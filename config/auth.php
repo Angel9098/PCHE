@@ -38,7 +38,7 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'usuario', // Cambia 'users' por 'usuario'
         ],
 
         'api' => [
@@ -66,15 +66,12 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'usuario' => [
             'driver' => 'eloquent',
-            'model' => App\Usuuario::class,
+            'model' => App\Usuario::class,
+            'table' => 'usuarios', // Nombre de la tabla de usuarios en tu base de datos
+            'username' => 'email', // Campo que se utilizará como nombre de usuario para el inicio de sesión
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
     ],
 
     /*
@@ -92,14 +89,7 @@ return [
     |
     */
 
-    'passwords' => [
-        'users' => [
-            'provider' => 'users',
-            'table' => 'password_resets',
-            'expire' => 60,
-            'throttle' => 60,
-        ],
-    ],
+    'passwords' => [],
 
     /*
     |--------------------------------------------------------------------------
