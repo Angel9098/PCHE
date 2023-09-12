@@ -31,7 +31,8 @@ Route::get('empresas', 'EmpresaController@allempresas')->name('empresas');;
 
 //Rutas para area
 Route::get('areas', 'AreaController@index')->name('areas');
-Route::get('horarios/area', 'AreaController@horariosArea')->name('areasbyempresa');
+Route::get('horarios/area', 'AreaController@horariosArea')->name('horariobyarea');
+Route::get('empresa/area', 'AreaController@empresaArea')->name('areasbyempresa');
 
 //Route::get('dashboard', 'DashboardController@index')->name('dashboard')->middleware('auth');
 
