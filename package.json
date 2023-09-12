@@ -26,7 +26,6 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
-        "v-calendar": "^2.4.1",
         "vue-router": "^3.6.5",
         "vue-toastification": "^1.7.14"
     }
