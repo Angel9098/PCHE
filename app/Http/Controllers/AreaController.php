@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Area;
 use Illuminate\Http\Request;
 use App\Empleado;
-use Illuminate\Support\Facades\DB;
 
 class AreaController extends Controller
 {
@@ -43,14 +42,4 @@ class AreaController extends Controller
         return response()->json(['message' => 'Horarios disponibles para el área recuperados con éxito', 'horarios' => $horarios], 200);
     }
 
-    public function empresaArea($id){
-
-        $areas = DB::table('empresas')
-        ->join('areas', 'empresas.id', '=', 'areas.empresa_id')
-        ->where('empresas.id', $id)
-        ->select('empresas.nombre as empresa', 'areas.nombre as area')
-        ->get();
-
-        return response()->json($areas);
-    }
 }

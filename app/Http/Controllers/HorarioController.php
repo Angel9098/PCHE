@@ -15,8 +15,6 @@ class HorarioController extends Controller
     public function index()
     {
         //
-        $horarios = Horario::all();
-        return response()->json($horarios);
     }
 
     /**

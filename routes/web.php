@@ -31,8 +31,7 @@ Route::get('empresas', 'EmpresaController@allempresas')->name('empresas');;
 
 //Rutas para area
 Route::get('areas', 'AreaController@index')->name('areas');
-Route::get('horarios/area', 'AreaController@horariosArea')->name('horariobyarea');
-Route::get('empresa/area', 'AreaController@empresaArea')->name('areasbyempresa');
+Route::get('horarios/area', 'AreaController@horariosArea')->name('areasbyempresa');
 
 //Route::get('dashboard', 'DashboardController@index')->name('dashboard')->middleware('auth');
 
@@ -51,8 +50,6 @@ Route::get('actualizarcontra','EmpleadoController@actualizarContrasenia')->name(
 
 Route::post('horas_extra/crear', 'HoraExtraCotroller@createHoraExtra')->name('horas_extra');
 Route::get('horas_extra', 'HoraExtraCotroller@allHoras')->name('horas_extra.all');
-Route::get('horarios', 'HorarioController@index')->name('allHorarios');
-
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', 'DashboardController@index')->name('dashboard');
