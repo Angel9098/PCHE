@@ -12,6 +12,8 @@ window.Vue = require('vue');
 import VueRouter from 'vue-router';
 import Toast from 'vue-toastification';
 
+import VCalendar from 'v-calendar';
+
 import "vue-toastification/dist/index.css"
 
 /**
@@ -35,6 +37,7 @@ import "vue-toastification/dist/index.css"
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 Vue.use(VueRouter);
+Vue.use(VCalendar);
 
 const options = {
 
@@ -78,6 +81,10 @@ const routes =[
     {
         path: '/importacionhoras',
         component: require('./components/CargaHorasComponent.vue').default
+    },
+    {
+        path: '/calendario',
+        component: require('./components/CalendarioComponent.vue').default
     }
 
 ]
