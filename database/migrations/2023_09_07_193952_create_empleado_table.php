@@ -20,6 +20,8 @@ class CreateEmpleadoTable extends Migration
             $table->string('cargo')->nullable();
             $table->string('dui', 10)->unique();
             $table->string('email')->unique();
+            $table->string('numero_emergencia');
+            $table->string('nombre_persona');
             $table->unsignedBigInteger('area_id');
             $table->timestamps();
 

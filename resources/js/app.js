@@ -74,6 +74,10 @@ const routes =[
     {
         path:'/historialhoras',
         component: require('./components/HistorialHorasComponent.vue').default
+    },
+    {
+        path: '/importacionhoras',
+        component: require('./components/CargaHorasComponent.vue').default
     }
 
 ]
