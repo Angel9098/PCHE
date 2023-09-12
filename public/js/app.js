@@ -5154,6 +5154,7 @@ __webpack_require__.r(__webpack_exports__);
       empresas: [],
       areas: [],
       horarios: [],
+      horariosFilter: [],
       turno: ''
     };
   },
@@ -5192,7 +5193,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     getHorarios: function getHorarios() {
       var _this3 = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("horarios/area?idArea=".concat(this.usuario.area), {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("horarios", {
         headers: {
           'Content-type': 'application/json'
         }
@@ -5202,8 +5203,10 @@ __webpack_require__.r(__webpack_exports__);
     },
     filterHorario: function filterHorario() {
       var _this4 = this;
-      this.horarios = this.horarios.filter(function (item) {
-        item.turno == _this4.turno;
+      console.log(this.horarios);
+      console.log('Filtro', this.horariosFilter);
+      this.horariosFilter = this.horarios.filter(function (item) {
+        item.turno.toString().toLowerCase() === _this4.turno.toLowerCase();
       });
     }
   }
@@ -6324,35 +6327,7 @@ var render = function render() {
   })])]), _vm._v(" "), _c("div", {
     staticClass: "d-flex flex-row justify-content-between gap-2"
   }, [_c("div", {
-    staticClass: "form-group col-4"
-  }, [_c("label", {
-    attrs: {
-      "for": "job_title"
-    }
-  }, [_vm._v("Cargo")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.usuario.job_title,
-      expression: "usuario.job_title"
-    }],
-    staticClass: "form-control",
-    attrs: {
-      id: "job_title",
-      type: "text",
-      required: ""
-    },
-    domProps: {
-      value: _vm.usuario.job_title
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.usuario, "job_title", $event.target.value);
-      }
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "form-group col-3"
+    staticClass: "form-group col-5"
   }, [_c("label", {
     attrs: {
       "for": "job_title"
@@ -6380,7 +6355,7 @@ var render = function render() {
       }
     }
   })]), _vm._v(" "), _c("div", {
-    staticClass: "form-group col-4"
+    staticClass: "form-group col-6"
   }, [_c("label", {
     attrs: {
       "for": "email"
@@ -6407,7 +6382,7 @@ var render = function render() {
         _vm.$set(_vm.usuario, "email", $event.target.value);
       }
     }
-  })])]), _vm._v(" "), _c("h4", {
+  })])]), _vm._v(" "), _c("div"), _vm._v(" "), _c("h4", {
     staticClass: "alert-heading pt-4"
   }, [_vm._v("Empresa y horario")]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("div", {
     staticClass: "d-flex flex-row justify-content-between gap-2"
@@ -6488,8 +6463,36 @@ var render = function render() {
       }
     }, [_vm._v("\n                                        " + _vm._s(a.nombre) + "\n                                    ")]);
   })], 2)])]), _vm._v(" "), _c("div", {
-    staticClass: "d-flex flex-row justify-content-start"
+    staticClass: "d-flex flex-row justify-content-between"
   }, [_c("div", {
+    staticClass: "form-group col-4"
+  }, [_c("label", {
+    attrs: {
+      "for": "job_title"
+    }
+  }, [_vm._v("Cargo")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.usuario.job_title,
+      expression: "usuario.job_title"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      id: "job_title",
+      type: "text",
+      required: ""
+    },
+    domProps: {
+      value: _vm.usuario.job_title
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.usuario, "job_title", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
     staticClass: "form-group col-4"
   }, [_c("label", {
     attrs: {
@@ -6520,54 +6523,40 @@ var render = function render() {
       }, _vm.filterHorario]
     }
   }, [_c("option", {
-    attrs: {
+    domProps: {
       value: "diurno"
     }
   }, [_vm._v("\n                                        Diurno\n                                    ")]), _vm._v(" "), _c("option", {
-    attrs: {
+    domProps: {
       value: "nocturno"
     }
   }, [_vm._v("\n                                        Nocturno\n                                    ")])])])]), _vm._v(" "), _c("div", {
     staticClass: "d-flex flex-row col-12 mt-2"
   }, [_c("table", {
     staticClass: "table table-hover table-sm table-bordered"
-  }, [_vm._m(0), _vm._v(" "), _c("tbody", [_c("tr", [_c("th", {
-    attrs: {
-      scope: "row"
-    }
-  }, [_c("div", {
-    staticClass: "form-check d-flex flex-row justify-content-center"
-  }, [_c("input", {
-    staticClass: "form-check-input position-static",
-    attrs: {
-      type: "checkbox",
-      id: "blankCheckbox",
-      "aria-label": "..."
-    },
-    domProps: {
-      value: _vm.usuario.calendarId
-    }
-  })])]), _vm._v(" "), _c("td", [_vm._v("LUNES A JUEVES DE 8:00 AM A 5:00 PM / VIERNES DE 8:00 AM A 8:00 PM")]), _vm._v(" "), _c("td", {
-    staticClass: "text-center"
-  }, [_vm._v("44")])]), _vm._v(" "), _c("tr", [_c("th", {
-    attrs: {
-      scope: "row"
-    }
-  }, [_c("div", {
-    staticClass: "form-check d-flex flex-row justify-content-center"
-  }, [_c("input", {
-    staticClass: "form-check-input position-static",
-    attrs: {
-      type: "checkbox",
-      id: "blankCheckbox",
-      "aria-label": "..."
-    },
-    domProps: {
-      value: _vm.usuario.calendarId
-    }
-  })])]), _vm._v(" "), _c("td", [_vm._v("LUNES A JUEVES DE 12:00 AM A 8:00 PM / DOMINGO DE 8:00 AM A 8:00 PM")]), _vm._v(" "), _c("td", {
-    staticClass: "text-center"
-  }, [_vm._v("40")])])])])]), _vm._v(" "), _c("div", {
+  }, [_vm._m(0), _vm._v(" "), _c("tbody", _vm._l(_vm.horariosFilter, function (item) {
+    return _c("tr", {
+      key: item.id
+    }, [_c("th", {
+      attrs: {
+        scope: "row"
+      }
+    }, [_c("div", {
+      staticClass: "form-check d-flex flex-row justify-content-center"
+    }, [_c("input", {
+      staticClass: "form-check-input position-static",
+      attrs: {
+        type: "checkbox",
+        id: "blankCheckbox",
+        "aria-label": "..."
+      },
+      domProps: {
+        value: item.id
+      }
+    })])]), _vm._v(" "), _c("td", [_vm._v(_vm._s(item.descripcion))]), _vm._v(" "), _c("td", {
+      staticClass: "text-center"
+    }, [_vm._v(_vm._s(item.horas_semana))])]);
+  }), 0)])]), _vm._v(" "), _c("div", {
     staticClass: "form-group col-12 d-flex flex-row justify-content-start"
   }, [_c("button", {
     staticClass: "btn btn-primary",
@@ -60667,8 +60656,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\CTGXGJ3\Desktop\ProyectoPCHE\PCHE\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\CTGXGJ3\Desktop\ProyectoPCHE\PCHE\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\laragon\www\PCHE-II\PCHE\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\laragon\www\PCHE-II\PCHE\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
