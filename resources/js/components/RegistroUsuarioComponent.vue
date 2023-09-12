@@ -19,18 +19,17 @@
                             </div>
                         </div>
                         <div class="d-flex flex-row justify-content-between gap-2">
-                            <div class="form-group col-4">
-                                <label for="job_title">Cargo</label>
-                                <input id="job_title" type="text" class="form-control" v-model="usuario.job_title" required>
-                            </div>
-                            <div class="form-group col-3">
+                            <div class="form-group col-5">
                                 <label for="job_title">DUI</label>
                                 <input id="job_title" type="text" class="form-control" v-model="usuario.dui" required>
                             </div>
-                            <div class="form-group col-4">
+                            <div class="form-group col-6">
                                 <label for="email">Correo Electrónico</label>
                                 <input id="email" type="email" class="form-control" v-model="usuario.email" required>
                             </div>
+                        </div>
+                        <div >
+
                         </div>
                         
                         <h4 class="alert-heading pt-4">Empresa y horario</h4>
@@ -56,14 +55,18 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="d-flex flex-row justify-content-start">
+                        <div class="d-flex flex-row justify-content-between">
+                            <div class="form-group col-4">
+                                <label for="job_title">Cargo</label>
+                                <input id="job_title" type="text" class="form-control" v-model="usuario.job_title" required>
+                            </div>
                             <div class="form-group col-4">
                                 <label for="hora">Turno</label>
                                 <select id="hora" class="form-select" v-model="turno" required :placeholder="'Seleccione turno'" @change="filterHorario">
-                                    <option value="diurno">
+                                    <option :value="'diurno'">
                                         Diurno
                                     </option>
-                                    <option value="nocturno">
+                                    <option :value="'nocturno'">
                                         Nocturno
                                     </option>
                                 </select>
@@ -79,23 +82,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    <tr v-for="item in horariosFilter" :key="item.id">
                                         <th scope="row">
                                             <div class="form-check d-flex flex-row justify-content-center">
-                                                <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" :value="usuario.calendarId" aria-label="...">
+                                                <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" :value="item.id" aria-label="...">
                                             </div>                                            
                                         </th>
-                                        <td>LUNES A JUEVES DE 8:00 AM A 5:00 PM / VIERNES DE 8:00 AM A 8:00 PM</td>
-                                        <td class="text-center">44</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">
-                                            <div class="form-check d-flex flex-row justify-content-center">
-                                                <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" :value="usuario.calendarId" aria-label="...">
-                                            </div> 
-                                        </th>
-                                        <td>LUNES A JUEVES DE 12:00 AM A 8:00 PM / DOMINGO DE 8:00 AM A 8:00 PM</td>
-                                        <td class="text-center">40</td>
+                                        <td>{{ item.descripcion }}</td>
+                                        <td class="text-center">{{ item.horas_semana }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -136,6 +130,7 @@ import axios from 'axios';
                 empresas: [],
                 areas: [],
                 horarios: [],
+                horariosFilter: [],
                 turno: ''
             }
         },
@@ -165,14 +160,16 @@ import axios from 'axios';
                 });
             },
             getHorarios(){
-                axios.get(`horarios/area?idArea=${this.usuario.area}`,{
+                axios.get(`horarios`,{
                     headers: {'Content-type': 'application/json'}
                 }).then(resp=>{
                     this.horarios = resp.data;
                 });
             },
-            filterHorario(){
-            this.horarios =  this.horarios.filter(item => { item.turno == this.turno });
+            filterHorario() {
+                console.log(this.horarios)
+                console.log('Filtro',this.horariosFilter)
+            this.horariosFilter =  this.horarios.filter(item => { item.turno.toString().toLowerCase() === this.turno.toLowerCase() });
             }
 
         }
