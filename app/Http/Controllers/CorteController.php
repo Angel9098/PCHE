@@ -9,11 +9,17 @@ use Illuminate\Http\Request;
 class CorteController extends Controller
 {
 
+    public function index(){
+          $cortes = Corte::all();
+          return response()->json($cortes);
+    }
+
     public function create(Request $request){
 
         $corte = new Corte([
             'descripcion' => $request->input('descripcion'),
-            'fecha_corte' => $request->input('fecha_corte')
+            'fecha_corte' => $request->input('fecha_corte'),
+            'vigente' => true
         ]);
 
         $corte->save();
