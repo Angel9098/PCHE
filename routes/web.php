@@ -51,6 +51,10 @@ Route::post('horas_extra/crear', 'HoraExtraCotroller@createHoraExtra')->name('ho
 Route::get('horas_extra', 'HoraExtraCotroller@allHoras')->name('horas_extra.all');
 Route::get('horarios', 'HorarioController@index')->name('allHorarios');
 
+//Ruta Cortes
+Route::get('cortes', 'CorteController@index')->name('cortes');
+Route::post('cortes/crear', 'CorteController@create')->name('crearCorte');
+
 Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', 'DashboardController@index')->name('dashboard');
 });

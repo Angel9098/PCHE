@@ -13,11 +13,11 @@ class CreateCorteTable extends Migration
      */
     public function up()
     {
-        Schema::create('corte', function (Blueprint $table) {
+        Schema::create('cortes', function (Blueprint $table) {
             $table->id();
             $table->string('descripcion');
             $table->date('fecha_corte');
-            $table->boolean('vigente');
+            $table->boolean('vigente')->default(true);
             $table->timestamps();
         });
     }
