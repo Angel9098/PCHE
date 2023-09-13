@@ -19,9 +19,9 @@
         </picture>
 
         <p class="font-weight-bold">NOMBRE DE PERFIL :</p>
-        <p>{{ perfil.name }}</p>
+        <p>{{ perfil.nombres }}</p>
         <p class="font-weight-bold">CARGO O PUESTO :</p>
-        <p>{{ perfil.puestoocargo }}</p>
+        <p>{{ perfil.cargo }}</p>
         <p class="font-weight-bold">DESCRIPCION DEL PUESTO :</p>
         <p>{{ perfil.description }}</p>
       </div>
@@ -46,7 +46,7 @@
               class="form-control"
               id="changeNombre"
               placeholder="CAMBIAR EL NOMBRE"
-              v-model="perfil.name"
+              v-model="perfil.nombres"
             />
           </div>
           <!-- CAMBIAR PUESTO O CARGO -->
@@ -57,7 +57,7 @@
               class="form-control"
               id="changePuesto"
               placeholder="CAMBIAR PUESTO O CARGO"
-              v-model="perfil.puestoocargo"
+              v-model="perfil.cargo"
             />
           </div>
           <!-- DESCRIPCION DEL PUESTO -->
@@ -140,9 +140,9 @@ export default {
         "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
       defaultBooleand: true,
       perfil: {
-        name: "",
+        nombres: "",
         imagen: "",
-        puestoocargo: "",
+        cargo: "",
         description: "",
       },
     };
