@@ -1,15 +1,14 @@
 <template>
     <div>
-        <nav class="navbar navbar-dark bg-primary justify-content-between">
-            <a class="navbar-brand">PCHE</a>
-            <div class="form-inline">
-                <button class="btn btn-outline-light" type="button" @click="cerrarSesion">Cerrar sesión</button>
-            </div>
-        </nav>
-        <h2 class="text-center">Bienvenido {{ usuario.nombres }} {{ usuario.apellidos }}</h2>
+        <menu-flotante-component-vue></menu-flotante-component-vue>
+     <main class="container">
+         <h1 class="text-center my-4">Bienvenido</h1>
+     </main>
     </div>
+
 </template>
 <script>
+import MenuFlotanteComponentVue from './MenuFlotanteComponent.vue';
     export default {
         data() {
             return {
@@ -26,6 +25,9 @@
                 localStorage.removeItem('user');
                 this.$router.push('/');
             }
+        },
+        components:{
+            MenuFlotanteComponentVue
         }
     }
 </script>

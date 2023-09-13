@@ -20,10 +20,10 @@
           <div class="position-sticky">
             <ul class="nav flex-column">
               <li class="nav-item">
-                <a class="nav-link" href="?#/"> <i class="fa-brands fa-searchengin mr-3"></i> Bucador</a>
+                <a class="nav-link" href="?#/"> <i class="fa-brands fa-searchengin mr-3"></i> Buscador</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="?#/"> <i class="fa-solid fa-circle-plus  mr-3"></i> Agregar hora extras </a>
+                <a class="nav-link" href="?#/"> <i class="fa-solid fa-circle-plus  mr-3"></i> Agregar horas extras </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="?#/"><i class="fa-solid fa-house  mr-3"></i> Inicio </a>

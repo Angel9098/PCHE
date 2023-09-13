@@ -35,6 +35,9 @@ Route::get('horarios/area', 'AreaController@horariosArea')->name('areasbyempresa
 
 //Route::get('dashboard', 'DashboardController@index')->name('dashboard')->middleware('auth');
 
+//rutas para horarios
+Route::get('horarios/consulta','HorarioController@consultaDehorarioPorEmpleado')->name('horariobypersona');
+
 //Rutas para empleado
 Route::get('empleados', 'EmpleadoController@allempleados')->name('empleados');
 Route::post('empleados/save', 'EmpleadoController@store')->name('empleados_save');
@@ -49,6 +52,9 @@ Route::post('actualizarcontra','EmpleadoController@actualizarContrasenia')->name
 Route::post('horas_extra/crear', 'HoraExtraCotroller@createHoraExtra')->name('horas_extra');
 Route::get('horas_extra', 'HoraExtraCotroller@allHoras')->name('horas_extra.all');
 Route::get('horarios', 'HorarioController@index')->name('allHorarios');
+
+//ruta subida imagenes
+Route::post('/subir_archivo', 'EmpresaController@subirArchivo');
 
 //Ruta Cortes
 Route::get('cortes', 'CorteController@index')->name('cortes');
