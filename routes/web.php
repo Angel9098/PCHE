@@ -50,6 +50,9 @@ Route::post('horas_extra/crear', 'HoraExtraCotroller@createHoraExtra')->name('ho
 Route::get('horas_extra', 'HoraExtraCotroller@allHoras')->name('horas_extra.all');
 Route::get('horarios', 'HorarioController@index')->name('allHorarios');
 
+//ruta subida imagenes
+Route::post('/subir_archivo', 'EmpresaController@subirArchivo');
+
 //Ruta Cortes
 Route::get('cortes', 'CorteController@index')->name('cortes');
 Route::post('cortes/crear', 'CorteController@create')->name('crearCorte');
