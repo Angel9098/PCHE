@@ -35,6 +35,9 @@ Route::get('horarios/area', 'AreaController@horariosArea')->name('areasbyempresa
 
 //Route::get('dashboard', 'DashboardController@index')->name('dashboard')->middleware('auth');
 
+//rutas para horarios
+Route::get('horarios/consulta','HorarioController@consultaDehorarioPorEmpleado')->name('horariobypersona');
+
 //Rutas para empleado
 Route::get('empleados', 'EmpleadoController@allempleados')->name('empleados');
 Route::post('empleados/save', 'EmpleadoController@store')->name('empleados_save');
