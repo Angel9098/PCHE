@@ -1,7 +1,6 @@
 <template>
-    <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-9 mt-3">
+    <div class="d-flex justify-content-center">
+        <div class="col-9 mt-3">
             <h1 class="text-center">Registro de Empleado</h1>
             <div class="card mt-3 mb-3 borderCircle bg-white">
                 <div class="card-body">
@@ -19,15 +18,11 @@
                             </div>
                         </div>
                         <div class="d-flex flex-row justify-content-between gap-2">
-                            <div class="form-group col-4">
-                                <label for="job_title">Cargo</label>
-                                <input id="job_title" type="text" class="form-control" v-model="usuario.job_title" required>
-                            </div>
-                            <div class="form-group col-3">
+                            <div class="form-group col-5">
                                 <label for="job_title">DUI</label>
                                 <input id="job_title" type="text" class="form-control" v-model="usuario.dui" required>
                             </div>
-                            <div class="form-group col-4">
+                            <div class="form-group col-6">
                                 <label for="email">Correo Electrónico</label>
                                 <input id="email" type="email" class="form-control" v-model="usuario.email" required>
                             </div>
@@ -37,11 +32,11 @@
                         <div class="d-flex flex-row justify-content-between gap-2 mt-2">
                             <div class="form-group col-5">
                                 <label for="nameEmergency">Nombre completo</label>
-                                <input id="nameEmergency" type="text" class="form-control" v-model="usuario.nombre_emergencia" required>
+                                <input id="nameEmergency" type="text" class="form-control" v-model="usuario.nombre_persona" required>
                             </div>
                             <div class="form-group col-6">
                                 <label for="phoneEmergency">Teléfono</label>
-                                <input id="phoneEmergency" type="text" class="form-control" v-model="usuario.telefono_emergencia" required>
+                                <input id="phoneEmergency" type="text" class="form-control" v-model="usuario.numero_emergencia" required>
                             </div>
                         </div>
                         
@@ -82,7 +77,7 @@
                                     <option :value="'diurno'">
                                         Diurno
                                     </option>
-                                    <option value="nocturno">
+                                    <option :value="'nocturno'">
                                         Nocturno
                                     </option>
                                 </select>
@@ -98,23 +93,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    <tr v-for="horario in horariosFilter" :key="horario.id">
                                         <th scope="row">
                                             <div class="form-check d-flex flex-row justify-content-center">
-                                                <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" :value="usuario.calendarId" aria-label="...">
+                                                <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" :value="horario.id" aria-label="..." @change="selectHorario(horario.id)" :checked="horario.id === usuario.horario_id">
                                             </div>                                            
                                         </th>
-                                        <td>LUNES A JUEVES DE 8:00 AM A 5:00 PM / VIERNES DE 8:00 AM A 8:00 PM</td>
-                                        <td class="text-center">44</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">
-                                            <div class="form-check d-flex flex-row justify-content-center">
-                                                <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" :value="usuario.calendarId" aria-label="...">
-                                            </div> 
-                                        </th>
-                                        <td>LUNES A JUEVES DE 12:00 AM A 8:00 PM / DOMINGO DE 8:00 AM A 8:00 PM</td>
-                                        <td class="text-center">40</td>
+                                        <td>{{ horario.descripcion }}</td>
+                                        <td class="text-center">{{ horario.horas_semana }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -132,8 +118,6 @@
             </div>
         </div>
     </div>
-</div>
-
 </template>
 <script>
 
@@ -151,8 +135,8 @@ export default {
                     empresa:'',
                     dui: '',
                     horario_id: 0,
-                    nombre_emergencia: '',
-                    telefono_emergencia: ''
+                    nombre_persona: '',
+                    numero_emergencia: ''
                 },
                 empresas: [],
                 areas: [],
@@ -170,7 +154,11 @@ export default {
                 axios.post('empleados/crear', this.usuario, {
                     headers:{'Content-type':'application/json'}
                 }).then(response=>{
-                    console.log(response.data);
+                    this.$toast.success(response.data.message, {
+                        timeout: 3000,
+                        position: 'top-right',
+                        icon: true
+                    });
                 })
             },
             getEmpresas(){
@@ -188,7 +176,7 @@ export default {
                 });
             },
             getHorarios(){
-                axios.get(`horarios/area?idArea=${this.usuario.area}`,{
+                axios.get(`horarios`,{
                     headers: {'Content-type': 'application/json'}
                 }).then(resp=>{
                     this.horarios = resp.data;
@@ -203,6 +191,9 @@ export default {
                     this.horariosFilter = [];
                     this.horariosFilter = this.horarios.filter(item => this.turno.localeCompare(item.turno, 'es', { sensitivity: 'accent' }) == 0);
                 }
+            },
+            selectHorario(id) {
+                this.usuario.horario_id = id;
             }
 
         }
