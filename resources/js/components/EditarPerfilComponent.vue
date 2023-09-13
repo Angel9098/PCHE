@@ -2,7 +2,7 @@
 
 <template>
   <main class="container m-auto">
-    <h1 class="text-center my-4">Actualización de perfil</h1>
+    <h1 class="text-center my-4">Actualización de pérfil</h1>
     <article class="card">
       <div class="floatCenter">
         <h2 class="text-center my-3">Vista previa</h2>
@@ -18,11 +18,11 @@
           />
         </picture>
 
-        <p class="font-weight-bold">NOMBRE DE PERFIL :</p>
+        <p class="font-weight-bold">NOMBRE DE PÉRFIL :</p>
         <p>{{ perfil.nombres }}</p>
         <p class="font-weight-bold">CARGO O PUESTO :</p>
         <p>{{ perfil.cargo }}</p>
-        <p class="font-weight-bold">DESCRIPCION DEL PUESTO :</p>
+        <p class="font-weight-bold">DESCRIPCIÓN DEL PUESTO :</p>
         <p>{{ perfil.description }}</p>
       </div>
       <div>
@@ -62,7 +62,7 @@
           </div>
           <!-- DESCRIPCION DEL PUESTO -->
           <div class="mb-3">
-            <label for="validationTextarea">DESCRIPCION DEL PUESTO</label>
+            <label for="validationTextarea">DESCRIPCIÓN DEL PUESTO</label>
             <textarea
               class="form-control is-invalid"
               id="validationTextarea"
@@ -83,7 +83,10 @@
               GUARDAR CAMBIOS <i class="fa-solid fa-circle-plus"></i>
             </button>
             <button
-            type="button" class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#exampleModal"
+              type="button"
+              class="btn btn-primary my-3"
+              data-bs-toggle="modal"
+              data-bs-target="#exampleModal"
             >
               Cambiar contraseña <i class="fa-solid fa-pen-to-square"></i>
             </button>
@@ -93,19 +96,32 @@
     </article>
     <!-- ****** -->
 
-   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Nombre de persona</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <modal-change-password></modal-change-password>
+    <div
+      class="modal fade"
+      id="exampleModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">
+              Nombre de persona
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <modal-change-password></modal-change-password>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
     <!-- ******* -->
   </main>
 </template>
@@ -132,6 +148,8 @@
 }
 </style>
 <script>
+import axios from "axios";
+
 import ModalChangePassword from "./ModalChangePassword.vue";
 export default {
   data() {
@@ -139,6 +157,7 @@ export default {
       defaultImagen:
         "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
       defaultBooleand: true,
+      file: File,
       perfil: {
         nombres: "",
         imagen: "",
@@ -153,11 +172,28 @@ export default {
   methods: {
     changesDefauld(event) {
       this.defaultBooleand = false;
-      const files  = event.target.files[0];
-      this.perfil.imagen =URL.createObjectURL(files)
+      this.file = event.target.files[0];
+      
+      const files = event.target.files[0];
+      this.perfil.imagen = URL.createObjectURL(files);
     },
     sendInfromation() {
-      console.log(this.perfil);
+      console.log(this.file)
+        const sendFiles = new FormData();
+        sendFiles.append('imagen', this.file,this.file.name);
+
+        axios.post(
+        "/subir_archivo",
+         sendFiles 
+      )
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      
+      // return new  Promise.all();
     },
   },
 };
