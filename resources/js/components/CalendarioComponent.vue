@@ -102,11 +102,12 @@ export default {
     methods: {
         async getCortes() {
             try {
-                const response = await axios.get('/api/cortes?page=' + this.currentPage);
+                const response = await axios.get('/cortes?page=' + this.currentPage);
+                console.log('Respuesta del servidor:', response.data);
                 this.cortes = response.data.data;
                 this.lastPage = response.data.last_page;
             } catch (error) {
-                console.error("Error al obtener los cortes:", error);
+                console.error("Error al obtener los cortes:", error.response ? error.response.data : error.message);
             }
         },
         changePage(page) {
@@ -115,15 +116,16 @@ export default {
         },
         async enviarCorte() {
             try {
-                await axios.post('/api/cortes/crear', {
+                const response = await axios.post('/cortes/crear', {
                     descripcion: this.descripcionCorte,
                     fecha_corte: this.selectedDate
                 });
+                console.log('Respuesta al enviar corte:', response.data);
                 this.descripcionCorte = '';
                 $('#corteModal').modal('hide');
-                this.getCortes();  // Recargar la lista de cortes después de agregar uno nuevo.
+                this.getCortes();
             } catch (error) {
-                console.error("Error al enviar el corte:", error);
+                console.error("Error al enviar el corte:", error.response ? error.response.data : error.message);
             }
         }
     }
