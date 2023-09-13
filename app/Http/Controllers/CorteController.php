@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Corte;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
 
@@ -11,22 +12,23 @@ class CorteController extends Controller
 
     public function index()
     {
-        $cortes = Corte::all();
+        $cortes = Corte::paginate(5);
         return response()->json($cortes);
     }
 
     public function create(Request $request)
     {
+        try{
+            $corte = new Corte([
+                'descripcion' => $request->input('descripcion'),
+                'fecha_corte' => $request->input('fecha_corte'),
+            ]);
 
-        $corte = new Corte([
-            'descripcion' => $request->input('descripcion'),
-            'fecha_corte' => $request->input('fecha_corte'),
-            'vigente' => true
-        ]);
-
-        $corte->save();
-
-        return response()->json(["message" => 'Corte agregado con exito'], 201);
+            $corte->save();
+            return response()->json(["message" => 'Corte agregado con exito'], 201);
+        }catch(QueryException $ex){
+            return response()->json(["message" => 'Error al agregar el corte: ' . $ex->getMessage()], 500);
+        }
     }
 
     public function update(Request $request, $id)

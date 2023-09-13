@@ -8,7 +8,7 @@ class Empleado extends Model
 {
 
     protected $fillable = [
-        'nombres', 'apellidos', 'cargo', 'dui', 'email'
+        'nombres', 'apellidos', 'cargo', 'dui', 'email','numero_emergencia','nombre_persona'
     ];
 
     public function area()

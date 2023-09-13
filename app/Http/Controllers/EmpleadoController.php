@@ -16,31 +16,8 @@ class EmpleadoController extends Controller
         return response()->json($empleados);
     }
 
-    /*public function store(Request $request, Area $area){
-
-        $request->validate([
-            'nombres'=>'required|string',
-            'apellidos'=>'required|string',
-            'cargo' => 'required|string',
-            'correo' => 'required|email|unique:empleados',
-            'area' =>  'required|exists:areas,id'
-        ]);
-
-        $empleado = Empleado::create([
-            'nombres' => $request->input('nombres'),
-            'apellidos' => $request->input('apellidos'),
-            'cargo' => $request->input('cargo'),
-            'correo' => $request->input('correo'),
-            'area_id' => $request->input('area_id')
-        ]);
-
-        return response()->json(['message' => 'Empleado creado correctamente', 201]);
-
-    }*/
-
-    public function empleadosBusquedaNombre(Request $request)
-    {
-        try {
+    public function empleadosBusquedaNombre(Request $request){
+        try{
             $nombre = $request->input('nombres');
             $empleados = Empleado::where('nombres', 'LIKE', "%$nombre%")->get();
             return response()->json($empleados);
@@ -66,7 +43,9 @@ class EmpleadoController extends Controller
             $empleado->email = $request->input('email');
             $empleado->area_id = $request->input('area_id');
             $empleado->dui = $request->input('dui');
-            $empleado->horario_id = $request->input('horario_id');
+            $empleado->horario_id=$request->input('horario_id');
+            $empleado->numero_emergencia =$request->input('numero_emergencia');
+            $empleado->nombre_persona = $request->input('nombre_persona');
             $empleado->save();
 
 
@@ -89,8 +68,10 @@ class EmpleadoController extends Controller
                 'email' => 'required|email|unique:empleados',
                 'area_id' =>  'required|exists:areas,id',
                 'email' => 'required|string',
-                'horario_id' => 'required|exists:horarios,id',
-                'dui' => 'required|string'
+                'horario_id'=> 'required|exists:horarios,id',
+                'dui'=> 'required|string',
+                'numero_emergencia'=>'required|string',
+                'nombre_persona'=>'required|string'
             ]);
 
 
@@ -101,7 +82,9 @@ class EmpleadoController extends Controller
             $empleado->email = $request->input('email');
             $empleado->area_id = $request->input('area_id');
             $empleado->dui = $request->input('dui');
-            $empleado->horario_id = $request->input('horario_id');
+            $empleado->horario_id=$request->input('horario_id');
+            $empleado->numero_emergencia =$request->input('numero_emergencia');
+            $empleado->nombre_persona = $request->input('nombre_persona');
             $empleado->save();
 
 
