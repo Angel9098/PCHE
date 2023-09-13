@@ -5033,6 +5033,23 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CargaHorasComponent.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CargaHorasComponent.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {},
+  mounted: function mounted() {},
+  methods: {}
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/DashboardComponent.vue?vue&type=script&lang=js&":
 /*!*****************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/DashboardComponent.vue?vue&type=script&lang=js& ***!
@@ -5164,23 +5181,27 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       usuario: {
-        name: '',
-        last_name: '',
+        nombres: '',
+        apellidos: '',
         email: '',
-        area: 0,
-        job_title: '',
-        company: '',
+        area_id: 0,
+        cargo: '',
+        empresa: '',
         dui: '',
-        calendarId: 0
+        horario_id: 0,
+        nombre_emergencia: '',
+        telefono_emergencia: ''
       },
       empresas: [],
       areas: [],
       horarios: [],
-      turno: ''
+      horariosFilter: [],
+      turno: 'all'
     };
   },
   mounted: function mounted() {
     this.getEmpresas();
+    this.getHorarios();
   },
   methods: {
     registrar: function registrar() {
@@ -5204,7 +5225,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     getAreas: function getAreas() {
       var _this2 = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("areas?idEmpresa=".concat(this.usuario.company), {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("areas?idEmpresa=".concat(this.usuario.empresa), {
         headers: {
           'Content-type': 'application/json'
         }
@@ -5220,13 +5241,21 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (resp) {
         _this3.horarios = resp.data;
+        _this3.horariosFilter = resp.data;
       });
     },
     filterHorario: function filterHorario() {
       var _this4 = this;
-      this.horarios = this.horarios.filter(function (item) {
-        item.turno == _this4.turno;
-      });
+      if (this.turno == 'all') {
+        this.getHorarios();
+      } else {
+        this.horariosFilter = [];
+        this.horariosFilter = this.horarios.filter(function (item) {
+          return _this4.turno.localeCompare(item.turno, 'es', {
+            sensitivity: 'accent'
+          }) == 0;
+        });
+      }
     }
   }
 });
@@ -5303,7 +5332,7 @@ var render = function render() {
       "margin-bottom": "5%"
     }
   }, [_vm._m(0), _vm._v(" "), _c("form", {
-    staticClass: "col-12 d-flex flex-column justify-content-center"
+    staticClass: "col-8 d-flex flex-column justify-content-center"
   }, [_c("div", {
     staticClass: "col-12 d-flex flex-column justify-content-center"
   }, [_c("h2", {
@@ -5312,14 +5341,12 @@ var render = function render() {
       "margin-bottom": "3%"
     }
   }, [_vm._v("ACTIVACIÓN DE USUARIO")]), _vm._v(" "), _c("div", {
-    staticClass: "row d-flex justify-content-center",
+    staticClass: "d-flex flex-row justify-content-center align-items-center",
     staticStyle: {
       "margin-bottom": "2%"
     }
-  }, [_c("div", {
-    staticClass: "col-2"
-  }), _vm._v(" "), _vm._m(1), _vm._v(" "), _c("div", {
-    staticClass: "col-4"
+  }, [_vm._m(1), _vm._v(" "), _c("div", {
+    staticClass: "col-6 mx-3"
   }, [_c("input", {
     directives: [{
       name: "model",
@@ -5328,13 +5355,10 @@ var render = function render() {
       expression: "duiEmpleado"
     }],
     staticClass: "form-control",
-    staticStyle: {
-      height: "50px"
-    },
     attrs: {
       type: "text",
       id: "duiEmpleado",
-      placeholder: "Ingrese el DUI del empleado"
+      placeholder: "Ingrese DUI de empleado"
     },
     domProps: {
       value: _vm.duiEmpleado
@@ -5353,9 +5377,6 @@ var render = function render() {
       expression: "idEmpleado"
     }],
     staticClass: "form-control",
-    staticStyle: {
-      height: "50px"
-    },
     attrs: {
       type: "text",
       id: "idEmpleado",
@@ -5371,12 +5392,9 @@ var render = function render() {
       }
     }
   })]), _vm._v(" "), _c("div", {
-    staticClass: "col-1"
+    staticClass: "col-4 d-flex flex-row justify-content-start"
   }, [_c("button", {
     staticClass: "btn btn-primary",
-    staticStyle: {
-      "margin-right": "2%"
-    },
     attrs: {
       type: "button"
     },
@@ -5384,16 +5402,14 @@ var render = function render() {
       click: _vm.buscarEmpleado
     }
   }, [_vm._v("Buscar")])])]), _vm._v(" "), _c("div", {
-    staticClass: "row d-flex justify-content-center",
+    staticClass: "d-flex flex-row justify-content-center gap-2",
     staticStyle: {
       "margin-bottom": "2%"
     }
   }, [_c("div", {
-    staticClass: "col-1"
-  }), _vm._v(" "), _c("div", {
     staticClass: "col-4"
   }, [_c("div", {
-    staticClass: "row"
+    staticClass: "d-flex flex-row align-items-center"
   }, [_vm._m(2), _vm._v(" "), _c("div", {
     staticClass: "col-9"
   }, [_c("input", {
@@ -5404,9 +5420,6 @@ var render = function render() {
       expression: "nombres"
     }],
     staticClass: "form-control",
-    staticStyle: {
-      height: "50px"
-    },
     attrs: {
       type: "text",
       id: "nombres",
@@ -5424,7 +5437,7 @@ var render = function render() {
   })])])]), _vm._v(" "), _c("div", {
     staticClass: "col-4"
   }, [_c("div", {
-    staticClass: "row"
+    staticClass: "d-flex flex-row align-items-center"
   }, [_vm._m(3), _vm._v(" "), _c("div", {
     staticClass: "col-9"
   }, [_c("input", {
@@ -5435,9 +5448,6 @@ var render = function render() {
       expression: "apellidosEmpleado"
     }],
     staticClass: "form-control",
-    staticStyle: {
-      height: "50px"
-    },
     attrs: {
       type: "text",
       id: "apellidosEmpleado",
@@ -5453,16 +5463,14 @@ var render = function render() {
       }
     }
   })])])])]), _vm._v(" "), _c("div", {
-    staticClass: "row d-flex justify-content-center",
+    staticClass: "d-flex flex-row justify-content-center gap-2",
     staticStyle: {
       "margin-bottom": "2%"
     }
   }, [_c("div", {
-    staticClass: "col-1"
-  }), _vm._v(" "), _c("div", {
     staticClass: "col-4"
   }, [_c("div", {
-    staticClass: "row"
+    staticClass: "d-flex flex-row align-items-center"
   }, [_vm._m(4), _vm._v(" "), _c("div", {
     staticClass: "col-9"
   }, [_c("input", {
@@ -5473,9 +5481,6 @@ var render = function render() {
       expression: "empresa"
     }],
     staticClass: "form-control",
-    staticStyle: {
-      height: "50px"
-    },
     attrs: {
       type: "text",
       id: "empresa",
@@ -5493,7 +5498,7 @@ var render = function render() {
   })])])]), _vm._v(" "), _c("div", {
     staticClass: "col-4"
   }, [_c("div", {
-    staticClass: "row"
+    staticClass: "d-flex flex-row align-items-center"
   }, [_vm._m(5), _vm._v(" "), _c("div", {
     staticClass: "col-9"
   }, [_c("input", {
@@ -5504,9 +5509,6 @@ var render = function render() {
       expression: "cargo"
     }],
     staticClass: "form-control",
-    staticStyle: {
-      height: "50px"
-    },
     attrs: {
       type: "text",
       id: "cargo",
@@ -5522,16 +5524,14 @@ var render = function render() {
       }
     }
   })])])])]), _vm._v(" "), _c("div", {
-    staticClass: "row d-flex justify-content-center",
+    staticClass: "d-flex flex-row justify-content-center",
     staticStyle: {
       "margin-bottom": "2%"
     }
   }, [_c("div", {
-    staticClass: "col-1"
-  }), _vm._v(" "), _c("div", {
     staticClass: "col-4"
   }, [_c("div", {
-    staticClass: "row"
+    staticClass: "d-flex flex-row align-items-center"
   }, [_vm._m(6), _vm._v(" "), _c("div", {
     staticClass: "col-9"
   }, [_c("input", {
@@ -5542,9 +5542,6 @@ var render = function render() {
       expression: "correo"
     }],
     staticClass: "form-control",
-    staticStyle: {
-      height: "50px"
-    },
     attrs: {
       type: "text",
       id: "correo",
@@ -5562,7 +5559,7 @@ var render = function render() {
   })])])]), _vm._v(" "), _c("div", {
     staticClass: "col-4"
   })]), _vm._v(" "), _c("div", {
-    staticClass: "row d-flex justify-content-center",
+    staticClass: "d-flex flex-row justify-content-center",
     staticStyle: {
       "margin-bottom": "2%"
     }
@@ -5611,9 +5608,7 @@ var render = function render() {
     staticStyle: {
       "margin-bottom": "2%"
     }
-  }, [_c("div", {
-    staticClass: "col-2"
-  }), _vm._v(" "), _vm._m(7), _vm._v(" "), _c("div", {
+  }, [_vm._m(7), _vm._v(" "), _c("div", {
     staticClass: "col-5"
   }, [_c("input", {
     directives: [{
@@ -5684,7 +5679,7 @@ var staticRenderFns = [function () {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
-    staticClass: "col-2.5"
+    staticClass: "col-2 d-flex flex-row justify-content-start"
   }, [_c("label", {
     staticStyle: {
       "font-weight": "bold",
@@ -5694,16 +5689,13 @@ var staticRenderFns = [function () {
     attrs: {
       "for": "duiEmpleado"
     }
-  }, [_vm._v("DUI DE\n                        EMPLEADO")])]);
+  }, [_vm._v("DUI DE EMPLEADO")])]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
     staticClass: "col-3"
   }, [_c("label", {
-    staticStyle: {
-      "margin-top": "20%"
-    },
     attrs: {
       "for": "nombres"
     }
@@ -5714,9 +5706,6 @@ var staticRenderFns = [function () {
   return _c("div", {
     staticClass: "col-3"
   }, [_c("label", {
-    staticStyle: {
-      "margin-top": "20%"
-    },
     attrs: {
       "for": "apellidosEmpleado"
     }
@@ -5727,9 +5716,6 @@ var staticRenderFns = [function () {
   return _c("div", {
     staticClass: "col-3"
   }, [_c("label", {
-    staticStyle: {
-      "margin-top": "20%"
-    },
     attrs: {
       "for": "empresa"
     }
@@ -5740,9 +5726,6 @@ var staticRenderFns = [function () {
   return _c("div", {
     staticClass: "col-3"
   }, [_c("label", {
-    staticStyle: {
-      "margin-top": "20%"
-    },
     attrs: {
       "for": "cargo"
     }
@@ -5753,9 +5736,6 @@ var staticRenderFns = [function () {
   return _c("div", {
     staticClass: "col-3"
   }, [_c("label", {
-    staticStyle: {
-      "margin-top": "20%"
-    },
     attrs: {
       "for": "correo"
     }
@@ -5764,7 +5744,7 @@ var staticRenderFns = [function () {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
-    staticClass: "col-2.5"
+    staticClass: "col-2"
   }, [_c("label", {
     staticStyle: {
       "font-weight": "bold",
@@ -5962,6 +5942,38 @@ var staticRenderFns = [function () {
       "aria-hidden": "true"
     }
   }, [_vm._v("»")])])])])]);
+}];
+render._withStripped = true;
+
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CargaHorasComponent.vue?vue&type=template&id=ec6c0c1a&":
+/*!****************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib/loaders/templateLoader.js??ref--6!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CargaHorasComponent.vue?vue&type=template&id=ec6c0c1a& ***!
+  \****************************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function render() {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _vm._m(0);
+};
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "d-flex justify-content-center align-items-center"
+  }, [_c("div", {
+    staticClass: "w-75 d-flex flex-column justify-content-center align-items-center"
+  }, [_c("h1", [_vm._v("Registro de Horas Extras")]), _vm._v(" "), _c("div", {
+    staticClass: "col-10 d-flex flex-column justify-content-center bg-secondary-subtle rounded-4"
+  }, [_c("p", [_vm._v("Adjunte archivo de horas extras")]), _vm._v(" "), _c("small", [_vm._v("Solo se permite archivo Excel")])])])]);
 }];
 render._withStripped = true;
 
@@ -6484,8 +6496,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.usuario.name,
-      expression: "usuario.name"
+      value: _vm.usuario.nombres,
+      expression: "usuario.nombres"
     }],
     staticClass: "form-control",
     attrs: {
@@ -6494,12 +6506,12 @@ var render = function render() {
       required: ""
     },
     domProps: {
-      value: _vm.usuario.name
+      value: _vm.usuario.nombres
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.$set(_vm.usuario, "name", $event.target.value);
+        _vm.$set(_vm.usuario, "nombres", $event.target.value);
       }
     }
   })]), _vm._v(" "), _c("div", {
@@ -6512,8 +6524,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.usuario.last_name,
-      expression: "usuario.last_name"
+      value: _vm.usuario.apellidos,
+      expression: "usuario.apellidos"
     }],
     staticClass: "form-control",
     attrs: {
@@ -6522,12 +6534,12 @@ var render = function render() {
       required: ""
     },
     domProps: {
-      value: _vm.usuario.last_name
+      value: _vm.usuario.apellidos
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.$set(_vm.usuario, "last_name", $event.target.value);
+        _vm.$set(_vm.usuario, "apellidos", $event.target.value);
       }
     }
   })])]), _vm._v(" "), _c("div", {
@@ -6618,6 +6630,66 @@ var render = function render() {
     }
   })])]), _vm._v(" "), _c("h4", {
     staticClass: "alert-heading pt-4"
+  }, [_vm._v("En caso de emergencia contactar a")]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("div", {
+    staticClass: "d-flex flex-row justify-content-between gap-2 mt-2"
+  }, [_c("div", {
+    staticClass: "form-group col-5"
+  }, [_c("label", {
+    attrs: {
+      "for": "nameEmergency"
+    }
+  }, [_vm._v("Nombre completo")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.usuario.nombre_emergencia,
+      expression: "usuario.nombre_emergencia"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      id: "nameEmergency",
+      type: "text",
+      required: ""
+    },
+    domProps: {
+      value: _vm.usuario.nombre_emergencia
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.usuario, "nombre_emergencia", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "form-group col-6"
+  }, [_c("label", {
+    attrs: {
+      "for": "phoneEmergency"
+    }
+  }, [_vm._v("Teléfono")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.usuario.telefono_emergencia,
+      expression: "usuario.telefono_emergencia"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      id: "phoneEmergency",
+      type: "text",
+      required: ""
+    },
+    domProps: {
+      value: _vm.usuario.telefono_emergencia
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.usuario, "telefono_emergencia", $event.target.value);
+      }
+    }
+  })])]), _vm._v(" "), _c("h4", {
+    staticClass: "alert-heading pt-4"
   }, [_vm._v("Empresa y horario")]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("div", {
     staticClass: "d-flex flex-row justify-content-between gap-2"
   }, [_c("div", {
@@ -6630,8 +6702,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.usuario.company,
-      expression: "usuario.company"
+      value: _vm.usuario.empresa,
+      expression: "usuario.empresa"
     }],
     staticClass: "form-select",
     attrs: {
@@ -6646,7 +6718,7 @@ var render = function render() {
           var val = "_value" in o ? o._value : o.value;
           return val;
         });
-        _vm.$set(_vm.usuario, "company", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+        _vm.$set(_vm.usuario, "empresa", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
       }, _vm.getAreas]
     }
   }, _vm._l(_vm.empresas, function (empresa) {
@@ -6666,13 +6738,14 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.usuario.area,
-      expression: "usuario.area"
+      value: _vm.usuario.area_id,
+      expression: "usuario.area_id"
     }],
     staticClass: "form-select",
     attrs: {
       id: "area",
-      required: ""
+      required: "",
+      disabled: _vm.usuario.empresa == ""
     },
     on: {
       change: [function ($event) {
@@ -6682,7 +6755,7 @@ var render = function render() {
           var val = "_value" in o ? o._value : o.value;
           return val;
         });
-        _vm.$set(_vm.usuario, "area", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+        _vm.$set(_vm.usuario, "area_id", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
       }, _vm.getHorarios]
     }
   }, [_vm.areas.length === 0 ? _c("option", {
@@ -6697,8 +6770,36 @@ var render = function render() {
       }
     }, [_vm._v("\n                                        " + _vm._s(a.nombre) + "\n                                    ")]);
   })], 2)])]), _vm._v(" "), _c("div", {
-    staticClass: "d-flex flex-row justify-content-start"
+    staticClass: "d-flex flex-row justify-content-between"
   }, [_c("div", {
+    staticClass: "form-group col-5"
+  }, [_c("label", {
+    attrs: {
+      "for": "job_title"
+    }
+  }, [_vm._v("Cargo")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.usuario.cargo,
+      expression: "usuario.cargo"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      id: "job_title",
+      type: "text",
+      required: ""
+    },
+    domProps: {
+      value: _vm.usuario.cargo
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.usuario, "cargo", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
     staticClass: "form-group col-4"
   }, [_c("label", {
     attrs: {
@@ -6729,7 +6830,11 @@ var render = function render() {
       }, _vm.filterHorario]
     }
   }, [_c("option", {
-    attrs: {
+    domProps: {
+      value: "all"
+    }
+  }, [_vm._v("\n                                        Todos\n                                    ")]), _vm._v(" "), _c("option", {
+    domProps: {
       value: "diurno"
     }
   }, [_vm._v("\n                                        Diurno\n                                    ")]), _vm._v(" "), _c("option", {
@@ -6835,12 +6940,14 @@ var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
-    staticClass: "bg-white d-flex flex-column justify-content-center col-6",
+    staticClass: "d-flex justify-content-center align-items-center"
+  }, [_c("div", {
+    staticClass: "bg-white d-flex flex-column justify-content-center align-items-center w-50",
     staticStyle: {
       "margin-top": "8%"
     }
   }, [_vm._m(0), _vm._v(" "), _c("form", [_c("div", {
-    staticClass: "col-12 d-flex flex-column justify-content-center"
+    staticClass: "d-flex flex-column justify-content-center"
   }, [_c("br"), _vm._v(" "), _c("h2", {
     staticClass: "text-center"
   }, [_vm._v("SELECCIÓN DE EMPRESAS")]), _vm._v(" "), _c("br"), _vm._v(" "), _c("div", {
@@ -6868,27 +6975,24 @@ var render = function render() {
     attrs: {
       value: ""
     }
-  }, [_vm._v("Seleccione La empresa")]), _vm._v(" "), _vm._l(_vm.empresas, function (empresa) {
+  }, [_vm._v("Seleccione empresa")]), _vm._v(" "), _vm._l(_vm.empresas, function (empresa) {
     return _c("option", {
       key: empresa.id,
       domProps: {
         value: empresa.id
       }
-    }, [_vm._v("\n            " + _vm._s(empresa.id) + " - " + _vm._s(empresa.nombre) + "\n          ")]);
+    }, [_vm._v("\n              " + _vm._s(empresa.id) + " - " + _vm._s(empresa.nombre) + "\n            ")]);
   })], 2)]), _vm._v(" "), _c("br"), _vm._v(" "), _c("div", {
-    staticClass: "col-12 d-flex justify-content-center"
+    staticClass: "d-flex col-12 justify-content-center"
   }, [_c("button", {
-    staticClass: "btn btn-primary btn-block",
-    staticStyle: {
-      width: "25%"
-    },
+    staticClass: "btn btn-primary mt-2",
     attrs: {
       type: "button"
     },
     on: {
       click: _vm.seleccionar
     }
-  }, [_vm._v("\n          Seleccionar\n        ")])])])])]);
+  }, [_vm._v("\n            Seleccionar\n          ")])])])])])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
@@ -60466,17 +60570,20 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-var render, staticRenderFns
-var script = {}
+/* harmony import */ var _CargaHorasComponent_vue_vue_type_template_id_ec6c0c1a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CargaHorasComponent.vue?vue&type=template&id=ec6c0c1a& */ "./resources/js/components/CargaHorasComponent.vue?vue&type=template&id=ec6c0c1a&");
+/* harmony import */ var _CargaHorasComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CargaHorasComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/CargaHorasComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
 
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_0__["default"])(
-  script,
-  render,
-  staticRenderFns,
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _CargaHorasComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _CargaHorasComponent_vue_vue_type_template_id_ec6c0c1a___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _CargaHorasComponent_vue_vue_type_template_id_ec6c0c1a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
   null,
@@ -60484,8 +60591,42 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
   
 )
 
+/* hot reload */
+if (false) { var api; }
 component.options.__file = "resources/js/components/CargaHorasComponent.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/CargaHorasComponent.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/components/CargaHorasComponent.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CargaHorasComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./CargaHorasComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CargaHorasComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CargaHorasComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/CargaHorasComponent.vue?vue&type=template&id=ec6c0c1a&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/components/CargaHorasComponent.vue?vue&type=template&id=ec6c0c1a& ***!
+  \****************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ref_6_node_modules_vue_loader_lib_index_js_vue_loader_options_CargaHorasComponent_vue_vue_type_template_id_ec6c0c1a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ref--6!../../../node_modules/vue-loader/lib??vue-loader-options!./CargaHorasComponent.vue?vue&type=template&id=ec6c0c1a& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CargaHorasComponent.vue?vue&type=template&id=ec6c0c1a&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ref_6_node_modules_vue_loader_lib_index_js_vue_loader_options_CargaHorasComponent_vue_vue_type_template_id_ec6c0c1a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ref_6_node_modules_vue_loader_lib_index_js_vue_loader_options_CargaHorasComponent_vue_vue_type_template_id_ec6c0c1a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
 
 /***/ }),
 
@@ -61066,8 +61207,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\CTGXGJ3\Desktop\ProyectoPCHE\PCHE\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\CTGXGJ3\Desktop\ProyectoPCHE\PCHE\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\laragon\www\PCHE-II\PCHE\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\laragon\www\PCHE-II\PCHE\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

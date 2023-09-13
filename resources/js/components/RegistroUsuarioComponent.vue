@@ -11,11 +11,11 @@
                         <div class="d-flex flex-row justify-content-between gap-2">
                             <div class="form-group col-5">
                                 <label for="name">Nombre</label>
-                                <input id="name" type="text" class="form-control" v-model="usuario.name" required>
+                                <input id="name" type="text" class="form-control" v-model="usuario.nombres" required>
                             </div>
                             <div class="form-group col-6">
                                 <label for="last_name">Apellido</label>
-                                <input id="last_name" type="text" class="form-control" v-model="usuario.last_name" required>
+                                <input id="last_name" type="text" class="form-control" v-model="usuario.apellidos" required>
                             </div>
                         </div>
                         <div class="d-flex flex-row justify-content-between gap-2">
@@ -32,13 +32,25 @@
                                 <input id="email" type="email" class="form-control" v-model="usuario.email" required>
                             </div>
                         </div>
+                        <h4 class="alert-heading pt-4">En caso de emergencia contactar a</h4>
+                        <hr>
+                        <div class="d-flex flex-row justify-content-between gap-2 mt-2">
+                            <div class="form-group col-5">
+                                <label for="nameEmergency">Nombre completo</label>
+                                <input id="nameEmergency" type="text" class="form-control" v-model="usuario.nombre_emergencia" required>
+                            </div>
+                            <div class="form-group col-6">
+                                <label for="phoneEmergency">Teléfono</label>
+                                <input id="phoneEmergency" type="text" class="form-control" v-model="usuario.telefono_emergencia" required>
+                            </div>
+                        </div>
                         
                         <h4 class="alert-heading pt-4">Empresa y horario</h4>
                         <hr>
                         <div class="d-flex flex-row justify-content-between gap-2">
                             <div class="form-group col-5">
                                 <label for="company">Empresa</label>
-                                <select id="company" class="form-select" v-model="usuario.company" required @change="getAreas">
+                                <select id="company" class="form-select" v-model="usuario.empresa" required @change="getAreas">
                                     <option v-for="empresa in empresas" :key="empresa.id" :value="empresa.id">
                                         {{ empresa.nombre }}
                                     </option>
@@ -46,7 +58,7 @@
                             </div>
                             <div class="form-group col-6">
                                 <label for="area">Área</label>
-                                <select id="area" class="form-select" v-model="usuario.area" @change="getHorarios" required>
+                                <select id="area" class="form-select" v-model="usuario.area_id" @change="getHorarios" required :disabled="usuario.empresa == ''">
                                     <option v-if="areas.length === 0" :disabled="true">
                                         Sin elementos disponibles
                                     </option>
@@ -56,11 +68,18 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="d-flex flex-row justify-content-start">
+                        <div class="d-flex flex-row justify-content-between">
+                            <div class="form-group col-5">
+                                <label for="job_title">Cargo</label>
+                                <input id="job_title" type="text" class="form-control" v-model="usuario.cargo" required>
+                            </div>
                             <div class="form-group col-4">
                                 <label for="hora">Turno</label>
                                 <select id="hora" class="form-select" v-model="turno" required :placeholder="'Seleccione turno'" @change="filterHorario">
-                                    <option value="diurno">
+                                    <option :value="'all'">
+                                        Todos
+                                    </option>
+                                    <option :value="'diurno'">
                                         Diurno
                                     </option>
                                     <option value="nocturno">
@@ -120,27 +139,31 @@
 
 import axios from 'axios';
 
-    export default{
+export default {
         data() {
             return {
                 usuario:{
-                    name:'',
-                    last_name:'',
+                    nombres:'',
+                    apellidos:'',
                     email:'',
-                    area: 0,
-                    job_title:'',
-                    company:'',
+                    area_id: 0,
+                    cargo:'',
+                    empresa:'',
                     dui: '',
-                    calendarId: 0
+                    horario_id: 0,
+                    nombre_emergencia: '',
+                    telefono_emergencia: ''
                 },
                 empresas: [],
                 areas: [],
                 horarios: [],
-                turno: ''
+                horariosFilter: [],
+                turno: 'all'
             }
         },
         mounted() {
             this.getEmpresas();
+            this.getHorarios();
         },
         methods: {
             registrar() {
@@ -158,7 +181,7 @@ import axios from 'axios';
                 });
             },
             getAreas() {
-                axios.get(`areas?idEmpresa=${this.usuario.company}`, {
+                axios.get(`areas?idEmpresa=${this.usuario.empresa}`, {
                     headers: { 'Content-type': 'application/json' }
                 }).then(resp=>{
                     this.areas = resp.data.areas;
@@ -169,10 +192,17 @@ import axios from 'axios';
                     headers: {'Content-type': 'application/json'}
                 }).then(resp=>{
                     this.horarios = resp.data;
+                    this.horariosFilter = resp.data;
                 });
             },
-            filterHorario(){
-            this.horarios =  this.horarios.filter(item => { item.turno == this.turno });
+            filterHorario() {
+                if (this.turno == 'all') {
+                    this.getHorarios();
+                }
+                else {
+                    this.horariosFilter = [];
+                    this.horariosFilter = this.horarios.filter(item => this.turno.localeCompare(item.turno, 'es', { sensitivity: 'accent' }) == 0);
+                }
             }
 
         }
