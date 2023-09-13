@@ -1,7 +1,6 @@
 <template>
-    <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-9 mt-3">
+    <div class="d-flex justify-content-center">
+        <div class="col-9 mt-3">
             <h1 class="text-center">Registro de Empleado</h1>
             <div class="card mt-3 mb-3 borderCircle bg-white">
                 <div class="card-body">
@@ -33,11 +32,11 @@
                         <div class="d-flex flex-row justify-content-between gap-2 mt-2">
                             <div class="form-group col-5">
                                 <label for="nameEmergency">Nombre completo</label>
-                                <input id="nameEmergency" type="text" class="form-control" v-model="usuario.nombre_emergencia" required>
+                                <input id="nameEmergency" type="text" class="form-control" v-model="usuario.nombre_persona" required>
                             </div>
                             <div class="form-group col-6">
                                 <label for="phoneEmergency">Teléfono</label>
-                                <input id="phoneEmergency" type="text" class="form-control" v-model="usuario.telefono_emergencia" required>
+                                <input id="phoneEmergency" type="text" class="form-control" v-model="usuario.numero_emergencia" required>
                             </div>
                         </div>
 
@@ -94,14 +93,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="item in horariosFilter" :key="item.id">
+                                    <tr v-for="horario in horariosFilter" :key="horario.id">
                                         <th scope="row">
                                             <div class="form-check d-flex flex-row justify-content-center">
-                                                <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" :value="item.id" aria-label="...">
+                                                <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" :value="horario.id" aria-label="..." @change="selectHorario(horario.id)" :checked="horario.id === usuario.horario_id">
                                             </div>
                                         </th>
-                                        <td>{{ item.descripcion }}</td>
-                                        <td class="text-center">{{ item.horas_semana }}</td>
+                                        <td>{{ horario.descripcion }}</td>
+                                        <td class="text-center">{{ horario.horas_semana }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -119,8 +118,6 @@
             </div>
         </div>
     </div>
-</div>
-
 </template>
 <script>
 
@@ -138,8 +135,8 @@ export default {
                     empresa:'',
                     dui: '',
                     horario_id: 0,
-                    nombre_emergencia: '',
-                    telefono_emergencia: ''
+                    nombre_persona: '',
+                    numero_emergencia: ''
                 },
                 empresas: [],
                 areas: [],
@@ -157,7 +154,11 @@ export default {
                 axios.post('empleados/crear', this.usuario, {
                     headers:{'Content-type':'application/json'}
                 }).then(response=>{
-                    console.log(response.data);
+                    this.$toast.success(response.data.message, {
+                        timeout: 3000,
+                        position: 'top-right',
+                        icon: true
+                    });
                 })
             },
             getEmpresas(){
@@ -190,6 +191,9 @@ export default {
                     this.horariosFilter = [];
                     this.horariosFilter = this.horarios.filter(item => this.turno.localeCompare(item.turno, 'es', { sensitivity: 'accent' }) == 0);
                 }
+            },
+            selectHorario(id) {
+                this.usuario.horario_id = id;
             }
 
         }

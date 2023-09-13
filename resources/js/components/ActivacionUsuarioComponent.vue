@@ -9,15 +9,15 @@
                 <h2 class="text-center" style="margin-bottom: 3%;">ACTIVACIÓN DE USUARIO</h2>
 
                 <!-- Campo para ingresar el DUI del empleado -->
-                <div class="d-flex flex-row justify-content-center align-items-center" style="margin-bottom: 2%;">
+                <div class="d-flex flex-row justify-content-center align-items-center" style="margin-bottom: 5%;">
                     <div class="col-2 d-flex flex-row justify-content-start">
-                        <label for="duiEmpleado" style="font-weight: bold; margin-top: 10%; height: 50px">DUI DE EMPLEADO</label>
+                        <label for="duiEmpleado" style="font-weight: bold">DUI DE EMPLEADO</label>
                     </div>
-                    <div class="col-6 mx-3">
+                    <div class="col-6 mx-1">
                         <input v-model="duiEmpleado" type="text" id="duiEmpleado" class="form-control" placeholder="Ingrese DUI de empleado">
                         <input v-model="idEmpleado" type="text" id="idEmpleado" class="form-control" hidden>
                     </div>
-                    <div class="col-4 d-flex flex-row justify-content-start">
+                    <div class="col-2 d-flex flex-row justify-content-start">
                         <button @click="buscarEmpleado" class="btn btn-primary" type="button">Buscar</button>
                     </div>
                 </div>
@@ -91,14 +91,12 @@
                 </div>
 
                 <!-- Campo para ingresar la contraseña temporal -->
-                <div class="row d-flex justify-content-center" style="margin-bottom: 2%;">
-                    <div class="col-2">
-                        <label for="contrasenia" style="font-weight: bold; margin-top: 10%; height: 50px">Contraseña
-                            temporal</label>
+                <div class="d-flex flex-row justify-content-center align-items-center" style="margin-bottom: 2%;">
+                    <div class="col-4">
+                        <label for="contrasenia" style="font-weight: bold">Contraseña temporal</label>
                     </div>
-                    <div class="col-5">
-                        <input v-model="contrasenia" type="text" id="contrasenia" class="form-control" style="height: 50px"
-                            placeholder="Ingrese contraseña temporal" :disabled="!activarUsuario" />
+                    <div class="col-4">
+                        <input v-model="contrasenia" type="text" id="contrasenia" class="form-control" placeholder="Ingrese contraseña temporal" :disabled="!activarUsuario">
                     </div>
                 </div>
 
@@ -184,8 +182,7 @@ export default {
                     axios.post('/registrarse', datosRegistro)
                         .then((response) => {
                             // Manejar la respuesta del servidor, si es necesario
-                            console.log(response.data);
-                            if (response.data.message === 'Usuario creado con exito') {
+                            if (response.data.message === 'Usuario creado con éxito') {
                                 this.$toast.success(response.data.message);
                                 this.nombres = null;
                                 this.duiEmpleado = null;
