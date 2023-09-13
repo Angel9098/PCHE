@@ -63,4 +63,24 @@ class HorarioController extends Controller
     {
 
     }
+
+    public function consultaDehorarioPorEmpleado(Request $request){
+
+        try {
+            $nombreEmpleado = $request->input('nombres');
+
+            $horario = DB::table('empleados')
+            ->join('horarios', 'empleados.horario_id', '=', 'horarios.id')
+            ->select('horarios.*')
+            ->where('empleados.nombres', 'LIKE', "%$nombreEmpleado%")
+            ->get();
+           // $horario = Horario::all();
+
+            return response()->json($horario);
+
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error al crear registro',$e], 500);
+        }
+
+    }
 }

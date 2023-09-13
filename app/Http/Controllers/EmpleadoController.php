@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use \App\Empleado;
 use App\UserAct;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class EmpleadoController extends Controller
 {
@@ -74,22 +75,29 @@ class EmpleadoController extends Controller
                 'nombre_persona'=>'required|string'
             ]);
 
+            $dui = $request->input('dui');
 
-            $empleado = new Empleado();
-            $empleado->nombres = $request->input('nombres');
-            $empleado->apellidos = $request->input('apellidos');
-            $empleado->cargo = $request->input('cargo');
-            $empleado->email = $request->input('email');
-            $empleado->area_id = $request->input('area_id');
-            $empleado->dui = $request->input('dui');
-            $empleado->horario_id=$request->input('horario_id');
-            $empleado->numero_emergencia =$request->input('numero_emergencia');
-            $empleado->nombre_persona = $request->input('nombre_persona');
-            $empleado->save();
+            $emp = Empleado::where('dui', $dui)->get();
 
+            if (!$emp->isEmpty()) {
+                return response()->json(['message' => 'Dui ya registrado','DuiDisponible' => '0'], 404);
+            }else{
+                $empleado = new Empleado();
+                $empleado->nombres = $request->input('nombres');
+                $empleado->apellidos = $request->input('apellidos');
+                $empleado->cargo = $request->input('cargo');
+                $empleado->email = $request->input('email');
+                $empleado->area_id = $request->input('area_id');
+                $empleado->dui = $request->input('dui');
+                $empleado->horario_id=$request->input('horario_id');
+                $empleado->numero_emergencia =$request->input('numero_emergencia');
+                $empleado->nombre_persona = $request->input('nombre_persona');
+                $empleado->save();
 
-            return response()->json(['message' => 'Empleado creado con éxito', 'empleado' => $empleado, 200]);
-        } catch (\Exception $e) {
+                return response()->json(['message' => 'Empleado creado con éxito', 'empleado' => $empleado, 200]);
+            }
+
+            } catch (\Exception $e) {
             return response()->json(['message' => 'Error al crear registro', $e], 500);
         }
     }
