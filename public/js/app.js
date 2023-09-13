@@ -5056,22 +5056,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             case 0:
               _context.prev = 0;
               _context.next = 3;
-              return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/cortes?page=' + _this.currentPage);
+              return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/cortes?page=' + _this.currentPage);
             case 3:
               response = _context.sent;
+              console.log('Respuesta del servidor:', response.data);
               _this.cortes = response.data.data;
               _this.lastPage = response.data.last_page;
-              _context.next = 11;
+              _context.next = 12;
               break;
-            case 8:
-              _context.prev = 8;
+            case 9:
+              _context.prev = 9;
               _context.t0 = _context["catch"](0);
-              console.error("Error al obtener los cortes:", _context.t0);
-            case 11:
+              console.error("Error al obtener los cortes:", _context.t0.response ? _context.t0.response.data : _context.t0.message);
+            case 12:
             case "end":
               return _context.stop();
           }
-        }, _callee, null, [[0, 8]]);
+        }, _callee, null, [[0, 9]]);
       }))();
     },
     changePage: function changePage(page) {
@@ -5081,30 +5082,33 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     enviarCorte: function enviarCorte() {
       var _this2 = this;
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+        var response;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
               _context2.prev = 0;
               _context2.next = 3;
-              return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/cortes/crear', {
+              return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/cortes/crear', {
                 descripcion: _this2.descripcionCorte,
                 fecha_corte: _this2.selectedDate
               });
             case 3:
+              response = _context2.sent;
+              console.log('Respuesta al enviar corte:', response.data);
               _this2.descripcionCorte = '';
               $('#corteModal').modal('hide');
-              _this2.getCortes(); // Recargar la lista de cortes después de agregar uno nuevo.
-              _context2.next = 11;
+              _this2.getCortes();
+              _context2.next = 13;
               break;
-            case 8:
-              _context2.prev = 8;
+            case 10:
+              _context2.prev = 10;
               _context2.t0 = _context2["catch"](0);
-              console.error("Error al enviar el corte:", _context2.t0);
-            case 11:
+              console.error("Error al enviar el corte:", _context2.t0.response ? _context2.t0.response.data : _context2.t0.message);
+            case 13:
             case "end":
               return _context2.stop();
           }
-        }, _callee2, null, [[0, 8]]);
+        }, _callee2, null, [[0, 10]]);
       }))();
     }
   }
@@ -61759,8 +61763,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\laragon\www\PCHE-II\PCHE\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\laragon\www\PCHE-II\PCHE\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\laragon\www\PCHE\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\laragon\www\PCHE\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
