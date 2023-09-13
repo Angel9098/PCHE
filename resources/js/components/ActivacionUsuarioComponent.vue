@@ -1,99 +1,81 @@
 <template>
-    <div class="bg-white d-flex flex-column justify-content-center align-items-center col-12 col-xs-12"
-        style="margin-bottom: 5%;">
+    <div class="bg-white d-flex flex-column justify-content-center align-items-center col-12 col-xs-12" style="margin-bottom: 5%;">
         <!-- Imagen centrada -->
         <div class="center-image d-flex flex-column justify-content-center align-items-center" style="margin-bottom: 3%">
             <img src="assets/img/latinMobile.png" alt="logo" class="w-75" />
         </div>
-        <form class="col-12 d-flex flex-column justify-content-center">
+        <form class="col-8 d-flex flex-column justify-content-center">
             <div class="col-12 d-flex flex-column justify-content-center">
                 <h2 class="text-center" style="margin-bottom: 3%;">ACTIVACIÓN DE USUARIO</h2>
 
                 <!-- Campo para ingresar el DUI del empleado -->
-                <div class="row d-flex justify-content-center" style="margin-bottom: 2%;">
-                    <div class="col-2">
+                <div class="d-flex flex-row justify-content-center align-items-center" style="margin-bottom: 2%;">
+                    <div class="col-2 d-flex flex-row justify-content-start">
+                        <label for="duiEmpleado" style="font-weight: bold; margin-top: 10%; height: 50px">DUI DE EMPLEADO</label>
                     </div>
-                    <div class="col-2.5">
-                        <label for="duiEmpleado" style="font-weight: bold; margin-top: 10%; height: 50px">DUI DE
-                            EMPLEADO</label>
+                    <div class="col-6 mx-3">
+                        <input v-model="duiEmpleado" type="text" id="duiEmpleado" class="form-control" placeholder="Ingrese DUI de empleado">
+                        <input v-model="idEmpleado" type="text" id="idEmpleado" class="form-control" hidden>
                     </div>
-                    <div class="col-4">
-                        <input v-model="duiEmpleado" type="text" id="duiEmpleado" class="form-control" style="height: 50px"
-                            placeholder="Ingrese el DUI del empleado" />
-                        <input v-model="idEmpleado" type="text" id="idEmpleado" class="form-control" style="height: 50px"
-                            hidden />
-                    </div>
-                    <div class="col-1">
-                        <button @click="buscarEmpleado" style="margin-right: 2%;" class="btn btn-primary"
-                            type="button">Buscar</button>
+                    <div class="col-4 d-flex flex-row justify-content-start">
+                        <button @click="buscarEmpleado" class="btn btn-primary" type="button">Buscar</button>
                     </div>
                 </div>
 
-                <div class="row d-flex justify-content-center" style="margin-bottom: 2%;">
-                    <div class="col-1">
-                    </div>
+                <div class="d-flex flex-row justify-content-center gap-2" style="margin-bottom: 2%;">
                     <div class="col-4">
-                        <div class="row">
+                        <div class="d-flex flex-row align-items-center">
                             <div class="col-3">
-                                <label for="nombres" style="margin-top: 20%;">Nombres</label>
+                                <label for="nombres">Nombres</label>
                             </div>
                             <div class="col-9">
-                                <input v-model="nombres" type="text" id="nombres" class="form-control" style="height: 50px"
-                                    disabled />
+                                <input v-model="nombres" type="text" id="nombres" class="form-control" disabled>
                             </div>
                         </div>
                     </div>
                     <div class="col-4">
-                        <div class="row">
+                        <div class="d-flex flex-row align-items-center">
                             <div class="col-3">
-                                <label for="apellidosEmpleado" style="margin-top: 20%;">Apellidos</label>
+                                <label for="apellidosEmpleado">Apellidos</label>
                             </div>
                             <div class="col-9">
-                                <input v-model="apellidosEmpleado" type="text" id="apellidosEmpleado" class="form-control"
-                                    style="height: 50px" disabled />
+                                <input v-model="apellidosEmpleado" type="text" id="apellidosEmpleado" class="form-control" disabled>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="row d-flex justify-content-center" style="margin-bottom: 2%;">
-                    <div class="col-1">
-                    </div>
+                <div class="d-flex flex-row justify-content-center gap-2" style="margin-bottom: 2%;">
                     <div class="col-4">
-                        <div class="row">
+                        <div class="d-flex flex-row align-items-center">
                             <div class="col-3">
-                                <label for="empresa" style="margin-top: 20%;">Empresa</label>
+                                <label for="empresa">Empresa</label>
                             </div>
                             <div class="col-9">
-                                <input v-model="empresa" type="text" id="empresa" class="form-control" style="height: 50px"
-                                    disabled />
+                                <input v-model="empresa" type="text" id="empresa" class="form-control" disabled>
                             </div>
                         </div>
                     </div>
                     <div class="col-4">
-                        <div class="row">
+                        <div class="d-flex flex-row align-items-center">
                             <div class="col-3">
-                                <label for="cargo" style="margin-top: 20%;">Cargo</label>
+                                <label for="cargo">Cargo</label>
                             </div>
                             <div class="col-9">
-                                <input v-model="cargo" type="text" id="cargo" class="form-control" style="height: 50px"
-                                    disabled />
+                                <input v-model="cargo" type="text" id="cargo" class="form-control" disabled>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="row d-flex justify-content-center" style="margin-bottom: 2%;">
-                    <div class="col-1">
-                    </div>
+                <div class="d-flex flex-row justify-content-center" style="margin-bottom: 2%;">
                     <div class="col-4">
-                        <div class="row">
+                        <div class="d-flex flex-row align-items-center">
                             <div class="col-3">
-                                <label for="correo" style="margin-top: 20%;">Correo</label>
+                                <label for="correo">Correo</label>
                             </div>
                             <div class="col-9">
-                                <input v-model="correo" type="text" id="correo" class="form-control" style="height: 50px"
-                                    disabled />
+                                <input v-model="correo" type="text" id="correo" class="form-control" disabled>
                             </div>
                         </div>
                     </div>
@@ -101,7 +83,7 @@
                     </div>
                 </div>
 
-                <div class="row d-flex justify-content-center" style="margin-bottom: 2%;">
+                <div class="d-flex flex-row justify-content-center" style="margin-bottom: 2%;">
                     <div class="form-check form-check-inline align-items-center">
                         <input v-model="activarUsuario" type="checkbox" class="form-check-input" id="activarUsuario" />
                         <label class="form-check-label" for="activarUsuario">Activar Usuario</label>
@@ -111,8 +93,6 @@
                 <!-- Campo para ingresar la contraseña temporal -->
                 <div class="row d-flex justify-content-center" style="margin-bottom: 2%;">
                     <div class="col-2">
-                    </div>
-                    <div class="col-2.5">
                         <label for="contrasenia" style="font-weight: bold; margin-top: 10%; height: 50px">Contraseña
                             temporal</label>
                     </div>

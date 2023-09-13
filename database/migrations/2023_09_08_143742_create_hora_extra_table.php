@@ -18,10 +18,10 @@ class CreateHoraExtraTable extends Migration
             $table->unsignedBigInteger('id_empleado');
             $table->integer('diurnas');
             $table->integer('nocturnas');
-            $table->integer('diurnas-descanso');
-            $table->integer('nocturnas-descanso');
+            $table->integer('diurnas_descanso');
+            $table->integer('nocturnas_descanso');
             $table->integer('diurnas_asuento');
-            $table->integer('diurnas_asuento');
+            $table->integer('nocturnas_asuento');
             $table->integer('total');
             $table->timestamps();
 

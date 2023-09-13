@@ -17,6 +17,7 @@ class CreateCorteTable extends Migration
             $table->id();
             $table->string('descripcion');
             $table->date('fecha_corte');
+            $table->boolean('vigente');
             $table->timestamps();
         });
     }

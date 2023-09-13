@@ -9,20 +9,28 @@ use Illuminate\Http\Request;
 class CorteController extends Controller
 {
 
-    public function create(Request $request){
+    public function index()
+    {
+        $cortes = Corte::all();
+        return response()->json($cortes);
+    }
+
+    public function create(Request $request)
+    {
 
         $corte = new Corte([
             'descripcion' => $request->input('descripcion'),
-            'fecha_corte' => $request->input('fecha_corte')
+            'fecha_corte' => $request->input('fecha_corte'),
+            'vigente' => true
         ]);
 
         $corte->save();
 
         return response()->json(["message" => 'Corte agregado con exito'], 201);
-
     }
 
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
 
         $corte = Corte::find($id);
 
@@ -37,7 +45,4 @@ class CorteController extends Controller
 
         return response()->json(["message" => 'Corte actualizado con exito'], 201);
     }
-
-
-
 }
