@@ -41,7 +41,7 @@
           <div class="form-group">
             <label for="changePuesto" class="text-uppercase">Correo electrónico</label>
             <input
-              type="fiTEXTe"
+              type="email"
               class="form-control"
               id="changePuesto"
               placeholder="example@gmil.com"
@@ -53,7 +53,7 @@
           <div class="form-group">
             <label for="changeNombre" class="text-uppercase">contacto de emergencia</label>
             <input
-              type="fiTEXTe"
+              type="text"
               class="form-control"
               id="changeNombre"
               placeholder="Contacto de emergencia"
@@ -65,7 +65,7 @@
           <div class="form-group">
             <label for="changePuesto" class="text-uppercase">Número de emergencia</label>
             <input
-              type="fiTEXTe"
+              type="number"
               class="form-control"
               id="changePuesto"
               placeholder="(503) 7854 6985"
