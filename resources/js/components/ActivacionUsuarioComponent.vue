@@ -1,10 +1,11 @@
 <template>
-    <div class="bg-white d-flex flex-column justify-content-center align-items-center col-12 col-xs-12" style="margin-bottom: 5%;">
+    <div class="bg-white d-flex flex-column justify-content-center align-items-center col-12 col-xs-12"
+        style="margin-bottom: 5%;">
         <!-- Imagen centrada -->
         <div class="center-image d-flex flex-column justify-content-center align-items-center" style="margin-bottom: 3%">
             <img src="assets/img/latinMobile.png" alt="logo" class="w-75" />
         </div>
-        <form class="col-8 d-flex flex-column justify-content-center">
+        <form class="col-8 col-sm-12 col-md-12 d-flex flex-column justify-content-center">
             <div class="col-12 d-flex flex-column justify-content-center">
                 <h2 class="text-center" style="margin-bottom: 3%;">ACTIVACIÓN DE USUARIO</h2>
 
@@ -14,7 +15,8 @@
                         <label for="duiEmpleado" style="font-weight: bold">DUI DE EMPLEADO</label>
                     </div>
                     <div class="col-6 mx-1">
-                        <input v-model="duiEmpleado" type="text" id="duiEmpleado" class="form-control" placeholder="Ingrese DUI de empleado">
+                        <input v-model="duiEmpleado" type="text" id="duiEmpleado" class="form-control"
+                            placeholder="Ingrese DUI de empleado">
                         <input v-model="idEmpleado" type="text" id="idEmpleado" class="form-control" hidden>
                     </div>
                     <div class="col-2 d-flex flex-row justify-content-start">
@@ -39,7 +41,8 @@
                                 <label for="apellidosEmpleado">Apellidos</label>
                             </div>
                             <div class="col-9">
-                                <input v-model="apellidosEmpleado" type="text" id="apellidosEmpleado" class="form-control" disabled>
+                                <input v-model="apellidosEmpleado" type="text" id="apellidosEmpleado" class="form-control"
+                                    disabled>
                             </div>
                         </div>
                     </div>
@@ -80,6 +83,18 @@
                         </div>
                     </div>
                     <div class="col-4">
+                        <div class="d-flex flex-row align-items-center">
+                            <div class="col-3">
+                                <label for="correo">Rol</label>
+                            </div>
+                            <div class="col-9">
+                                <select v-model="rol" class="form-control">
+                                    <option value="administrador">Administrador</option>
+                                    <option value="jefe">Jefe</option>
+                                </select>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
 
@@ -96,7 +111,8 @@
                         <label for="contrasenia" style="font-weight: bold">Contraseña temporal</label>
                     </div>
                     <div class="col-4">
-                        <input v-model="contrasenia" type="text" id="contrasenia" class="form-control" placeholder="Ingrese contraseña temporal" :disabled="!activarUsuario">
+                        <input v-model="contrasenia" type="text" id="contrasenia" class="form-control"
+                            placeholder="Ingrese contraseña temporal" :disabled="!activarUsuario">
                     </div>
                 </div>
 
@@ -126,6 +142,7 @@ export default {
             correo: "",
             idEmpleado: "",
             activarUsuario: false,
+            rol: ""
         };
     },
 
@@ -145,7 +162,8 @@ export default {
                                 this.empresa = null;
                                 this.cargo = null;
                                 this.correo = null;
-                                this.idEmpleado = null
+                                this.idEmpleado = null;
+                                this.rol = null;
                                 this.$toast.error('Empleado no encontrado');
                             } else {
                                 this.nombres = this.empleado.nombres;
@@ -154,6 +172,7 @@ export default {
                                 this.cargo = this.empleado.cargo;
                                 this.correo = this.empleado.email;
                                 this.idEmpleado = this.empleado.id;
+                                this.rol = this.empleado.rol;
                             }
                         }
                     })
@@ -176,6 +195,7 @@ export default {
                         cargo: this.cargo,
                         correo: this.correo,
                         contrasenia: this.contrasenia,
+                        rol: this.rol,
                     };
 
                     // Realiza una solicitud POST al endpoint "registrarse"
@@ -194,6 +214,7 @@ export default {
                                 this.correo = null;
                                 this.idEmpleado = null
                                 this.activarUsuario = false;
+                                this.rol = null;
                             }
                         })
                         .catch((error) => {

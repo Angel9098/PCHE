@@ -6,6 +6,8 @@ use App\Area;
 use Illuminate\Http\Request;
 use \App\Empleado;
 use App\UserAct;
+use App\Usuario;
+use GuzzleHttp\Psr7\Message;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
@@ -17,8 +19,9 @@ class EmpleadoController extends Controller
         return response()->json($empleados);
     }
 
-    public function empleadosBusquedaNombre(Request $request){
-        try{
+    public function empleadosBusquedaNombre(Request $request)
+    {
+        try {
             $nombre = $request->input('nombres');
             $empleados = Empleado::where('nombres', 'LIKE', "%$nombre%")->get();
             return response()->json($empleados);
@@ -38,15 +41,18 @@ class EmpleadoController extends Controller
                 return response()->json(['message' => 'Empleado no encontrado'], 404);
             }
 
+
+
             $empleado->nombres = $request->input('nombres');
             $empleado->apellidos = $request->input('apellidos');
             $empleado->cargo = $request->input('cargo');
             $empleado->email = $request->input('email');
             $empleado->area_id = $request->input('area_id');
             $empleado->dui = $request->input('dui');
-            $empleado->horario_id=$request->input('horario_id');
-            $empleado->numero_emergencia =$request->input('numero_emergencia');
+            $empleado->horario_id = $request->input('horario_id');
+            $empleado->numero_emergencia = $request->input('numero_emergencia');
             $empleado->nombre_persona = $request->input('nombre_persona');
+
             $empleado->save();
 
 
@@ -69,10 +75,10 @@ class EmpleadoController extends Controller
                 'email' => 'required|email|unique:empleados',
                 'area_id' =>  'required|exists:areas,id',
                 'email' => 'required|string',
-                'horario_id'=> 'required|exists:horarios,id',
-                'dui'=> 'required|string',
-                'numero_emergencia'=>'required|string',
-                'nombre_persona'=>'required|string'
+                'horario_id' => 'required|exists:horarios,id',
+                'dui' => 'required|string',
+                'numero_emergencia' => 'required|string',
+                'nombre_persona' => 'required|string'
             ]);
 
             $dui = $request->input('dui');
@@ -80,8 +86,8 @@ class EmpleadoController extends Controller
             $emp = Empleado::where('dui', $dui)->get();
 
             if (!$emp->isEmpty()) {
-                return response()->json(['message' => 'Dui ya registrado','DuiDisponible' => '0'], 404);
-            }else{
+                return response()->json(['message' => 'Dui ya registrado', 'DuiDisponible' => '0'], 404);
+            } else {
                 $empleado = new Empleado();
                 $empleado->nombres = $request->input('nombres');
                 $empleado->apellidos = $request->input('apellidos');
@@ -89,19 +95,17 @@ class EmpleadoController extends Controller
                 $empleado->email = $request->input('email');
                 $empleado->area_id = $request->input('area_id');
                 $empleado->dui = $request->input('dui');
-                $empleado->horario_id=$request->input('horario_id');
-                $empleado->numero_emergencia =$request->input('numero_emergencia');
+                $empleado->horario_id = $request->input('horario_id');
+                $empleado->numero_emergencia = $request->input('numero_emergencia');
                 $empleado->nombre_persona = $request->input('nombre_persona');
                 $empleado->save();
 
                 return response()->json(['message' => 'Empleado creado con éxito', 'empleado' => $empleado, 200]);
             }
-
-            } catch (\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json(['message' => 'Error al crear registro', $e], 500);
         }
     }
-
 
     public function eliminarEmpleados(Request $request)
     {
@@ -130,40 +134,38 @@ class EmpleadoController extends Controller
         }
     }
 
-    public function actualizarContrasenia(Request $request, UserAct $userAct)
+    public function actualizarContrasenia(Request $request)
     {
         try {
 
-            $idUsuario = $userAct->idUsuario;
-            $oldPassword = $userAct->oldPassword;
-            $newPassword = $userAct->newPassword;
-            $confirmPassword = $userAct->confirmPassword;
-
+            $idUsuario =   $request->input('idUsuario');
+            $oldPassword =   $request->input('oldPassword');
+            $newPassword =   $request->input('newPassword');
+            $confirmPassword =   $request->input('confirmPassword');
 
             // Retrieve the employee
-            $empleado = Empleado::find($idUsuario);
-
+            $empleado = Usuario::find($idUsuario);
+            //dd($empleado);
             if (!$empleado) {
                 return response()->json(['error' => 'Usuario no encontrado'], 404);
             }
 
             //verificar si la contraseña antigua esta correcta
-            if (!Hash::check($oldPassword, $empleado->usuario->password)) {
+            if (!Hash::check($oldPassword, $empleado->password)) {
                 return response()->json(['error' => 'Contraseña antigua es incorrecta'], 400);
             }
-
             if ($newPassword != $confirmPassword) {
                 return response()->json(['error' => 'Las contraseñas no coiciden'], 400);
             }
 
-            $empleado->usuario->update([
+            $empleado->update([
                 'password' => bcrypt($newPassword)
             ]);
 
             // Password updated successfully
-            return response()->json(['message' => 'Password updated successfully'], 200);
+            return response()->json(['message' => 'Contraseña actualizada exitosamente'], 200);
         } catch (\Exception $e) {
-            return response()->json(['ocurrio un error al obtener el usuario' => $e], 500);
+            return response()->json(['ocurrio un error al obtener el usuario' => $e->getMessage()], 500);
         }
     }
 

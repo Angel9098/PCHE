@@ -60,6 +60,8 @@ class AuthController extends Controller
             'email' => $request->input('correo'),
             'password' => bcrypt($request->input('contrasenia')),
             'empleado_id' => $request->input('idEmpleado'),
+            'rol' => $request->input('rol'),
+
         ]);
 
         // Iniciar sesión automáticamente

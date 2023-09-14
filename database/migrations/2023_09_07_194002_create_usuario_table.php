@@ -19,6 +19,7 @@ class CreateUsuarioTable extends Migration
             $table->string('password');
             $table->unsignedBigInteger('empleado_id');
             $table->string('imagen');
+            $table->string('rol');
             $table->rememberToken();
             $table->timestamps();
 
