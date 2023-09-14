@@ -4,7 +4,7 @@
       <div class="container-fluid">
         <a class="navbar-brand">
          <img class="wiHImg" width="40" height="40" src="assets/img/iconblancologo_Mesa de trabajo 1.png" alt="" srcset=""> 
-  
+          {{ nombres }}
         </a>
         <form class="d-flex">
           <button class="btn btn-primary text-uppercase btnGray" type="submit">
@@ -124,11 +124,11 @@ export default {
   },
   methods: {
     //empleadobyid
-    leerData(){
+   leerData(){
       const {id} = JSON.parse(localStorage.getItem("user"));
-      axios.get(`empleadobyid?idEmpleado=${id}`,(result)=>{
-        console.log(result)
-      },(error) => {})
+      axios.get(`empleadobyid?idEmpleado=${id}`).then((result) => {
+       this.nombre =result.data[0].nombres
+            }).catch(error => {})
     }
   },
 };
