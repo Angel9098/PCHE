@@ -28,13 +28,14 @@
     </button>
   </form>
 </template>
-  
+
   <script>
 import axios from "axios";
 export default {
   data() {
     return {
       changesPassowrd: {
+        idUsuario: "",
         oldPassword: "",
         newPassword: "",
         confirmPassword: "",
@@ -43,8 +44,10 @@ export default {
   },
   methods: {
     sendPassword() {
-      console.log(this.changesPassowrd.oldPassword);
-       axios.post('/actualizarcontra',this.changesPassowrd).then((response)=>{
+    const {id} = JSON.parse(localStorage.getItem("user"));
+    console.log(id);
+    this.changesPassowrd.idUsuario = id;
+      axios.post('/actualizarcontra',this.changesPassowrd).then((response)=>{
         console.log(response)
        }).catch((error) => {
         console.log(error)
