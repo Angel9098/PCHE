@@ -15,8 +15,7 @@
                         <label for="duiEmpleado" style="font-weight: bold">DUI DE EMPLEADO</label>
                     </div>
                     <div class="col-6 mx-1">
-                        <input v-model="duiEmpleado" type="text" id="duiEmpleado" class="form-control"
-                            placeholder="Ingrese DUI de empleado">
+                        <input v-model="duiEmpleado" type="text" id="duiEmpleado" class="form-control" placeholder="Ingrese DUI de empleado" v-mask="'########-#'">
                         <input v-model="idEmpleado" type="text" id="idEmpleado" class="form-control" hidden>
                     </div>
                     <div class="col-2 d-flex flex-row justify-content-start">

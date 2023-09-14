@@ -20,7 +20,7 @@
                         <div class="d-flex flex-row justify-content-between gap-2">
                             <div class="form-group col-5">
                                 <label for="job_title">DUI</label>
-                                <input id="job_title" type="text" class="form-control" v-model="usuario.dui" required>
+                                <input id="job_title" type="text" class="form-control" v-model="usuario.dui" required v-mask="'########-#'">
                             </div>
                             <div class="form-group col-6">
                                 <label for="email">Correo Electrónico</label>
@@ -37,8 +37,7 @@
                             </div>
                             <div class="form-group col-6">
                                 <label for="phoneEmergency">Teléfono</label>
-                                <input id="phoneEmergency" type="text" class="form-control"
-                                    v-model="usuario.numero_emergencia" required>
+                                <input id="phoneEmergency" type="text" class="form-control" v-model="usuario.numero_emergencia" required v-mask="'####-####'">
                             </div>
                         </div>
 

@@ -12,6 +12,7 @@ window.Vue = require('vue');
 import VueRouter from 'vue-router';
 import Toast from 'vue-toastification';
 import VCalendar from 'v-calendar';
+import VueMask from 'v-mask';
 
 import "vue-toastification/dist/index.css"
 
@@ -37,6 +38,7 @@ import "vue-toastification/dist/index.css"
  */
 Vue.use(VueRouter);
 Vue.use(VCalendar);
+Vue.use(VueMask);
 
 const options = {
 
