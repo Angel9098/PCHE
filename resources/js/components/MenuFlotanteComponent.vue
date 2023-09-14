@@ -3,8 +3,8 @@
     <nav class="navbar navbar-dark bg-primary">
       <div class="container-fluid">
         <a class="navbar-brand">
-          <!-- <img class="wiHImg" src="assets/img/LAM.gif" alt="" srcset=""> -->
-          Latin American Mobile
+         <img class="wiHImg" width="40" height="40" src="assets/img/iconblancologo_Mesa de trabajo 1.png" alt="" srcset=""> 
+  
         </a>
         <form class="d-flex">
           <button class="btn btn-primary text-uppercase btnGray" type="submit">
@@ -20,19 +20,23 @@
           <div class="position-sticky">
             <ul class="nav flex-column">
               <li class="nav-item">
-                <a class="nav-link" href="?#/"> <i class="fa-brands fa-searchengin mr-3"></i> Buscador</a>
+                <a class="nav-link text-uppercase" href="?#/dashboard"><i class="fa-solid fa-house  mr-3"></i> Inicio </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="?#/"> <i class="fa-solid fa-circle-plus  mr-3"></i> Agregar horas extras </a>
+                <a class="nav-link text-uppercase" href="?#/"> <i class="fa-solid fa-circle-plus  mr-3"></i> registrar empleados</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="?#/"><i class="fa-solid fa-house  mr-3"></i> Inicio </a>
+                <a class="nav-link text-uppercase" href="?#/importacionhoras"> <i class="fa-solid fa-circle-plus  mr-3"></i> Agregar horas extras </a>
+              </li>
+              
+              <li class="nav-item">
+                <a class="nav-link text-uppercase" href="?#/editarperfilusuario"><i class="fa-solid fa-users  mr-3"></i> Perfil </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="?#/editarperfil"><i class="fa-solid fa-users  mr-3"></i> Perfil </a>
+                <a class="nav-link text-uppercase" href="?#/calendarios"><i class="fa-solid fa-calendar"></i> Calendario</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#"><i class="fa-solid fa-sliders mr-3 "></i> Configuración </a>
+                <a class="nav-link text-uppercase" href="?#/historialhoras"> <i class="fa-brands fa-searchengin mr-3"></i> Historial horas extras</a>
               </li>
               <!-- Agrega más opciones según sea necesario -->
             </ul>
@@ -108,11 +112,25 @@
 </style>
 
 <script>
+import axios from 'axios';
 export default {
   data() {
-    return {};
+    return { 
+      nombre: ''
+    };
   },
-  methods: {},
+  mounted() {
+    this.leerData();
+  },
+  methods: {
+    //empleadobyid
+    leerData(){
+      const {id} = JSON.parse(localStorage.getItem("user"));
+      axios.get(`empleadobyid?idEmpleado=${id}`,(result)=>{
+        console.log(result)
+      },(error) => {})
+    }
+  },
 };
 </script>
 

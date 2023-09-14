@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Corte;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 
 class CorteController extends Controller
 {
@@ -25,6 +25,9 @@ class CorteController extends Controller
             ]);
 
             $corte->save();
+
+            DB::statement('CALL actualizar_vigente()');
+
             return response()->json(["message" => 'Corte agregado con exito'], 201);
         }catch(QueryException $ex){
             return response()->json(["message" => 'Error al agregar el corte: ' . $ex->getMessage()], 500);
