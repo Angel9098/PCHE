@@ -5152,6 +5152,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var read_excel_file__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! read-excel-file */ "./node_modules/read-excel-file/index.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -5173,7 +5176,7 @@ __webpack_require__.r(__webpack_exports__);
             var registroHora = {
               idEmpleado: element[0],
               nombre: element[1],
-              fecha: element[2],
+              fecha: element[2] == null ? element[2] : moment__WEBPACK_IMPORTED_MODULE_1___default()(element[2]).format('L'),
               sueldo: element[3],
               diurnas: element[4] == null ? 0 : element[4],
               nocturnas: element[5] == null ? 0 : element[5],
@@ -5185,7 +5188,6 @@ __webpack_require__.r(__webpack_exports__);
             _this.items.push(registroHora);
           }
         });
-        console.log(_this.items);
       });
     }
   }
@@ -89465,8 +89467,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\laragon\www\PCHE\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\laragon\www\PCHE\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\laragon\www\PCHE-II\PCHE\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\laragon\www\PCHE-II\PCHE\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

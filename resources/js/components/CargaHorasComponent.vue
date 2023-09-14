@@ -43,7 +43,8 @@
     </div>
 </template>
 <script>
-import readXlsxFile from 'read-excel-file'
+import readXlsxFile from 'read-excel-file';
+import moment from 'moment';
 export default {
     data() {
         return {
@@ -63,7 +64,7 @@ export default {
                         let registroHora = {
                             idEmpleado: element[0],
                             nombre: element[1],
-                            fecha: element[2],
+                            fecha: element[2] == null ? element[2] : moment(element[2]).format('L'),
                             sueldo: element[3],
                             diurnas: element[4] == null ? 0 : element[4],
                             nocturnas: element[5] == null ? 0 : element[5],
@@ -75,7 +76,6 @@ export default {
                         this.items.push(registroHora);
                     }
                 });
-                console.log(this.items)
             });
             }
         }
