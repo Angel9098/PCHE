@@ -166,4 +166,19 @@ class EmpleadoController extends Controller
             return response()->json(['ocurrio un error al obtener el usuario' => $e], 500);
         }
     }
+
+
+    public function busquedaEmpleadoPorEmpresa(Request $request){
+        try{
+            $idEmpresa = $request->input('idEmpresa');
+            $empleados = DB::table('empleados as e')
+            ->join('areas as ar', 'ar.id', '=', 'e.area_id')
+            ->select('e.*')
+            ->where('ar.empresa_id', '=', $idEmpresa)
+            ->get();
+            return response()->json($empleados);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'ocurrio un error al generar la busqueada'], 500);
+        }
+    }
 }
