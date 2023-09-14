@@ -10,7 +10,7 @@
     
         <h2 class="h1 text-center mt-5">HISTORIAL DE FECHAS DE CORTE</h2>
         <table class="table table-hover table-bordered mt-4">
-            <thead class="table-dark">
+            <thead class="table-primary bg-primary">
                 <tr class="text-center">
                     <th scope="col">Descripción</th>
                     <th scope="col">Fecha de corte</th>
@@ -20,8 +20,8 @@
             <tbody v-if="cortes.length > 0">
                 <tr class="text-center" v-for="corte in cortes" :key="corte.id">
                     <td>{{ corte.descripcion }}</td>
-                    <td>{{ corte.fecha_corte }}</td>
-                    <td>{{ corte.created_at }}</td>
+                    <td>{{ formatFecha(corte.fecha_corte) }}</td>
+                    <td>{{ formatFecha(corte.created_at) }}</td>
                 </tr>
             </tbody>
             <tbody v-else>
@@ -55,7 +55,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="corteModalLabel">Agregar fecha de corte</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close" @click="cerrarModal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -64,11 +64,12 @@
                             <label for="descripcion">Descripción</label>
                             <input type="text" class="form-control" id="descripcion" v-model="descripcionCorte">
                         </div>
+                        <p v-if="errorDescripcion" class="text-danger">La descripción no puede estar vacía.</p>
+                        <p v-if="errorSubmit" class="text-danger">{{ errorSubmit }}</p>
                         <p>Fecha seleccionada: {{ selectedDate }}</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-primary" @click="enviarCorte">Enviar</button>
+                        <button type="button" class="btn btn-primary" @click="enviarCorte">Agregar fecha de corte</button>
                     </div>
                 </div>
             </div>
@@ -78,6 +79,7 @@
 
 <script>
 import axios from 'axios';
+import moment from 'moment';
 
 export default {
     data() {
@@ -86,7 +88,9 @@ export default {
             cortes: [],
             currentPage: 1,
             lastPage: 1,
-            descripcionCorte: ''
+            descripcionCorte: '',
+            errorDescripcion: false,
+            errorSubmit: null
         };
     },
     watch: {
@@ -100,10 +104,12 @@ export default {
         this.getCortes();
     },
     methods: {
+        cerrarModal() {
+            $('#corteModal').modal('hide');
+        },
         async getCortes() {
             try {
                 const response = await axios.get('/cortes?page=' + this.currentPage);
-                console.log('Respuesta del servidor:', response.data);
                 this.cortes = response.data.data;
                 this.lastPage = response.data.last_page;
             } catch (error) {
@@ -115,18 +121,34 @@ export default {
             this.getCortes();
         },
         async enviarCorte() {
+            if (!this.descripcionCorte.trim()) {
+                this.errorDescripcion = true;
+                return;
+            } else {
+                this.errorDescripcion = false;
+            }
+
             try {
                 const response = await axios.post('/cortes/crear', {
                     descripcion: this.descripcionCorte,
                     fecha_corte: this.selectedDate
                 });
-                console.log('Respuesta al enviar corte:', response.data);
                 this.descripcionCorte = '';
+                this.errorSubmit = null;
                 $('#corteModal').modal('hide');
                 this.getCortes();
             } catch (error) {
-                console.error("Error al enviar el corte:", error.response ? error.response.data : error.message);
+                this.errorSubmit = "Error: no se pudo guardar la fecha de corte.";
+                setTimeout(() => {
+                    $('#corteModal').modal('hide');
+                    this.selectedDate = null;
+                    this.descripcionCorte = '';
+                    this.errorSubmit = null;
+                }, 5000);
             }
+        },
+        formatFecha(date) {
+            return moment(date).format('DD/MM/YYYY');
         }
     }
 }
