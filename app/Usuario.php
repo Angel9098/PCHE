@@ -16,7 +16,7 @@ class Usuario extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'email', 'password','empleado_id'
+        'email', 'password','empleado_id', 'imagen'
     ];
 
     public function getAuthPassword()

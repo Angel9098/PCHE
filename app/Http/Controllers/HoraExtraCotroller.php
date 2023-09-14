@@ -9,6 +9,9 @@ class HoraExtraCotroller extends Controller
 {
     public function createHoraExtra(Request $request){
 
+
+
+
         $hora_extra = new HoraExtra([
             'id_empleado' => $request->input('id_empleado'),
             'lunes' => $request->input('lunes'),
