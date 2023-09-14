@@ -29,11 +29,11 @@
             <form class="w-50 d-flex flex-column gap-3">
                 <div class="form-group">
                     <label for="user">Usuario</label>
-                    <input type="text" class="form-control" id="user" placeholder="Escriba usuario" aria-describedby="userHelp" v-model="objLogin.email">
+                    <input type="text" class="form-control" id="user" placeholder="Escriba usuario" aria-describedby="userHelp" v-model="objLogin.email" @keyup.enter="Ingresar">
                 </div>
                 <div class="form-group">
                     <label for="pass">Contraseña</label>
-                    <input type="password" class="form-control" id="pass" placeholder="Escriba contraseña" aria-describedby="passHelp" v-model="objLogin.password">
+                    <input type="password" class="form-control" id="pass" placeholder="Escriba contraseña" aria-describedby="passHelp" v-model="objLogin.password" @keyup.enter="Ingresar">
                 </div>
                 <div class="form-group d-flex flex-row justify-content-center">
                     <button type="button" class="btn btn-primary" @click="Ingresar">
