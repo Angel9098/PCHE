@@ -1,14 +1,14 @@
 <template>
     <div class="container">
         <br>
-        <h1 class="h1 text-center">Selección de fecha de corte</h1>
+        <h2 class="h1 text-center">SELECCIÓN DE FECHA DE CORTE</h2>
         <br>
         <div class="content-container">
             <v-date-picker is-expanded v-model="selectedDate" class="vdp-datepicker"></v-date-picker>
             <textarea placeholder=" " class="textbox" rows="10" disabled></textarea>
         </div>
     
-        <h1 class="h1 text-center mt-5">Historial de fechas de corte</h1>
+        <h2 class="h1 text-center mt-5">HISTORIAL DE FECHAS DE CORTE</h2>
         <table class="table table-hover table-bordered mt-4">
             <thead class="table-dark">
                 <tr class="text-center">
@@ -54,7 +54,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="corteModalLabel">Agregar Fecha de Corte</h5>
+                        <h5 class="modal-title" id="corteModalLabel">Agregar fecha de corte</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
