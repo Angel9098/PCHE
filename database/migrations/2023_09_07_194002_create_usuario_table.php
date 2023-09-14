@@ -18,6 +18,7 @@ class CreateUsuarioTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->unsignedBigInteger('empleado_id');
+            $table->string('imagen');
             $table->rememberToken();
             $table->timestamps();
 

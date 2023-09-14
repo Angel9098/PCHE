@@ -30,7 +30,7 @@ class AuthController extends Controller
 
         if (Auth::guard('web')->attempt($credentials)) {
             $user = Auth::user(); // Obtener el usuario autenticado
-            return response()->json(['message' => 'Inicio de sesión exitoso','Usuario' => $user], 200);
+            return response()->json(['message' => 'Inicio de sesión exitoso', 'Usuario' => $user], 200);
         }
 
         return response()->json(['message' => 'Credenciales inválidas'], 401);
@@ -67,5 +67,23 @@ class AuthController extends Controller
 
         // Redirigir al usuario a la página deseada después del registro
         return response()->json(['message' => 'Usuario creado con exito'], 201);
+    }
+
+    public function editarPerfilUser(Request $request)
+    {
+        $imagen = $request->file('imagen');
+        $nombreImagen = uniqid() . '.' . $imagen->getClientOriginalExtension();
+        $rutaImagen = $imagen->storeAs('public/imagenes', $nombreImagen);
+        $urlImagen = asset('storage/' . $rutaImagen);
+
+        $idEmpleado =  $request->input('id');
+        $usuario = Usuario::findOrFail($idEmpleado);
+
+        if (!$usuario) {
+            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        }
+        $usuario->imagen = $nombreImagen;
+
+        return response()->json(['message' =>  $usuario], 200);
     }
 }
