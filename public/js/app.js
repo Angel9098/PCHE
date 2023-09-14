@@ -5036,7 +5036,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       cortes: [],
       currentPage: 1,
       lastPage: 1,
-      descripcionCorte: '',
+      descripcionCorte: "",
       errorDescripcion: false,
       errorSubmit: null
     };
@@ -5044,7 +5044,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   watch: {
     selectedDate: function selectedDate(newDate) {
       if (newDate) {
-        $('#corteModal').modal('show');
+        $("#corteModal").modal("show");
       }
     }
   },
@@ -5053,7 +5053,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   methods: {
     cerrarModal: function cerrarModal() {
-      $('#corteModal').modal('hide');
+      $("#corteModal").modal("hide");
     },
     getCortes: function getCortes() {
       var _this = this;
@@ -5064,7 +5064,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             case 0:
               _context.prev = 0;
               _context.next = 3;
-              return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/cortes?page=' + _this.currentPage);
+              return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/cortes?page=" + _this.currentPage);
             case 3:
               response = _context.sent;
               _this.cortes = response.data.data;
@@ -5089,7 +5089,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     enviarCorte: function enviarCorte() {
       var _this2 = this;
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-        var response;
+        var formattedDate, response;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
@@ -5103,38 +5103,39 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               _this2.errorDescripcion = false;
             case 6:
               _context2.prev = 6;
-              _context2.next = 9;
-              return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/cortes/crear', {
+              formattedDate = moment__WEBPACK_IMPORTED_MODULE_1___default()(_this2.selectedDate).format("YYYY/MM/DD");
+              _context2.next = 10;
+              return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/cortes/crear", {
                 descripcion: _this2.descripcionCorte,
-                fecha_corte: _this2.selectedDate
+                fecha_corte: formattedDate
               });
-            case 9:
+            case 10:
               response = _context2.sent;
-              _this2.descripcionCorte = '';
+              _this2.descripcionCorte = "";
               _this2.errorSubmit = null;
-              $('#corteModal').modal('hide');
+              $("#corteModal").modal("hide");
               _this2.getCortes();
-              _context2.next = 20;
+              _context2.next = 21;
               break;
-            case 16:
-              _context2.prev = 16;
+            case 17:
+              _context2.prev = 17;
               _context2.t0 = _context2["catch"](6);
               _this2.errorSubmit = "Error: no se pudo guardar la fecha de corte.";
               setTimeout(function () {
-                $('#corteModal').modal('hide');
+                $("#corteModal").modal("hide");
                 _this2.selectedDate = null;
-                _this2.descripcionCorte = '';
+                _this2.descripcionCorte = "";
                 _this2.errorSubmit = null;
               }, 5000);
-            case 20:
+            case 21:
             case "end":
               return _context2.stop();
           }
-        }, _callee2, null, [[6, 16]]);
+        }, _callee2, null, [[6, 17]]);
       }))();
     },
     formatFecha: function formatFecha(date) {
-      return moment__WEBPACK_IMPORTED_MODULE_1___default()(date).format('DD/MM/YYYY');
+      return moment__WEBPACK_IMPORTED_MODULE_1___default()(date).format("DD/MM/YYYY");
     }
   }
 });
@@ -6122,7 +6123,7 @@ var render = function render() {
     attrs: {
       id: "corteModalLabel"
     }
-  }, [_vm._v("Agregar fecha de corte")]), _vm._v(" "), _c("button", {
+  }, [_vm._v("\n                        Agregar fecha de corte\n                    ")]), _vm._v(" "), _c("button", {
     staticClass: "close",
     attrs: {
       type: "button",
@@ -6166,9 +6167,9 @@ var render = function render() {
     }
   })]), _vm._v(" "), _vm.errorDescripcion ? _c("p", {
     staticClass: "text-danger"
-  }, [_vm._v("La descripción no puede estar vacía.")]) : _vm._e(), _vm._v(" "), _vm.errorSubmit ? _c("p", {
+  }, [_vm._v("\n                        La descripción no puede estar vacía.\n                    ")]) : _vm._e(), _vm._v(" "), _vm.errorSubmit ? _c("p", {
     staticClass: "text-danger"
-  }, [_vm._v(_vm._s(_vm.errorSubmit))]) : _vm._e(), _vm._v(" "), _c("p", [_vm._v("Fecha seleccionada: " + _vm._s(_vm.selectedDate))])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n                        " + _vm._s(_vm.errorSubmit) + "\n                    ")]) : _vm._e(), _vm._v(" "), _c("p", [_vm._v("\n                        Fecha seleccionada: " + _vm._s(_vm.formatFecha(_vm.selectedDate)) + "\n                    ")])]), _vm._v(" "), _c("div", {
     staticClass: "modal-footer"
   }, [_c("button", {
     staticClass: "btn btn-primary",
@@ -6178,7 +6179,7 @@ var render = function render() {
     on: {
       click: _vm.enviarCorte
     }
-  }, [_vm._v("Agregar fecha de corte")])])])])])]);
+  }, [_vm._v("\n                        Agregar fecha de corte\n                    ")])])])])])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
@@ -6208,7 +6209,7 @@ var staticRenderFns = [function () {
     attrs: {
       colspan: "3"
     }
-  }, [_vm._v("No hay fechas de corte para mostrar")])]);
+  }, [_vm._v("\n                    No hay fechas de corte para mostrar\n                ")])]);
 }];
 render._withStripped = true;
 
@@ -12006,7 +12007,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.content-container[data-v-3ea645de] {\r\n    display: flex;\r\n    justify-content: space-around;\r\n    align-items: center;\r\n    width: 100%;\r\n    max-width: 800px;\r\n    margin: 0 auto;\n}\n.textbox[data-v-3ea645de], .vdp-datepicker[data-v-3ea645de] {\r\n    flex: 1;\r\n    padding: 10px;\r\n    margin: 0 10px;\n}\n.borderCircle[data-v-3ea645de] {\r\n    border-radius: 20px;\r\n    border-color: white;\n}\r\n", ""]);
+exports.push([module.i, "\n.content-container[data-v-3ea645de] {\r\n    display: flex;\r\n    justify-content: space-around;\r\n    align-items: center;\r\n    width: 100%;\r\n    max-width: 800px;\r\n    margin: 0 auto;\n}\n.textbox[data-v-3ea645de],\r\n.vdp-datepicker[data-v-3ea645de] {\r\n    flex: 1;\r\n    padding: 10px;\r\n    margin: 0 10px;\n}\n.borderCircle[data-v-3ea645de] {\r\n    border-radius: 20px;\r\n    border-color: white;\n}\r\n", ""]);
 
 // exports
 
