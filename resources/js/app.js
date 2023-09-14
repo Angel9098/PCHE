@@ -72,6 +72,10 @@ const routes =[
         component: require('./components/EditarPerfilComponent.vue').default
     },
     {
+        path:'/editarperfilusuario',
+        component: require('./components/EditarPerfilUsuarioComponent.vue').default
+    },
+    {
         path:'/menu',
         component: require('./components/MenuFlotanteComponent.vue').default
     },
