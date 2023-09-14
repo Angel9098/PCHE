@@ -1,13 +1,22 @@
 <template>
     <div class="container">
-        <br>
+        <br />
         <h2 class="h1 text-center">SELECCIÓN DE FECHA DE CORTE</h2>
-        <br>
+        <br />
         <div class="content-container">
-            <v-date-picker is-expanded v-model="selectedDate" class="vdp-datepicker"></v-date-picker>
-            <textarea placeholder=" " class="textbox" rows="10" disabled></textarea>
+            <v-date-picker
+                is-expanded
+                v-model="selectedDate"
+                class="vdp-datepicker"
+            ></v-date-picker>
+            <textarea
+                placeholder=" "
+                class="textbox"
+                rows="10"
+                disabled
+            ></textarea>
         </div>
-    
+
         <h2 class="h1 text-center mt-5">HISTORIAL DE FECHAS DE CORTE</h2>
         <table class="table table-hover table-bordered mt-4">
             <thead class="table-primary bg-primary">
@@ -26,23 +35,48 @@
             </tbody>
             <tbody v-else>
                 <tr>
-                    <td colspan="3" class="text-center">No hay fechas de corte para mostrar</td>
+                    <td colspan="3" class="text-center">
+                        No hay fechas de corte para mostrar
+                    </td>
                 </tr>
             </tbody>
         </table>
 
         <nav aria-label="Page navigation example">
             <ul class="pagination">
-                <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
-                    <a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)" aria-label="Previous">
+                <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                    <a
+                        class="page-link"
+                        href="#"
+                        @click.prevent="changePage(currentPage - 1)"
+                        aria-label="Previous"
+                    >
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <li class="page-item" v-for="page in lastPage" :key="page" :class="{ 'active': page === currentPage }">
-                    <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
+                <li
+                    class="page-item"
+                    v-for="page in lastPage"
+                    :key="page"
+                    :class="{ active: page === currentPage }"
+                >
+                    <a
+                        class="page-link"
+                        href="#"
+                        @click.prevent="changePage(page)"
+                        >{{ page }}</a
+                    >
                 </li>
-                <li class="page-item" :class="{ 'disabled': currentPage === lastPage }">
-                    <a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)" aria-label="Next">
+                <li
+                    class="page-item"
+                    :class="{ disabled: currentPage === lastPage }"
+                >
+                    <a
+                        class="page-link"
+                        href="#"
+                        @click.prevent="changePage(currentPage + 1)"
+                        aria-label="Next"
+                    >
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
@@ -50,26 +84,56 @@
         </nav>
 
         <!-- Modal -->
-        <div class="modal fade" id="corteModal" tabindex="-1" aria-labelledby="corteModalLabel" aria-hidden="true">
+        <div
+            class="modal fade"
+            id="corteModal"
+            tabindex="-1"
+            aria-labelledby="corteModalLabel"
+            aria-hidden="true"
+        >
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="corteModalLabel">Agregar fecha de corte</h5>
-                        <button type="button" class="close" @click="cerrarModal" aria-label="Close">
+                        <h5 class="modal-title" id="corteModalLabel">
+                            Agregar fecha de corte
+                        </h5>
+                        <button
+                            type="button"
+                            class="close"
+                            @click="cerrarModal"
+                            aria-label="Close"
+                        >
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="descripcion">Descripción</label>
-                            <input type="text" class="form-control" id="descripcion" v-model="descripcionCorte">
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="descripcion"
+                                v-model="descripcionCorte"
+                            />
                         </div>
-                        <p v-if="errorDescripcion" class="text-danger">La descripción no puede estar vacía.</p>
-                        <p v-if="errorSubmit" class="text-danger">{{ errorSubmit }}</p>
-                        <p>Fecha seleccionada: {{ selectedDate }}</p>
+                        <p v-if="errorDescripcion" class="text-danger">
+                            La descripción no puede estar vacía.
+                        </p>
+                        <p v-if="errorSubmit" class="text-danger">
+                            {{ errorSubmit }}
+                        </p>
+                        <p>
+                            Fecha seleccionada: {{ formatFecha(selectedDate) }}
+                        </p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" @click="enviarCorte">Agregar fecha de corte</button>
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            @click="enviarCorte"
+                        >
+                            Agregar fecha de corte
+                        </button>
                     </div>
                 </div>
             </div>
@@ -78,8 +142,8 @@
 </template>
 
 <script>
-import axios from 'axios';
-import moment from 'moment';
+import axios from "axios";
+import moment from "moment";
 
 export default {
     data() {
@@ -88,32 +152,37 @@ export default {
             cortes: [],
             currentPage: 1,
             lastPage: 1,
-            descripcionCorte: '',
+            descripcionCorte: "",
             errorDescripcion: false,
-            errorSubmit: null
+            errorSubmit: null,
         };
     },
     watch: {
         selectedDate(newDate) {
             if (newDate) {
-                $('#corteModal').modal('show');
+                $("#corteModal").modal("show");
             }
-        }
+        },
     },
     created() {
         this.getCortes();
     },
     methods: {
         cerrarModal() {
-            $('#corteModal').modal('hide');
+            $("#corteModal").modal("hide");
         },
         async getCortes() {
             try {
-                const response = await axios.get('/cortes?page=' + this.currentPage);
+                const response = await axios.get(
+                    "/cortes?page=" + this.currentPage
+                );
                 this.cortes = response.data.data;
                 this.lastPage = response.data.last_page;
             } catch (error) {
-                console.error("Error al obtener los cortes:", error.response ? error.response.data : error.message);
+                console.error(
+                    "Error al obtener los cortes:",
+                    error.response ? error.response.data : error.message
+                );
             }
         },
         changePage(page) {
@@ -129,29 +198,33 @@ export default {
             }
 
             try {
-                const response = await axios.post('/cortes/crear', {
+                const formattedDate = moment(this.selectedDate).format(
+                    "YYYY/MM/DD"
+                );
+                const response = await axios.post("/cortes/crear", {
                     descripcion: this.descripcionCorte,
-                    fecha_corte: this.selectedDate
+                    fecha_corte: formattedDate,
                 });
-                this.descripcionCorte = '';
+                this.descripcionCorte = "";
                 this.errorSubmit = null;
-                $('#corteModal').modal('hide');
+                $("#corteModal").modal("hide");
                 this.getCortes();
             } catch (error) {
-                this.errorSubmit = "Error: no se pudo guardar la fecha de corte.";
+                this.errorSubmit =
+                    "Error: no se pudo guardar la fecha de corte.";
                 setTimeout(() => {
-                    $('#corteModal').modal('hide');
+                    $("#corteModal").modal("hide");
                     this.selectedDate = null;
-                    this.descripcionCorte = '';
+                    this.descripcionCorte = "";
                     this.errorSubmit = null;
                 }, 5000);
             }
         },
         formatFecha(date) {
-            return moment(date).format('DD/MM/YYYY');
-        }
-    }
-}
+            return moment(date).format("DD/MM/YYYY");
+        },
+    },
+};
 </script>
 
 <style scoped>
@@ -164,7 +237,8 @@ export default {
     margin: 0 auto;
 }
 
-.textbox, .vdp-datepicker {
+.textbox,
+.vdp-datepicker {
     flex: 1;
     padding: 10px;
     margin: 0 10px;
