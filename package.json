@@ -27,6 +27,7 @@
     },
     "dependencies": {
         "@popperjs/core": "^2.11.8",
+        "moment": "^2.29.4",
         "read-excel-file": "^5.6.1",
         "v-calendar": "^2.4.1",
         "v-mask": "^2.3.0",
