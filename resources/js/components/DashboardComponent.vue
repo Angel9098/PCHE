@@ -30,8 +30,8 @@ import MenuFlotanteComponentVue from './MenuFlotanteComponent.vue';
                 this.$router.push('/');
             },
             leerData(){
-      const {id} = JSON.parse(localStorage.getItem("user"));
-      axios.get(`empleadobyid?idEmpleado=${id}`).then((result) => {
+      const {empleado_id} = JSON.parse(localStorage.getItem("user"));
+      axios.get(`empleadobyid?idEmpleado=${empleado_id}`).then((result) => {
        this.nombre =result.data[0].nombres
             }).catch(error => {})
     }
