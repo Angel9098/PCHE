@@ -9,12 +9,9 @@
                 v-model="selectedDate"
                 class="vdp-datepicker"
             ></v-date-picker>
-            <textarea
-                placeholder=" "
-                class="textbox"
-                rows="10"
-                disabled
-            ></textarea>
+            <textarea placeholder=" " class="textbox" rows="10" disabled>
+    Fecha próxima de corte: {{ descripcionVigente }}</textarea
+            >
         </div>
 
         <h2 class="h1 text-center mt-5">HISTORIAL DE FECHAS DE CORTE</h2>
@@ -153,6 +150,7 @@ export default {
             currentPage: 1,
             lastPage: 1,
             descripcionCorte: "",
+            descripcionVigente: "",
             errorDescripcion: false,
             errorSubmit: null,
         };
@@ -166,6 +164,7 @@ export default {
     },
     created() {
         this.getCortes();
+        this.getDescripcionVigente();
     },
     methods: {
         cerrarModal() {
@@ -181,6 +180,24 @@ export default {
             } catch (error) {
                 console.error(
                     "Error al obtener los cortes:",
+                    error.response ? error.response.data : error.message
+                );
+            }
+        },
+        async getDescripcionVigente() {
+            try {
+                const response = await axios.get("/cortes");
+                if (response.data && response.data.data) {
+                    const registroVigente = response.data.data.find(
+                        (item) => item.vigente === 1
+                    );
+                    if (registroVigente) {
+                        this.descripcionVigente = registroVigente.fecha_corte;
+                    }
+                }
+            } catch (error) {
+                console.error(
+                    "Error al obtener la descripción vigente:",
                     error.response ? error.response.data : error.message
                 );
             }
