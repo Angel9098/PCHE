@@ -21,7 +21,7 @@ class CreateEmpleadoTable extends Migration
             $table->string('dui', 10)->unique();
             $table->string('email')->unique();
             $table->string('numero_emergencia');
-            $table->string('nombre_persona');
+            $table->string('avisar_contacto');
             $table->unsignedBigInteger('area_id');
             $table->timestamps();
 
