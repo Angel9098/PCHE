@@ -134,6 +134,19 @@ class EmpleadoController extends Controller
         }
     }
 
+    public function empleadoById(Request $request)
+    {
+        try {
+
+            $idEmpleado = $request->input('idEmpleado');
+            $empleado = Empleado::where('id', $idEmpleado)->get();
+
+            return response()->json($empleado);
+        } catch (\Exception $e) {
+            return response()->json(['ocurrio un error al obtener el empleado' => $e], 500);
+        }
+    }
+
     public function actualizarContrasenia(Request $request)
     {
         try {
@@ -170,14 +183,15 @@ class EmpleadoController extends Controller
     }
 
 
-    public function busquedaEmpleadoPorEmpresa(Request $request){
-        try{
+    public function busquedaEmpleadoPorEmpresa(Request $request)
+    {
+        try {
             $idEmpresa = $request->input('idEmpresa');
             $empleados = DB::table('empleados as e')
-            ->join('areas as ar', 'ar.id', '=', 'e.area_id')
-            ->select('e.*')
-            ->where('ar.empresa_id', '=', $idEmpresa)
-            ->get();
+                ->join('areas as ar', 'ar.id', '=', 'e.area_id')
+                ->select('e.*')
+                ->where('ar.empresa_id', '=', $idEmpresa)
+                ->get();
             return response()->json($empleados);
         } catch (\Exception $e) {
             return response()->json(['message' => 'ocurrio un error al generar la busqueada'], 500);

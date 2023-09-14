@@ -49,6 +49,8 @@ Route::get('empleados/busqueda/{nombre}', 'EmpleadoController@empleadosBusquedaN
 Route::get('empleado_dui', 'EmpleadoController@empleadoByDui')->name('bucarEmpleado');
 Route::post('actualizarcontra', 'EmpleadoController@actualizarContrasenia')->name('actualizarpass');
 Route::get('empleados/busqueda/empresa', 'EmpleadoController@busquedaEmpleadoPorEmpresa')->name('empleadosBusquedaEmpresa');
+Route::get('empleadobyid', 'EmpleadoController@empleadoById');
+
 
 Route::post('horas_extra/crear', 'HoraExtraCotroller@createHoraExtra')->name('horas_extra');
 Route::get('horas_extra', 'HoraExtraCotroller@allHoras')->name('horas_extra.all');
