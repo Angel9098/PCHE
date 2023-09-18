@@ -197,4 +197,10 @@ class EmpleadoController extends Controller
             return response()->json(['message' => 'ocurrio un error al generar la busqueada'], 500);
         }
     }
+
+    public function allEmpleadosAreaEmpresa(){
+        $empleados = Empleado::with("area.empresa")->get();
+
+        return response()->json($empleados);
+    }
 }
