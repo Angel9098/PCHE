@@ -5490,7 +5490,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      nombre: ''
+      nombre: ""
     };
   },
   mounted: function mounted() {
@@ -5505,6 +5505,10 @@ __webpack_require__.r(__webpack_exports__);
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("empleadobyid?idEmpleado=".concat(empleado_id)).then(function (result) {
         _this.nombre = result.data[0].nombres;
       })["catch"](function (error) {});
+    },
+    cerrarSesion: function cerrarSesion() {
+      localStorage.removeItem('user');
+      this.$router.push('/');
     }
   }
 });
@@ -7270,89 +7274,146 @@ var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", [_c("nav", {
-    staticClass: "navbar navbar-dark bg-primary"
+    staticClass: "navbar navbar-primary bg-primary fixed-top"
   }, [_c("div", {
     staticClass: "container-fluid"
-  }, [_c("a", {
-    staticClass: "navbar-brand"
-  }, [_c("img", {
-    staticClass: "wiHImg",
+  }, [_vm._m(0), _vm._v(" "), _vm._m(1), _vm._v(" "), _c("div", {
+    staticClass: "offcanvas offcanvas-start text-bg-primary",
     attrs: {
-      width: "40",
-      height: "40",
-      src: "assets/img/iconblancologo_Mesa de trabajo 1.png",
-      alt: "",
-      srcset: ""
+      tabindex: "-1",
+      id: "offcanvasDarkNavbar",
+      "aria-labelledby": "offcanvasDarkNavbarLabel"
     }
-  }), _vm._v(" \n        " + _vm._s(_vm.nombres) + "\n      ")]), _vm._v(" "), _vm._m(0)])]), _vm._v(" "), _vm._m(1)]);
+  }, [_c("div", {
+    staticClass: "offcanvas-header"
+  }, [_c("h5", {
+    staticClass: "offcanvas-title text-white",
+    attrs: {
+      id: "offcanvasDarkNavbarLabel"
+    }
+  }, [_vm._v("\n            " + _vm._s(_vm.nombre) + "\n          ")]), _vm._v(" "), _c("button", {
+    staticClass: "btn-close btn-close-white",
+    attrs: {
+      type: "button",
+      "data-bs-dismiss": "offcanvas",
+      "aria-label": "Close"
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "offcanvas-body"
+  }, [_vm._m(2), _vm._v(" "), _c("button", {
+    staticClass: "btn bg-black btn-primary text-uppercase btnGray",
+    attrs: {
+      type: "submit"
+    },
+    on: {
+      click: _vm.cerrarSesion
+    }
+  }, [_vm._v("\n            Cerrar sesion\n          ")])])])])]), _vm._v(" "), _c("div", [_c("nav", {
+    staticClass: "flexMenu bg-primary"
+  }, [_c("ul", {
+    staticClass: "ul"
+  }, [_vm._m(3), _vm._v(" "), _vm._m(4), _vm._v(" "), _vm._m(5), _vm._v(" "), _vm._m(6), _vm._v(" "), _vm._m(7), _vm._v(" "), _vm._m(8), _vm._v(" "), _vm._m(9), _vm._v(" "), _c("li", {
+    staticClass: "li my-4"
+  }, [_c("a", {
+    staticClass: "my-4 text-uppercase",
+    attrs: {
+      href: "?#/historialhoras"
+    },
+    on: {
+      click: _vm.cerrarSesion
+    }
+  }, [_c("i", {
+    staticClass: "fa-regular fa-circle-xmark text-white"
+  })])])])])])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("form", {
-    staticClass: "d-flex"
-  }, [_c("button", {
-    staticClass: "btn btn-primary text-uppercase btnGray",
+  return _c("button", {
+    staticClass: "navbar-toggler bg-white",
     attrs: {
-      type: "submit"
+      type: "button",
+      "data-bs-toggle": "offcanvas",
+      "data-bs-target": "#offcanvasDarkNavbar",
+      "aria-controls": "offcanvasDarkNavbar",
+      "aria-label": "Toggle navigation"
     }
-  }, [_vm._v("\n          Cerrar sesion\n        ")])]);
+  }, [_c("span", {
+    staticClass: "navbar-toggler-icon"
+  })]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("div", {
-    staticClass: "container-fluid fixed-top rounded"
-  }, [_c("div", {
-    staticClass: "row"
-  }, [_c("nav", {
-    staticClass: "col-md-3 col-lg-2 d-md-block bg-primary sidebar",
+  return _c("a", {
+    staticClass: "navbar-brand",
     attrs: {
-      id: "sidebar"
+      href: "#"
     }
-  }, [_c("div", {
-    staticClass: "position-sticky"
-  }, [_c("ul", {
-    staticClass: "nav flex-column"
+  }, [_c("img", {
+    staticClass: "wiHImg",
+    attrs: {
+      width: "80",
+      height: "50",
+      src: "assets/img/logopngblanco_Mesa de trabajo 1.png",
+      alt: "",
+      srcset: ""
+    }
+  })]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("ul", {
+    staticClass: "navbar-nav justify-content-end flex-grow-1 pe-3"
   }, [_c("li", {
     staticClass: "nav-item"
   }, [_c("a", {
-    staticClass: "nav-link text-uppercase",
+    staticClass: "nav-link active text-white",
     attrs: {
+      "aria-current": "page",
       href: "?#/dashboard"
     }
   }, [_c("i", {
     staticClass: "fa-solid fa-house mr-3"
-  }), _vm._v(" Inicio ")])]), _vm._v(" "), _c("li", {
+  }), _vm._v(" Inicio")])]), _vm._v(" "), _c("li", {
     staticClass: "nav-item"
   }, [_c("a", {
-    staticClass: "nav-link text-uppercase",
+    staticClass: "nav-link text-white text-uppercase",
     attrs: {
-      href: "?#/"
+      href: "?#/registro"
     }
   }, [_c("i", {
-    staticClass: "fa-solid fa-circle-plus mr-3"
+    staticClass: "fa-solid fa-circle-plus"
   }), _vm._v(" registrar empleados")])]), _vm._v(" "), _c("li", {
     staticClass: "nav-item"
   }, [_c("a", {
-    staticClass: "nav-link text-uppercase",
+    staticClass: "nav-link text-white text-uppercase",
     attrs: {
       href: "?#/importacionhoras"
     }
   }, [_c("i", {
-    staticClass: "fa-solid fa-circle-plus mr-3"
+    staticClass: "fa-solid fa-circle-plus"
   }), _vm._v(" Agregar horas extras ")])]), _vm._v(" "), _c("li", {
     staticClass: "nav-item"
   }, [_c("a", {
-    staticClass: "nav-link text-uppercase",
+    staticClass: "nav-link text-white text-uppercase",
     attrs: {
       href: "?#/editarperfilusuario"
     }
   }, [_c("i", {
-    staticClass: "fa-solid fa-users mr-3"
+    staticClass: "fa-solid fa-user"
   }), _vm._v(" Perfil ")])]), _vm._v(" "), _c("li", {
     staticClass: "nav-item"
   }, [_c("a", {
-    staticClass: "nav-link text-uppercase",
+    staticClass: "nav-link text-white text-uppercase",
+    attrs: {
+      href: "?#/empleados"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-users"
+  }), _vm._v(" Empleados")])]), _vm._v(" "), _c("li", {
+    staticClass: "nav-item"
+  }, [_c("a", {
+    staticClass: "nav-link text-white text-uppercase",
     attrs: {
       href: "?#/calendarios"
     }
@@ -7361,14 +7422,103 @@ var staticRenderFns = [function () {
   }), _vm._v(" Calendario")])]), _vm._v(" "), _c("li", {
     staticClass: "nav-item"
   }, [_c("a", {
-    staticClass: "nav-link text-uppercase",
+    staticClass: "nav-link text-white text-uppercase",
     attrs: {
       href: "?#/historialhoras"
     }
   }, [_c("i", {
-    staticClass: "fa-brands fa-searchengin mr-3"
-  }), _vm._v(" Historial horas extras")])])])])]), _vm._v(" "), _c("main", {
-    staticClass: "col-md-9 ms-sm-auto col-lg-10 px-md-4"
+    staticClass: "fa-brands fa-searchengin"
+  }), _vm._v(" Historial horas extras")])])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("li", {
+    staticClass: "li my-4"
+  }, [_c("a", {
+    staticClass: "my-4 text-uppercase",
+    attrs: {
+      href: "?#/dashboard"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-house text-white"
+  })])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("li", {
+    staticClass: "li my-4"
+  }, [_c("a", {
+    staticClass: "my-4 text-uppercase",
+    attrs: {
+      href: "?#/"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-circle-plus text-white"
+  })])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("li", {
+    staticClass: "li my-4"
+  }, [_c("a", {
+    staticClass: "my-4 text-uppercase",
+    attrs: {
+      href: "?#/importacionhoras"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-circle-plus text-white"
+  })])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("li", {
+    staticClass: "li my-4"
+  }, [_c("a", {
+    staticClass: "my-4 text-uppercase",
+    attrs: {
+      href: "?#/editarperfilusuario"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-user text-white"
+  })])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("li", {
+    staticClass: "li my-4"
+  }, [_c("a", {
+    staticClass: "my-4 text-uppercase",
+    attrs: {
+      href: "?#/empleados"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-users text-white"
+  })])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("li", {
+    staticClass: "li my-4"
+  }, [_c("a", {
+    staticClass: "my-4 text-uppercase",
+    attrs: {
+      href: "?#/calendarios"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-calendar text-white"
+  })])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("li", {
+    staticClass: "li my-4"
+  }, [_c("a", {
+    staticClass: "my-4 text-uppercase",
+    attrs: {
+      href: "?#/historialhoras"
+    }
+  }, [_c("i", {
+    staticClass: "fa-brands fa-searchengin text-white"
   })])]);
 }];
 render._withStripped = true;
@@ -12647,7 +12797,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.row > * {\r\n    flex-shrink: 0;\r\n    width: auto;\r\n    max-width: 100%;\r\n    padding-right: calc(var(--bs-gutter-x) * 0.5);\r\n    padding-left: calc(var(--bs-gutter-x) * 0.5);\r\n    margin-top: var(--bs-gutter-y);\r\n    color: white;\n}\n.nav-link {\r\n    display: block;\r\n    padding: var(--bs-nav-link-padding-y) var(--bs-nav-link-padding-x);\r\n    font-size: var(--bs-nav-link-font-size);\r\n    font-weight: var(--bs-nav-link-font-weight);\r\n    color: white;\r\n    text-decoration: none;\r\n    background: none;\r\n    border: 0;\r\n    font-weight: bolder;\r\n    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;\n}\n.active{\r\n  background-color: rgba(255, 255, 255, 0.774) !important;\n}\n.nav-link:hover{\r\n  background-color: rgba(255, 255, 255, 0.774);\r\n  color: black;\n}\n.flex {\r\n  display: flex;\r\n  width: 100%;\r\n  height: 50px;\r\n  justify-items: center;\r\n  align-items: center;\n}\n.flex:hover {\r\n  background-color: rgb(255, 255, 255);\r\n  width: 100%;\r\n  color: black;\r\n  font-weight: bold;\r\n  border-radius: 10px;\r\n  padding: 10px;\n}\n.btnGray {\r\n  background-color: rgba(128, 128, 128, 0.774);\n}\n.fixed-top {\r\n    position: fixed;\r\n    top: 20%;\r\n    right: 0;\r\n    left: 0;\r\n    z-index: 1030;\n}\r\n", ""]);
+exports.push([module.i, "\n.flexMenu {\r\n    margin: 0%;\r\n    width: 40px;\r\n    height: 100vh;\r\n    display: grid;\r\n    justify-content: center;\r\n    align-items: center;\n}\n.ul .li {\r\n    list-style: none;\n}\nol, ul, dl {\r\n    margin-top: 20px;\r\n    margin-bottom: 1rem;\n}\nol, ul {\r\n    padding-left: 0rem;\n}\r\n\r\n\r\n\r\n", ""]);
 
 // exports
 

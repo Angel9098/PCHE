@@ -1,122 +1,170 @@
 <template>
   <div>
-    <nav class="navbar navbar-dark bg-primary">
+    <nav class="navbar navbar-primary bg-primary fixed-top">
       <div class="container-fluid">
-        <a class="navbar-brand">
-         <img class="wiHImg" width="40" height="40" src="assets/img/iconblancologo_Mesa de trabajo 1.png" alt="" srcset=""> 
-          {{ nombres }}
-        </a>
-        <form class="d-flex">
-          <button class="btn btn-primary text-uppercase btnGray" type="submit">
-            Cerrar sesion
-          </button>
-        </form>
+       
+        <button
+          class="navbar-toggler bg-white"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#offcanvasDarkNavbar"
+          aria-controls="offcanvasDarkNavbar"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="#">
+          <img
+            class="wiHImg"
+            width="80"
+            height="50"
+            src="assets/img/logopngblanco_Mesa de trabajo 1.png"
+            alt=""
+            srcset=""
+        /></a>
+        <div
+          class="offcanvas offcanvas-start text-bg-primary"
+          tabindex="-1"
+          id="offcanvasDarkNavbar"
+          aria-labelledby="offcanvasDarkNavbarLabel"
+        >
+          <div class="offcanvas-header">
+            <h5
+              class="offcanvas-title text-white"
+              id="offcanvasDarkNavbarLabel"
+            >
+              {{ nombre }}
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="offcanvas"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="offcanvas-body">
+            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+              <li class="nav-item">
+                <a
+                  class="nav-link active text-white"
+                  aria-current="page"
+                  href="?#/dashboard"
+                  ><i class="fa-solid fa-house mr-3"></i> Inicio</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white text-uppercase"  href="?#/registro"><i class="fa-solid fa-circle-plus  "></i> registrar empleados</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white text-uppercase"  href="?#/importacionhoras"><i class="fa-solid fa-circle-plus  "></i> Agregar horas extras </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white text-uppercase"  href="?#/editarperfilusuario"><i class="fa-solid fa-user "></i> Perfil </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white text-uppercase"  href="?#/empleados"><i class="fa-solid fa-users"></i> Empleados</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white text-uppercase"  href="?#/calendarios"><i class="fa-solid fa-calendar"></i> Calendario</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white text-uppercase"  href="?#/historialhoras"><i class="fa-brands fa-searchengin "></i> Historial horas extras</a>
+              </li>
+              <!-- <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle "
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Dropdown
+              </a>
+              <ul class="dropdown-menu dropdown-menu-dark">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li>
+                  <hr class="dropdown-divider" />
+                </li>
+                <li>
+                  <a class="dropdown-item" href="#">Something else here</a>
+                </li>
+              </ul>
+            </li> -->
+            </ul>
+            <button
+            @click="cerrarSesion"
+              class="btn bg-black btn-primary text-uppercase btnGray"
+              type="submit"
+            >
+              Cerrar sesion
+            </button>
+          </div>
+        </div>
       </div>
     </nav>
-    <div class="container-fluid   fixed-top rounded">
-      <div class="row">
-        <!-- Menú lateral -->
-        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-primary sidebar">
-          <div class="position-sticky">
-            <ul class="nav flex-column">
-              <li class="nav-item">
-                <a class="nav-link text-uppercase" href="?#/dashboard"><i class="fa-solid fa-house  mr-3"></i> Inicio </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link text-uppercase" href="?#/"> <i class="fa-solid fa-circle-plus  mr-3"></i> registrar empleados</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link text-uppercase" href="?#/importacionhoras"> <i class="fa-solid fa-circle-plus  mr-3"></i> Agregar horas extras </a>
-              </li>
-              
-              <li class="nav-item">
-                <a class="nav-link text-uppercase" href="?#/editarperfilusuario"><i class="fa-solid fa-users  mr-3"></i> Perfil </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link text-uppercase" href="?#/calendarios"><i class="fa-solid fa-calendar"></i> Calendario</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link text-uppercase" href="?#/historialhoras"> <i class="fa-brands fa-searchengin mr-3"></i> Historial horas extras</a>
-              </li>
-              <!-- Agrega más opciones según sea necesario -->
+    <div>
+        <nav class="flexMenu bg-primary">
+            <ul class="ul">
+                <li class="li my-4">
+                    <a  class="my-4 text-uppercase"  href="?#/dashboard"><i class="fa-solid fa-house text-white"></i> </a>
+                </li>
+                <li class="li my-4">
+                    <a class="my-4 text-uppercase"  href="?#/"><i class="fa-solid fa-circle-plus  text-white"></i> </a>
+                </li>
+                <li class="li my-4">
+                    <a  class="my-4 text-uppercase"  href="?#/importacionhoras"><i class="fa-solid fa-circle-plus  text-white"></i> </a>
+                </li>
+                <li class="li my-4">
+                    <a class="my-4 text-uppercase"  href="?#/editarperfilusuario"><i class="fa-solid fa-user  text-white"></i> </a>
+                </li>
+                <li class="li my-4">
+                    <a class="my-4 text-uppercase"  href="?#/empleados"><i class="fa-solid fa-users text-white"></i></a>
+                </li>
+                <li class="li my-4">
+                    <a class="my-4 text-uppercase"  href="?#/calendarios"><i class="fa-solid fa-calendar text-white"></i> </a>
+                </li>
+                <li class="li my-4">
+                    <a class="my-4 text-uppercase"  href="?#/historialhoras"><i class="fa-brands fa-searchengin text-white"></i> </a>
+                </li>
+                <li class="li my-4">
+                    <a class="my-4 text-uppercase" @click="cerrarSesion" href="?#/historialhoras"><i class="fa-regular fa-circle-xmark text-white"></i> </a>
+                </li>
             </ul>
-          </div>
         </nav>
-        <!-- Contenido principal -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-          <!-- Aquí va el contenido de tu página -->
-        </main>
-      </div>
     </div>
   </div>
 </template>
-
 <style>
-.row > * {
-    flex-shrink: 0;
-    width: auto;
-    max-width: 100%;
-    padding-right: calc(var(--bs-gutter-x) * 0.5);
-    padding-left: calc(var(--bs-gutter-x) * 0.5);
-    margin-top: var(--bs-gutter-y);
-    color: white;
+.flexMenu {
+    margin: 0%;
+    width: 40px;
+    height: 100vh;
+    display: grid;
+    justify-content: center;
+    align-items: center;
 }
-.nav-link {
-    display: block;
-    padding: var(--bs-nav-link-padding-y) var(--bs-nav-link-padding-x);
-    font-size: var(--bs-nav-link-font-size);
-    font-weight: var(--bs-nav-link-font-weight);
-    color: white;
-    text-decoration: none;
-    background: none;
-    border: 0;
-    font-weight: bolder;
-    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+.ul .li {
+    list-style: none;
 }
-.active{
-  background-color: rgba(255, 255, 255, 0.774) !important;
-}
-.nav-link:hover{
-  background-color: rgba(255, 255, 255, 0.774);
-  color: black;
-
-}
-.flex {
-  display: flex;
-  width: 100%;
-  height: 50px;
-  justify-items: center;
-  align-items: center;
+ol, ul, dl {
+    margin-top: 20px;
+    margin-bottom: 1rem;
 }
 
-.flex:hover {
-  background-color: rgb(255, 255, 255);
-  width: 100%;
-  color: black;
-  font-weight: bold;
-  border-radius: 10px;
-  padding: 10px;
+ol, ul {
+    padding-left: 0rem;
 }
 
-.btnGray {
-  background-color: rgba(128, 128, 128, 0.774);
-}
 
-.fixed-top {
-    position: fixed;
-    top: 20%;
-    right: 0;
-    left: 0;
-    z-index: 1030;
-}
+
 </style>
-
 <script>
-import axios from 'axios';
+import axios from "axios";
 export default {
   data() {
-    return { 
-      nombre: ''
+    return {
+      nombre: "",
     };
   },
   mounted() {
@@ -124,12 +172,19 @@ export default {
   },
   methods: {
     //empleadobyid
-   leerData(){
-      const {empleado_id} = JSON.parse(localStorage.getItem("user"));
-      axios.get(`empleadobyid?idEmpleado=${empleado_id}`).then((result) => {
-       this.nombre =result.data[0].nombres
-            }).catch(error => {})
-    }
+    leerData() {
+      const { empleado_id } = JSON.parse(localStorage.getItem("user"));
+      axios
+        .get(`empleadobyid?idEmpleado=${empleado_id}`)
+        .then((result) => {
+          this.nombre = result.data[0].nombres;
+        })
+        .catch((error) => {});
+    },
+    cerrarSesion(){
+                localStorage.removeItem('user');
+                this.$router.push('/');
+            }
   },
 };
 </script>
