@@ -67,6 +67,8 @@
                         <th scope="col">Apellidos</th>
                         <th scope="col">Cargo</th>
                         <th scope="col">Email</th>
+                        <th scope="col">Area</th>
+                        <th scope="col">Empresa</th>
                         <th scope="col">Acciones</th>
 
                     </tr>
@@ -78,6 +80,13 @@
                         <td>{{ empleado.apellidos }}</td>
                         <td>{{ empleado.cargo }}</td>
                         <td>{{ empleado.email }}</td>
+                        <td>{{ empleado.area.nombre }}</td>
+                        <td>{{ empleado.area.empresa.nombre }}</td>
+                        <td>
+                            <button @click="seleccionar" class="btn btn-primary mt-2" type="button">
+                                Editar perfil
+                            </button>
+                        </td>
                     </tr>
                 </tbody>
                 <tbody v-else>
@@ -113,7 +122,6 @@
 
 <script>
 import axios from "axios";
-
 export default {
     data() {
         return {
@@ -133,6 +141,7 @@ export default {
     },
     created() {
         this.fetchEmpresas();
+        this.fetchEmpleados();
     },
     methods: {
         debounceSearchEmpleado: _.debounce(function () {
@@ -159,6 +168,20 @@ export default {
                 .catch((error) => {
                     console.error("Error al cargar empresas:", error);
                 });
+        },
+        fetchEmpleados() {
+            axios
+                .get("/empleados_area")
+                .then((response) => {
+                    this.empleados = response.data;
+                    console.log("Empleados");
+                })
+                .catch((error) => {
+                    console.error("Error al cargar empresas:", error);
+                });
+        },
+        seleccionar() {
+            this.$router.push('/editarperfil');
         },
 
         changePage(page) {
