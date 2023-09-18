@@ -187,7 +187,7 @@ export default {
 
         changePage(page) {
             this.currentPage = page;
-            this.getCortes();
+            this.fetchEmpleados();
         }
     },
 };
