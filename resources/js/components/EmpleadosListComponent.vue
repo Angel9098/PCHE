@@ -171,10 +171,11 @@ export default {
         },
         fetchEmpleados() {
             axios
-                .get("/empleados_area")
+                .get("/empleados_area?page=" + this.currentPage)
                 .then((response) => {
-                    this.empleados = response.data;
-                    console.log("Empleados");
+                    this.empleados = response.data.data;
+
+                    this.lastPage = response.data.last_page;
                 })
                 .catch((error) => {
                     console.error("Error al cargar empresas:", error);
