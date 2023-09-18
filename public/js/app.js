@@ -5199,36 +5199,83 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      horas: '',
-      items: []
+      loaded: false,
+      items: [],
+      fileExcel: File,
+      isDragging: false
     };
   },
   mounted: function mounted() {},
   methods: {
     importarExcel: function importarExcel() {
       var _this = this;
-      var input = document.getElementById('archivo');
-      Object(read_excel_file__WEBPACK_IMPORTED_MODULE_0__["default"])(input.files[0], {
-        sheet: 2
-      }).then(function (rows) {
-        rows.forEach(function (element, index) {
-          if (index > 4) {
-            var registroHora = {
-              idEmpleado: element[0],
-              nombre: element[1],
-              fecha: element[2] == null ? element[2] : moment__WEBPACK_IMPORTED_MODULE_1___default()(element[2]).format('L'),
-              sueldo: element[3],
-              diurnas: element[4] == null ? 0 : element[4],
-              nocturnas: element[5] == null ? 0 : element[5],
-              diurnasDescanso: element[6] == null ? 0 : element[6],
-              nocturnasDescanso: element[7] == null ? 0 : element[7],
-              diurnasAsueto: element[8] == null ? 0 : element[8],
-              nocturnasAsueto: element[9] == null ? 0 : element[9]
-            };
-            _this.items.push(registroHora);
-          }
+      this.fileExcel = this.$refs.file.files[0];
+      this.items = [];
+      if (this.$refs.file.files.length > 1) {
+        this.$toast.error("Seleccione únicamente un archivo", {
+          position: "top-right",
+          timeout: 3000,
+          closeOnClick: true,
+          pauseOnHover: true,
+          closeButton: "button",
+          icon: true
         });
-      });
+      } else {
+        if (this.fileExcel.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+          this.loaded = false;
+          this.$toast.error("Archivo Excel requerido", {
+            position: "top-right",
+            timeout: 3000,
+            closeOnClick: true,
+            pauseOnHover: true,
+            closeButton: "button",
+            icon: true
+          });
+        } else {
+          this.loaded = true;
+          Object(read_excel_file__WEBPACK_IMPORTED_MODULE_0__["default"])(this.fileExcel, {
+            sheet: 2
+          }).then(function (rows) {
+            rows.forEach(function (element, index) {
+              if (index > 4) {
+                var registroHora = {
+                  idEmpleado: element[0],
+                  nombre: element[1],
+                  fecha: element[2] == null ? element[2] : moment__WEBPACK_IMPORTED_MODULE_1___default()(element[2]).format('L'),
+                  sueldo: element[3],
+                  diurnas: element[4] == null ? 0 : element[4],
+                  nocturnas: element[5] == null ? 0 : element[5],
+                  diurnasDescanso: element[6] == null ? 0 : element[6],
+                  nocturnasDescanso: element[7] == null ? 0 : element[7],
+                  diurnasAsueto: element[8] == null ? 0 : element[8],
+                  nocturnasAsueto: element[9] == null ? 0 : element[9]
+                };
+                _this.items.push(registroHora);
+              }
+            });
+          });
+        }
+      }
+    },
+    dragOver: function dragOver(e) {
+      e.preventDefault();
+      this.isDragging = true;
+    },
+    dragLeave: function dragLeave(e) {
+      this.isDragging = true;
+    },
+    drop: function drop(e) {
+      e.preventDefault();
+      this.$refs.file.files = e.dataTransfer.files;
+      this.importarExcel();
+      this.isDragging = false;
+    },
+    remove: function remove() {
+      this.loaded = false;
+      this.isDragging = false;
+      this.$refs.file.files = null;
+      this.fileExcel = new File();
+      this.items = [];
     }
   }
 });
@@ -5500,7 +5547,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {},
+  data: function data() {
+    return {};
+  },
   mounted: function mounted() {},
   methods: {}
 });
@@ -5701,6 +5750,7 @@ __webpack_require__.r(__webpack_exports__);
           'Content-type': 'application/json'
         }
       }).then(function (response) {
+        _this.cancelar();
         _this.$toast.success(response.data.message, {
           timeout: 3000,
           position: 'top-right',
@@ -5754,6 +5804,18 @@ __webpack_require__.r(__webpack_exports__);
     },
     selectHorario: function selectHorario(id) {
       this.usuario.horario_id = id;
+    },
+    cancelar: function cancelar() {
+      this.usuario.nombres = '';
+      this.usuario.apellidos = '';
+      this.usuario.email = '';
+      this.usuario.area_id = 0;
+      this.usuario.cargo = '';
+      this.usuario.empresa = '';
+      this.usuario.dui = '';
+      this.usuario.horario_id = 0;
+      this.usuario.nombre_persona = '';
+      this.usuario.numero_emergencia = '';
     }
   }
 });
@@ -6544,8 +6606,17 @@ var render = function render() {
   }, [_c("div", {
     staticClass: "w-75 d-flex flex-column justify-content-center align-items-center"
   }, [_c("h1", [_vm._v("Registro de Horas Extras")]), _vm._v(" "), _c("div", {
-    staticClass: "col-11 d-flex flex-column justify-content-center align-items-center bg-light rounded-3 dropdrag-zone mt-5"
+    staticClass: "col-11 d-flex flex-column justify-content-center align-items-center bg-light rounded-3 dropdrag-zone mt-5",
+    attrs: {
+      id: "drop-zone"
+    },
+    on: {
+      dragover: _vm.dragOver,
+      dragleave: _vm.dragLeave,
+      drop: _vm.drop
+    }
   }, [_c("input", {
+    ref: "file",
     staticClass: "input-file",
     attrs: {
       id: "archivo",
@@ -6555,34 +6626,52 @@ var render = function render() {
     on: {
       change: _vm.importarExcel
     }
-  }), _vm._v(" "), _c("i", {
+  }), _vm._v(" "), _c("transition", {
+    attrs: {
+      name: "slide-fade"
+    }
+  }, [_vm.loaded == false ? _c("div", {
+    staticClass: "d-flex flex-column justify-content-center align-items-center"
+  }, [_c("i", {
     staticClass: "fa-solid fa-file-excel text-primary",
     style: "font-size: 60px"
   }), _vm._v(" "), _c("h5", {
     staticClass: "mb-0 mt-2"
-  }, [_vm._v("Adjunte archivo de horas extras")]), _vm._v(" "), _c("small", [_vm._v("Solo se permite archivo Excel")])])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("Adjunte archivo de horas extras")]), _vm._v(" "), _c("small", [_vm._v("Solo se permite archivo Excel")])]) : _c("div", {
+    staticClass: "col-12 d-flex flex-row justify-content-center align-items-center"
+  }, [_c("div", {
+    staticClass: "col-5 d-flex flex-row justify-content-end"
+  }, [_c("i", {
+    staticClass: "fa-solid fa-file-excel text-primary",
+    style: "font-size: 60px"
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "mx-3 col-5 d-flex flex-column justify-content-center align-items-start"
+  }, [_c("div", {
+    staticClass: "d-flex flex-row justify-content-start align-items-center"
+  }, [_c("h5", {
+    staticClass: "mb-0"
+  }, [_vm._v(_vm._s(_vm.fileExcel.name))]), _vm._v(" "), _c("i", {
+    staticClass: "fa-solid fa-circle-xmark mx-2 z-0",
+    attrs: {
+      "data-bs-toggle": "tooltip",
+      "data-bs-placement": "top",
+      "data-bs-title": "Remover archivo"
+    },
+    on: {
+      click: _vm.remove
+    }
+  })]), _vm._v(" "), _c("small", [_vm._v(_vm._s(_vm.fileExcel.size / 1000) + " kb")])])])])], 1)]), _vm._v(" "), _c("transition", {
+    attrs: {
+      name: "fade"
+    }
+  }, [_vm.loaded ? _c("div", {
     staticClass: "col-11 d-flex flex-column"
   }, [_c("div", {
     staticClass: "table-responsive"
   }, [_c("table", {
     staticClass: "table table-hover table-bordered table-sm mt-4 align-middle"
-  }, [_vm._m(0), _vm._v(" "), _c("tbody", {
-    staticClass: "table-group-divider"
-  }, _vm._l(_vm.items, function (registro) {
-    return _c("tr", {
-      key: registro.idEmpleado
-    }, [_c("td", {
-      attrs: {
-        scope: "row"
-      }
-    }, [_vm._v(_vm._s(registro.idEmpleado))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(registro.nombre))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(registro.fecha))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(registro.sueldo))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(registro.diurnas))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(registro.nocturnas))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(registro.diurnasDescanso))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(registro.nocturnasDescanso))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(registro.diurnasAsueto))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(registro.nocturnasAsueto))])]);
-  }), 0)])])])]);
-};
-var staticRenderFns = [function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("thead", {
-    staticClass: "text-center bg-primary text-white"
+  }, [_c("thead", {
+    staticClass: "text-center bg-primary text-white align-middle"
   }, [_c("th", {
     attrs: {
       scope: "col"
@@ -6596,6 +6685,10 @@ var staticRenderFns = [function () {
       scope: "col"
     }
   }, [_vm._v("Fecha")]), _vm._v(" "), _c("th", {
+    attrs: {
+      scope: "col"
+    }
+  }, [_vm._v("Sueldo")]), _vm._v(" "), _c("th", {
     attrs: {
       scope: "col"
     }
@@ -6619,8 +6712,19 @@ var staticRenderFns = [function () {
     attrs: {
       scope: "col"
     }
-  }, [_vm._v("Nocturnas Asueto")])]);
-}];
+  }, [_vm._v("Nocturnas Asueto")])]), _vm._v(" "), _c("tbody", {
+    staticClass: "text-center"
+  }, _vm._l(_vm.items, function (registro) {
+    return _c("tr", {
+      key: registro.idEmpleado
+    }, [_c("td", {
+      attrs: {
+        scope: "row"
+      }
+    }, [_vm._v(_vm._s(registro.idEmpleado))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(registro.nombre))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(registro.fecha))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm._f("toCurrency")(registro.sueldo)))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(registro.diurnas))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(registro.nocturnas))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(registro.diurnasDescanso))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(registro.nocturnasDescanso))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(registro.diurnasAsueto))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(registro.nocturnasAsueto))])]);
+  }), 0)])])]) : _vm._e()])], 1);
+};
+var staticRenderFns = [];
 render._withStripped = true;
 
 
@@ -8102,7 +8206,18 @@ var render = function render() {
     staticClass: "card mt-3 mb-3 borderCircle bg-white"
   }, [_c("div", {
     staticClass: "card-body"
-  }, [_c("form", [_c("h4", {
+  }, [_c("form", {
+    staticClass: "needs-validation",
+    attrs: {
+      novalidate: ""
+    },
+    on: {
+      submit: function submit($event) {
+        $event.preventDefault();
+        return _vm.registrar.apply(null, arguments);
+      }
+    }
+  }, [_c("h4", {
     staticClass: "alert-heading"
   }, [_vm._v("Datos generales")]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("div", {
     staticClass: "d-flex flex-row justify-content-between gap-2"
@@ -8134,7 +8249,9 @@ var render = function render() {
         _vm.$set(_vm.usuario, "nombres", $event.target.value);
       }
     }
-  })]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _c("div", {
+    staticClass: "invalid-feedback"
+  }, [_vm._v("\n                                Ingrese nombre\n                            ")])]), _vm._v(" "), _c("div", {
     staticClass: "form-group col-6"
   }, [_c("label", {
     attrs: {
@@ -8480,15 +8597,15 @@ var render = function render() {
   }, [_c("button", {
     staticClass: "btn btn-primary",
     attrs: {
-      type: "button"
-    },
-    on: {
-      click: _vm.registrar
+      type: "submit"
     }
   }, [_vm._v("\n                            Guardar\n                        ")]), _vm._v(" "), _c("button", {
     staticClass: "btn btn-light mx-3",
     attrs: {
       type: "button"
+    },
+    on: {
+      click: _vm.cancelar
     }
   }, [_vm._v("\n                            Cancelar\n                        ")])])])])])])]);
 };
@@ -13132,7 +13249,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.dropdrag-zone{\n    min-height: 150px;\n    outline: 2px dashed gray;\n    cursor: pointer;\n    color:dimgray;\n}\n.input-file{\n    opacity: 0;\n    width: 75%;\n    height: 150px;\n    cursor: pointer;\n    position: absolute;\n}\n", ""]);
+exports.push([module.i, "\n.dropdrag-zone{\n    min-height: 150px;\n    outline: 2px dashed gray;\n    cursor: pointer;\n    color:dimgray;\n}\n.input-file{\n    opacity: 0;\n    width: 70%;\n    height: 150px;\n    cursor: pointer;\n    position: absolute;\n}\nthead th:nth-child(2), tr td:nth-child(2) {\n    width: 25%;\n}\nthead th:nth-child(4), tr td:nth-child(4) {\n    width: 6%;\n}\nthead th:nth-child(5), tr td:nth-child(5) {\n    width: 6%;\n}\nthead th:nth-child(6), tr td:nth-child(6) {\n    width: 8%;\n}\n.fade-enter-active .fade-leave-active{\n    transition: opacity .5s;\n}\n.fade-enter .fade-leave-to{\n    opacity: 0;\n}\n.slide-fade-enter-active{\n    transition: all .3s ease;\n}\n.slide-fade-leave-active{\n    transition: all .8s cubic-bezier(1.0,0.5,0.8,1.0);\n}\n.slide-fade-enter .slide-fade-leave-to{\n    transform: translateX(10px);\n    opacity: 0;\n}\n\n\n", ""]);
 
 // exports
 
@@ -89534,7 +89651,9 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]);
 Vue.use(v_calendar__WEBPACK_IMPORTED_MODULE_2___default.a);
 Vue.use(v_mask__WEBPACK_IMPORTED_MODULE_3__["default"]);
-var options = {};
+var options = {
+  transition: "Vue-Toastification_fade"
+};
 Vue.use(vue_toastification__WEBPACK_IMPORTED_MODULE_1__["default"], options);
 var routes = [{
   path: '/',
@@ -89576,6 +89695,16 @@ var routes = [{
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]({
   routes: routes,
   mode: "hash"
+});
+Vue.filter('toCurrency', function (value) {
+  if (typeof value !== "number") {
+    return value;
+  }
+  var formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  });
+  return formatter.format(value);
 });
 var app = new Vue({
   router: router

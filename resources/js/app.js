@@ -41,7 +41,7 @@ Vue.use(VCalendar);
 Vue.use(VueMask);
 
 const options = {
-
+    transition: "Vue-Toastification_fade"
 };
 
 Vue.use(Toast, options);
@@ -101,6 +101,17 @@ const router = new VueRouter({
     routes: routes,
     mode: "hash"
 })
+
+Vue.filter('toCurrency', function (value) {
+    if (typeof value !== "number") {
+        return value;
+    }
+    var formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+    });
+    return formatter.format(value);
+});
 
 const app = new Vue({
     router

@@ -4,13 +4,16 @@
             <h1 class="text-center">Registro de Empleado</h1>
             <div class="card mt-3 mb-3 borderCircle bg-white">
                 <div class="card-body">
-                    <form>
+                    <form class="needs-validation" novalidate @submit.prevent="registrar">
                         <h4 class="alert-heading">Datos generales</h4>
                         <hr>
                         <div class="d-flex flex-row justify-content-between gap-2">
                             <div class="form-group col-5">
                                 <label for="name">Nombre</label>
                                 <input id="name" type="text" class="form-control" v-model="usuario.nombres" required>
+                                <div class="invalid-feedback">
+                                    Ingrese nombre
+                                </div>
                             </div>
                             <div class="form-group col-6">
                                 <label for="last_name">Apellido</label>
@@ -113,10 +116,10 @@
                             </table>
                         </div>
                         <div class="form-group col-12 d-flex flex-row justify-content-start">
-                            <button type="button" class="btn btn-primary" @click="registrar">
+                            <button type="submit" class="btn btn-primary">
                                 Guardar
                             </button>
-                            <button type="button" class="btn btn-light mx-3">
+                            <button type="button" class="btn btn-light mx-3" @click="cancelar">
                                 Cancelar
                             </button>
                         </div>
@@ -161,6 +164,7 @@ export default {
             axios.post('empleados/crear', this.usuario, {
                 headers: { 'Content-type': 'application/json' }
             }).then(response => {
+                this.cancelar();
                 this.$toast.success(response.data.message, {
                     timeout: 3000,
                     position: 'top-right',
@@ -201,6 +205,18 @@ export default {
         },
         selectHorario(id) {
             this.usuario.horario_id = id;
+        },
+        cancelar() {
+            this.usuario.nombres = '';
+            this.usuario.apellidos = '';
+            this.usuario.email = '';
+            this.usuario.area_id = 0;
+            this.usuario.cargo = '';
+            this.usuario.empresa = '';
+            this.usuario.dui = '';
+            this.usuario.horario_id = 0;
+            this.usuario.nombre_persona = '';
+            this.usuario.numero_emergencia = '';
         }
 
     }

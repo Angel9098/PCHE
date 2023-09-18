@@ -110,7 +110,7 @@
                     <a  class="my-4 text-uppercase"  href="?#/dashboard"><i class="fa-solid fa-house text-white"></i> </a>
                 </li>
                 <li class="li my-4">
-                    <a class="my-4 text-uppercase"  href="?#/"><i class="fa-solid fa-circle-plus  text-white"></i> </a>
+                    <a class="my-4 text-uppercase"  href="?#/registro"><i class="fa-solid fa-circle-plus  text-white"></i> </a>
                 </li>
                 <li class="li my-4">
                     <a  class="my-4 text-uppercase"  href="?#/importacionhoras"><i class="fa-solid fa-circle-plus  text-white"></i> </a>
@@ -128,7 +128,7 @@
                     <a class="my-4 text-uppercase"  href="?#/historialhoras"><i class="fa-brands fa-searchengin text-white"></i> </a>
                 </li>
                 <li class="li my-4">
-                    <a class="my-4 text-uppercase" @click="cerrarSesion" href="?#/historialhoras"><i class="fa-regular fa-circle-xmark text-white"></i> </a>
+                    <a class="my-4 text-uppercase" @click="cerrarSesion" ><i class="fa-regular fa-circle-xmark text-white"></i> </a>
                 </li>
             </ul>
         </nav>
@@ -136,13 +136,20 @@
   </div>
 </template>
 <style>
+.navbar {
+    position: relative;
+    z-index: 1200;
+}
 .flexMenu {
     margin: 0%;
     width: 40px;
-    height: 100vh;
+    height: 100%;
     display: grid;
+    position: relative;
     justify-content: center;
     align-items: center;
+    z-index: 1200;
+    
 }
 .ul .li {
     list-style: none;
