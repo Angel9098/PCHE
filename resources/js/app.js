@@ -90,8 +90,11 @@ const routes =[
     {
         path: '/calendarios',
         component: require('./components/CalendarioComponent.vue').default
+    },
+    {
+        path: '/empleados',
+        component: require('./components/EmpleadosListComponent.vue').default
     }
-
 ]
 
 const router = new VueRouter({
