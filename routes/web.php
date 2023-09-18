@@ -42,7 +42,7 @@ Route::get('horarios/consulta', 'HorarioController@consultaDehorarioPorEmpleado'
 Route::get('empleados', 'EmpleadoController@allempleados')->name('empleados');
 Route::post('empleados/save', 'EmpleadoController@store')->name('empleados_save');
 Route::delete('empleados/eliminar', 'EmpleadoController@eliminarEmpleados')->name('empleadosEliminar');
-Route::get('empleados/busqueda', 'EmpleadoController@empleadosBusquedaNombre')->name('empleadosBusqueda');
+Route::post('empleados/busqueda', 'EmpleadoController@empleadosBusquedaNombre')->name('empleadosBusqueda');
 Route::put('empleados/actualizar', 'EmpleadoController@actualizarEmpleados')->name('empleadosActualizar');
 Route::post('empleados/crear', 'EmpleadoController@crearEmpleado')->name('empleadoCrear');
 Route::get('empleados/busqueda/{nombre}', 'EmpleadoController@empleadosBusquedaNombre')->name('empleadosBusqueda');
@@ -50,6 +50,7 @@ Route::get('empleado_dui', 'EmpleadoController@empleadoByDui')->name('bucarEmple
 Route::post('actualizarcontra', 'EmpleadoController@actualizarContrasenia')->name('actualizarpass');
 Route::get('empleados/busqueda/empresa', 'EmpleadoController@busquedaEmpleadoPorEmpresa')->name('empleadosBusquedaEmpresa');
 Route::get('empleadobyid', 'EmpleadoController@empleadoById');
+Route::get('empleados_area', 'EmpleadoController@allEmpleadosAreaEmpresa')->name('empleadosbyAreaEmpresa');
 
 
 Route::post('horas_extra/crear', 'HoraExtraCotroller@createHoraExtra')->name('horas_extra');
