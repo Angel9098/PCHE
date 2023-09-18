@@ -199,7 +199,7 @@ class EmpleadoController extends Controller
     }
 
     public function allEmpleadosAreaEmpresa(){
-        $empleados = Empleado::with("area.empresa")->get();
+        $empleados = Empleado::with("area.empresa")->paginate(5);
 
         return response()->json($empleados);
     }
