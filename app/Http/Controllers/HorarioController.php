@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Horario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HorarioController extends Controller
 {

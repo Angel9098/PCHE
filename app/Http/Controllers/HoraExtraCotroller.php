@@ -9,6 +9,14 @@ class HoraExtraCotroller extends Controller
 {
     public function createHoraExtra(Request $request){
 
+        $id_empleado = $request->input('id_empleado');
+        $id_empleado = $request->input('lunes');
+        $id_empleado = $request->input('martes');
+        $id_empleado = $request->input('miercoles');
+        $id_empleado = $request->input('jueves');
+        $id_empleado = $request->input('viernes');
+        $id_empleado = $request->input('sabado');
+        $id_empleado = $request->input('domingo');
 
 
 

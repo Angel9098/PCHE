@@ -29,7 +29,9 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::guard('web')->attempt($credentials)) {
+
             $user = Auth::user(); // Obtener el usuario autenticado
+
             return response()->json(['message' => 'Inicio de sesión exitoso', 'Usuario' => $user], 200);
         }
 
@@ -87,5 +89,5 @@ class AuthController extends Controller
         $usuario->imagen = $nombreImagen;
 
         return response()->json(['message' =>  $usuario], 200);
-    }
+   }
 }
