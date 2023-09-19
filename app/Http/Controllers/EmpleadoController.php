@@ -198,9 +198,65 @@ class EmpleadoController extends Controller
         }
     }
 
-    public function allEmpleadosAreaEmpresa(){
+    public function allEmpleadosAreaEmpresa()
+    {
         $empleados = Empleado::with("area.empresa")->paginate(5);
 
         return response()->json($empleados);
+    }
+
+    public function bEmpleadoF(Request $request)
+    {
+        try {
+
+            $nombres = $request->input('nombre');
+            $apellidos = $request->input('apellido');
+            $dui = $request->input('dui');
+            $cargo = $request->input('cargo');
+            $email = $request->input('email');
+            $idEmpresa = $request->input('selectedOption');
+
+
+            if (empty($nombres) && empty($apellidos) && empty($dui) && empty($email) && empty($cargo) && empty($idEmpresa)) {
+                return response()->json(['message' => 'datos vienen vacios'], 500);
+            }
+
+            $empleados = Empleado::with('area.empresa')
+                ->where(function ($query) use ($nombres) {
+                    if (!empty($nombres)) {
+                        $query->where('nombres', 'LIKE', "%$nombres%");
+                    }
+                })
+                ->where(function ($query) use ($apellidos) {
+                    if (!empty($apellidos)) {
+                        $query->where('apellidos', 'LIKE', "%$apellidos%");
+                    }
+                })
+                ->where(function ($query) use ($dui) {
+                    if (!empty($dui)) {
+                        $query->where('dui', '=', $dui);
+                    }
+                })
+                ->where(function ($query) use ($email) {
+                    if (!empty($email)) {
+                        $query->where('email', 'LIKE', "%$email%");
+                    }
+                })
+                ->where(function ($query) use ($cargo) {
+                    if (!empty($cargo)) {
+                        $query->where('cargo', 'LIKE', "%$cargo%");
+                    }
+                })
+                ->whereHas('area.empresa', function ($query) use ($idEmpresa) {
+                    if (!empty($idEmpresa)) {
+                        $query->where('id', $idEmpresa);
+                    }
+                })
+                ->get();
+
+            return response()->json($empleados);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'ocurrio un error al generar la busqueda'], 500);
+        }
     }
 }

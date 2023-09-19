@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex justify-content-center align-items-center" style="margin-top: 15%;">
+    <div class="w-100 d-flex justify-content-center align-items-center" style="margin-top: 15%;">
 <!--         <div class="d-flex flex-column col-5 paddingOff" style="background-color: #1b4d76;">
             <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                 <ol class="carousel-indicators">
@@ -50,17 +50,17 @@ import axios from 'axios'
     export default {
         data() {
             return {
-            objLogin: { email: '', password: '' },
-            anchoPantalla: 0
-
+                objLogin: { email: '', password: '' },
+            
             }
         },
         mounted() {
 
         },
-        computed(){
-            this.anchoPantalla = window.screen.width;
-            console.log(this.anchoPantalla)
+        computed: {
+            anchoPantalla() {
+                return window.screen.width;
+            }
         },
         methods: {
             Ingresar(){

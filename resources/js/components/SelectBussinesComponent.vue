@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex justify-content-center align-items-center">
+  <div class="w-100 d-flex justify-content-center align-items-center">
     <div class="bg-white d-flex flex-column justify-content-center align-items-center w-50" style="margin-top: 8%">
       <!-- Imagen centrada -->
       <div class="center-image" style="margin-bottom: 5%">

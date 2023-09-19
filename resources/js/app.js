@@ -16,6 +16,7 @@ import VueMask from 'v-mask';
 
 import "vue-toastification/dist/index.css"
 
+import MenuFlotanteComponent from './components/MenuFlotanteComponent.vue';
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -28,7 +29,7 @@ import "vue-toastification/dist/index.css"
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 //Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-//Vue.component('login-component', require('./components/LoginComponent.vue').default);
+Vue.component('login-component', require('./components/LoginComponent.vue').default);
 //Vue.component('dashboard-component', require('./components/DashboardComponent.vue').default);
 
 /**
@@ -46,41 +47,41 @@ const options = {
 
 Vue.use(Toast, options);
 
-const routes =[
+const routes = [
     {
-        path:'/',
+        path: '/',
         component: require('./components/LoginComponent.vue').default
     },
     {
-        path:'/dashboard',
+        path: '/dashboard',
         component: require('./components/DashboardComponent.vue').default
     },
     {
-        path:'/business',
+        path: '/business',
         component: require('./components/SelectBussinesComponent.vue').default
     },
     {
-        path:'/registro',
+        path: '/registro',
         component: require('./components/RegistroUsuarioComponent.vue').default
     },
     {
-        path:'/activacionusuario',
+        path: '/activacionusuario',
         component: require('./components/ActivacionUsuarioComponent.vue').default
     },
     {
-        path:'/editarperfil',
+        path: '/editarperfil',
         component: require('./components/EditarPerfilComponent.vue').default
     },
     {
-        path:'/editarperfilusuario',
+        path: '/editarperfilusuario',
         component: require('./components/EditarPerfilUsuarioComponent.vue').default
     },
     {
-        path:'/menu',
+        path: '/menu',
         component: require('./components/MenuFlotanteComponent.vue').default
     },
     {
-        path:'/historialhoras',
+        path: '/historialhoras',
         component: require('./components/HistorialHorasComponent.vue').default
     },
     {
@@ -95,6 +96,12 @@ const routes =[
         path: '/empleados',
         component: require('./components/EmpleadosListComponent.vue').default
     }
+    ,
+    {
+        path: '/empresas',
+        component: require('./components/EmpresasComponent.vue').default
+    }
+
 ]
 
 const router = new VueRouter({
@@ -114,5 +121,10 @@ Vue.filter('toCurrency', function (value) {
 });
 
 const app = new Vue({
+    render:h=>h(MenuFlotanteComponent),
     router
 }).$mount('#app');
+
+// router.beforeEach((to,from,next) => {
+
+// })

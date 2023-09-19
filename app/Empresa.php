@@ -10,6 +10,7 @@ class Empresa extends Model
         'nombre',
         'direccion',
         'rubro',
+        'imagen'
     ];
 
     public function areas()

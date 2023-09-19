@@ -20,36 +20,39 @@
                     <div id="filters-collapseOne" class="accordion-collapse collapse" aria-labelledby="filters-headingOne">
                         <div class="accordion-body">
                             <div class="row">
-                                <div>
+                                <div class="col-2">
                                     <input v-model="filtros.nombre" @input="debounceSearchEmpleado" type="text"
                                         placeholder="Nombre" class="form-control mb-2" />
 
                                 </div>
-                                <div>
+                                <div class="col-2">
+                                    <input v-model="filtros.apellido" @input="debounceSearchEmpleado" type="text"
+                                        placeholder="Apellido" class="form-control mb-2" />
+
+                                </div>
+                                <div class="col-2">
                                     <input v-model="filtros.dui" @input="debounceSearchEmpleado" type="text"
                                         placeholder="DUI" class="form-control mb-2" />
                                 </div>
-                                <div>
+                                <div class="col-2">
                                     <input v-model="filtros.cargo" @input="debounceSearchEmpleado" type="text"
                                         placeholder="Cargo" class="form-control mb-2" />
                                 </div>
-                                <div>
+                                <div class="col-2">
                                     <input v-model="filtros.email" @input="debounceSearchEmpleado" type="text"
                                         placeholder="Email" class="form-control mb-2" />
                                 </div>
-
-                                <div class="form-group d-flex justify-content-center">
-                                    <select v-model="filtros.selectedOption" @input="debounceSearchEmpleado"
-                                        class="form-select">
-                                        <option value="" disabled selected>Seleccione empresa</option>
-                                        <option v-for="empresa in empresas" :key="empresa.id" :value="empresa.id">
-                                            {{ empresa.id }} - {{ empresa.nombre }}
-                                        </option>
-                                    </select>
+                                <div class="col-2">
+                                    <div class="form-group d-flex" style="width: 100%;">
+                                        <select v-model="filtros.selectedOption" @input="debounceSearchEmpleado"
+                                            class="form-select">
+                                            <option value="" disabled selected>Empresa</option>
+                                            <option v-for="empresa in empresas" :key="empresa.id" :value="empresa.id">
+                                                {{ empresa.id }} - {{ empresa.nombre }}
+                                            </option>
+                                        </select>
+                                    </div>
                                 </div>
-
-
-
                             </div>
                         </div>
                     </div>
@@ -69,8 +72,7 @@
                         <th scope="col">Email</th>
                         <th scope="col">Area</th>
                         <th scope="col">Empresa</th>
-                        <th scope="col">Acciones</th>
-
+                        <th scope="col" class="actions-header">Acciones</th>
                     </tr>
                 </thead>
                 <tbody v-if="empleados.length > 0">
@@ -82,8 +84,8 @@
                         <td>{{ empleado.email }}</td>
                         <td>{{ empleado.area.nombre }}</td>
                         <td>{{ empleado.area.empresa.nombre }}</td>
-                        <td>
-                            <button @click="seleccionar" class="btn btn-primary mt-2" type="button">
+                        <td class="actions-cell">
+                            <button @click="seleccionar" class="btn btn-primary" type="button">
                                 Editar perfil
                             </button>
                         </td>
@@ -91,13 +93,12 @@
                 </tbody>
                 <tbody v-else>
                     <tr>
-                        <td colspan="3" class="text-center">
+                        <td colspan="8" class="text-center">
                             No hay empleados para mostrar
                         </td>
                     </tr>
                 </tbody>
             </table>
-
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
                     <li class="page-item" :class="{ disabled: currentPage === 1 }">
@@ -129,6 +130,7 @@ export default {
             empresas: [],
             filtros: {
                 nombre: "",
+                apellido: "",
                 dui: "",
                 cargo: "",
                 email: "",
