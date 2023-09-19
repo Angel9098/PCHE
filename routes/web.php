@@ -28,7 +28,8 @@ Route::post('registrarse', 'AuthController@register')->name('registrarse');
 //Rutas para empresa
 Route::post('empresa', 'EmpresaController@create')->name('createdata');
 Route::get('empresas', 'EmpresaController@allempresas')->name('empresas');
-Route::delete('empresas', 'EmpresaController@deleteEmpresa')->name('empresas');
+Route::delete('empresas', 'EmpresaController@deleteEmpresa');
+Route::get('empresabyid', 'EmpresaController@empresaById');
 
 
 //Rutas para area

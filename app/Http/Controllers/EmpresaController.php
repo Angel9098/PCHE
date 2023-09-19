@@ -41,6 +41,19 @@ class EmpresaController extends Controller
         }
     }
 
+    public function empresaById(Request $request)
+    {
+        try {
+            $id = $request->input('id');
+
+            $empresa = Empresa::where('id', $id)->get();
+
+            return response()->json([$empresa], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'La empresa no ha podido actualizarce'], 500);
+        }
+    }
+
 
     public function create(Request $request)
     {
