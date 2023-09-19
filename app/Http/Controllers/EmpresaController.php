@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Empresa;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
 
@@ -15,22 +16,25 @@ class EmpresaController extends Controller
         return response()->json($empresas);
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        // Crear una nueva empresa
-        $empresa = Empresa::create([
-            'nombre' => 'Mi Empresa',
-            'direccion' => '123 Calle Principal',
-            'rubro' => 'Tecnología',
-        ]);
+        try {
+            $imagen = $request->file('imagen');
+            $nombreImagen = uniqid() . '.' . $imagen->getClientOriginalExtension();
+            $rutaImagen = $imagen->storeAs('public/imagenes', $nombreImagen);
 
-        // Agregar áreas a la empresa
-        $empresa->areas()->create([
-            'nombre' => 'Área de Desarrollo',
-        ]);
+            $empresa = new Empresa([
+                'nombre' => $request->input('descripcion'),
+                'direccion' => $request->input('fecha_corte'),
+                'direccion' => $request->input('rubro'),
+                'imagen' => $rutaImagen
+            ]);
 
-        $empresa->areas()->create([
-            'nombre' => 'Área de Ventas',
-        ]);
+            $empresa->save();
+
+            return response()->json(["message" => 'Empresa agregada con exito'], 201);
+        } catch (QueryException $ex) {
+            return response()->json(["message" => 'Error al agregar empresa: ' . $ex->getMessage()], 500);
+        }
     }
 }
