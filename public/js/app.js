@@ -7850,15 +7850,14 @@ var render = function render() {
     staticClass: "li my-4"
   }, [_c("a", {
     staticClass: "my-4 text-uppercase",
-    attrs: {
-      href: "?#/historialhoras"
-    },
     on: {
       click: _vm.cerrarSesion
     }
   }, [_c("i", {
     staticClass: "fa-regular fa-circle-xmark text-white"
-  })])])])])])]);
+  })])])])])]), _vm._v(" "), _c("div", {
+    staticClass: "container"
+  }, [_vm._v("\n ffffffff\n  ")])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
@@ -7984,7 +7983,7 @@ var staticRenderFns = [function () {
   }, [_c("a", {
     staticClass: "my-4 text-uppercase",
     attrs: {
-      href: "?#/"
+      href: "?#/registro"
     }
   }, [_c("i", {
     staticClass: "fa-solid fa-circle-plus text-white"
@@ -13306,7 +13305,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.content-container[data-v-5a9dc682] {\n    display: flex;\n    justify-content: space-around;\n    align-items: center;\n    width: 100%;\n    max-width: 800px;\n    margin: 0 auto;\n}\n.textbox[data-v-5a9dc682],\n.vdp-datepicker[data-v-5a9dc682] {\n    flex: 1;\n    padding: 10px;\n    margin: 0 10px;\n}\n.borderCircle[data-v-5a9dc682] {\n    border-radius: 20px;\n    border-color: white;\n}\n", ""]);
+exports.push([module.i, "\n.content-container[data-v-5a9dc682] {\r\n    display: flex;\r\n    justify-content: space-around;\r\n    align-items: center;\r\n    width: 100%;\r\n    max-width: 800px;\r\n    margin: 0 auto;\n}\n.textbox[data-v-5a9dc682],\r\n.vdp-datepicker[data-v-5a9dc682] {\r\n    flex: 1;\r\n    padding: 10px;\r\n    margin: 0 10px;\n}\n.borderCircle[data-v-5a9dc682] {\r\n    border-radius: 20px;\r\n    border-color: white;\n}\r\n", ""]);
 
 // exports
 
@@ -13363,7 +13362,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.flexMenu {\r\n    margin: 0%;\r\n    width: 40px;\r\n    height: 100vh;\r\n    display: grid;\r\n    justify-content: center;\r\n    align-items: center;\n}\n.ul .li {\r\n    list-style: none;\n}\nol, ul, dl {\r\n    margin-top: 20px;\r\n    margin-bottom: 1rem;\n}\nol, ul {\r\n    padding-left: 0rem;\n}\r\n\r\n\r\n\r\n", ""]);
+exports.push([module.i, "\n.flexMenu {\r\n    margin: 0%;\r\n    width: 40px;\r\n    height: 100vh;\r\n    display: grid;\r\n\r\n    justify-content: center;\r\n    align-items: center;\r\n    z-index: 1200;\n}\n.ul .li {\r\n    list-style: none;\n}\nol, ul, dl {\r\n    margin-top: 20px;\r\n    margin-bottom: 1rem;\n}\nol, ul {\r\n    padding-left: 0rem;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -90856,8 +90855,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\CTGXGJ3\Desktop\ProyectoPCHE\PCHE\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\CTGXGJ3\Desktop\ProyectoPCHE\PCHE\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\laragon\www\PCHE-RENOVADO\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\laragon\www\PCHE-RENOVADO\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

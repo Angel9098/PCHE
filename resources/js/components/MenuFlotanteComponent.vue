@@ -104,7 +104,8 @@
       </div>
     </nav>
     <div>
-        <nav class="flexMenu bg-primary">
+        <div>
+            <nav class="flexMenu bg-primary">
             <ul class="ul">
                 <li class="li my-4">
                     <a  class="my-4 text-uppercase"  href="?#/dashboard"><i class="fa-solid fa-house text-white"></i> </a>
@@ -132,24 +133,23 @@
                 </li>
             </ul>
         </nav>
+        </div>
+        <div>
+
+        </div>
     </div>
   </div>
 </template>
 <style>
-.navbar {
-    position: relative;
-    z-index: 1200;
-}
+
 .flexMenu {
     margin: 0%;
     width: 40px;
-    height: 100%;
+    height: 100vh;
     display: grid;
-    position: relative;
     justify-content: center;
     align-items: center;
     z-index: 1200;
-    
 }
 .ul .li {
     list-style: none;
@@ -162,8 +162,6 @@ ol, ul, dl {
 ol, ul {
     padding-left: 0rem;
 }
-
-
 
 </style>
 <script>
