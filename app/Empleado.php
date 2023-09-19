@@ -25,6 +25,6 @@ class Empleado extends Model
     }
 
     public function horasExtra(){
-        return $this->belongsTo(HoraExtra::class);
+        return $this->hasMany(HoraExtra::class);
     }
 }

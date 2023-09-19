@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Empleado;
 use App\HoraExtra;
 use Illuminate\Http\Request;
 
@@ -37,7 +38,9 @@ class HoraExtraCotroller extends Controller
     }
 
     public function allHoras(){
-        $horas = HoraExtra::all();
+
+        $horas = HoraExtra::with('empleados.horas_extra')->get();
+
         return response()->json($horas);
     }
 }

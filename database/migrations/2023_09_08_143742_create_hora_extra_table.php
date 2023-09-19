@@ -20,9 +20,11 @@ class CreateHoraExtraTable extends Migration
             $table->integer('nocturnas');
             $table->integer('diurnas_descanso');
             $table->integer('nocturnas_descanso');
-            $table->integer('diurnas_asuento');
-            $table->integer('nocturnas_asuento');
+            $table->integer('diurnas_asueto');
+            $table->integer('nocturnas_asueto');
+            $table->integer('total_efectivo');
             $table->integer('total');
+            $table->date('fecha_registro');
             $table->timestamps();
 
             $table->foreign('id_empleado')->references('id')->on('empleados');
