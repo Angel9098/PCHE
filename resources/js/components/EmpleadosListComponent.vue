@@ -151,7 +151,7 @@ export default {
         }, 300),
         async searchEmpleado() {
             try {
-                const response = await axios.post("/empleados/busqueda", this.filtros);
+                const response = await axios.post("/empleados/filtro/busqueda", this.filtros);
                 this.empleados = response.data;
             } catch (error) {
                 console.error("Error al buscar empleados:", error.response ? error.response.data : error.message);

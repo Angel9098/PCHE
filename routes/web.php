@@ -30,7 +30,7 @@ Route::post('empresa', 'EmpresaController@create')->name('createdata');
 Route::get('empresas', 'EmpresaController@allempresas')->name('empresas');
 Route::delete('empresas', 'EmpresaController@deleteEmpresa');
 Route::get('empresabyid', 'EmpresaController@empresaById');
-
+Route::get('empleados/filtro/busqueda', 'EmpleadoController@bEmpleadoF')->name('empleadosBusquedafiltro');
 
 //Rutas para area
 Route::get('areas', 'AreaController@index')->name('areas');
