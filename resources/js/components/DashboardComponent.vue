@@ -1,9 +1,7 @@
 <template>
     <div>
-        <menu-flotante-component-vue></menu-flotante-component-vue>
-     <main class="container">
-                
-         <h1 class="text-center my-4">Bienvenido  {{ nombre }}</h1>
+     <main class="container">       
+         <h1 class="text-center my-4">Bienvenido  {{ usuario.nombres }}</h1>
      </main>
     </div>
 

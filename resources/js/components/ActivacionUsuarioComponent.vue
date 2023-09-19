@@ -87,7 +87,7 @@
                                 <label for="correo">Rol</label>
                             </div>
                             <div class="col-9">
-                                <select v-model="rol" class="form-control">
+                                <select v-model="rol" class="form-select">
                                     <option value="administrador">Administrador</option>
                                     <option value="jefe">Jefe</option>
                                 </select>

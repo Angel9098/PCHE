@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex justify-content-center">
+    <div class="w-100 d-flex justify-content-center">
         <div class="col-9 mt-3">
             <h1 class="text-center">Registro de Empleado</h1>
             <div class="card mt-3 mb-3 borderCircle bg-white">

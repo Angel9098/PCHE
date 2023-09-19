@@ -1,9 +1,9 @@
 <template>
-    <div class="d-flex flex-column justify-content-center align-items-center">
+    <div class="w-100 d-flex flex-column justify-content-center align-items-center">
         <div class="w-75 d-flex flex-column justify-content-center align-items-center">
             <h1>Registro de Horas Extras</h1>
             <div id="drop-zone" class="col-11 d-flex flex-column justify-content-center align-items-center bg-light rounded-3 dropdrag-zone mt-5" @dragover="dragOver" @dragleave="dragLeave" @drop="drop">
-                <input id="archivo" type="file" ref="file" class="input-file" :accept="'application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'" @change="importarExcel">
+                <input id="archivo" type="file" ref="file" class="input-file" :accept="'application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel.sheet.macroEnabled.12'" @change="importarExcel">
                 <transition name="slide-fade">
                     <div v-if="loaded == false" class="d-flex flex-column justify-content-center align-items-center">
                         <i class="fa-solid fa-file-excel text-primary" :style="'font-size: 60px'"></i>
@@ -90,7 +90,7 @@ export default {
                     icon: true
                 });
             } else {
-                if (this.fileExcel.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+                if (this.fileExcel.type !== '') {
                     this.loaded = false;
                     this.$toast.error("Archivo Excel requerido", {
                         position: "top-right",

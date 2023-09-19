@@ -5221,7 +5221,7 @@ __webpack_require__.r(__webpack_exports__);
           icon: true
         });
       } else {
-        if (this.fileExcel.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+        if (this.fileExcel.type !== '') {
           this.loaded = false;
           this.$toast.error("Archivo Excel requerido", {
             position: "top-right",
@@ -5560,9 +5560,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      defaultImagen: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-      defaultBooleand: true,
-      file: File,
       empresas: [],
       data: {
         nombre: "",
@@ -5572,23 +5569,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       },
       nombreEmpresa: "",
       currentPage: 1,
-      lastPage: 1,
-      perfil: {
-        nombres: "",
-        imagen: ""
-      }
+      lastPage: 1
     };
   },
   created: function created() {
     this.fetchEmpresas();
   },
   methods: {
-    changesDefauld: function changesDefauld(event) {
-      this.defaultBooleand = false;
-      this.file = event.target.files[0];
-      var files = event.target.files[0];
-      this.perfil.imagen = URL.createObjectURL(files);
-    },
     dataGuardarEmpresa: function dataGuardarEmpresa() {
       var _this = this;
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
@@ -5624,13 +5611,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     eliminarEmpresa: function eliminarEmpresa(id) {
       var _this2 = this;
-      if (confirm("¿Estás seguro de que deseas eliminar esta empresa?")) {
-        axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("/empresas/".concat(id)).then(function () {
-          _this2.fetchEmpresas();
-        })["catch"](function (error) {
-          console.error("Error al eliminar empresa:", error);
-        });
-      }
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("/empresas/".concat(id)).then(function () {
+        _this2.fetchEmpresas();
+      })["catch"](function (error) {
+        console.error("Error al eliminar empresa:", error);
+      });
     },
     abrirModalAgregarEmpresa: function abrirModalAgregarEmpresa() {
       $("#modalAgregarEmpresa").modal("show");
@@ -5661,7 +5646,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       });
     },
     seleccionar: function seleccionar() {
-      this.$router.push("/editarperfil");
+      this.$router.push('/editarperfil');
     },
     changePage: function changePage(page) {
       this.currentPage = page;
@@ -5709,14 +5694,14 @@ __webpack_require__.r(__webpack_exports__);
       objLogin: {
         email: '',
         password: ''
-      },
-      anchoPantalla: 0
+      }
     };
   },
   mounted: function mounted() {},
-  computed: function computed() {
-    this.anchoPantalla = window.screen.width;
-    console.log(this.anchoPantalla);
+  computed: {
+    anchoPantalla: function anchoPantalla() {
+      return window.screen.width;
+    }
   },
   methods: {
     Ingresar: function Ingresar() {
@@ -5779,6 +5764,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.leerData();
+  },
+  computed: {
+    currentPath: function currentPath() {
+      return this.$route.path;
+    }
   },
   methods: {
     //empleadobyid
@@ -6269,7 +6259,7 @@ var render = function render() {
       value: _vm.rol,
       expression: "rol"
     }],
-    staticClass: "form-control",
+    staticClass: "form-select",
     on: {
       change: function change($event) {
         var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
@@ -6737,7 +6727,7 @@ var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
-    staticClass: "d-flex flex-column justify-content-center align-items-center"
+    staticClass: "w-100 d-flex flex-column justify-content-center align-items-center"
   }, [_c("div", {
     staticClass: "w-75 d-flex flex-column justify-content-center align-items-center"
   }, [_c("h1", [_vm._v("Registro de Horas Extras")]), _vm._v(" "), _c("div", {
@@ -6756,7 +6746,7 @@ var render = function render() {
     attrs: {
       id: "archivo",
       type: "file",
-      accept: "application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      accept: "application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel.sheet.macroEnabled.12"
     },
     on: {
       change: _vm.importarExcel
@@ -6879,11 +6869,11 @@ __webpack_require__.r(__webpack_exports__);
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("div", [_c("menu-flotante-component-vue"), _vm._v(" "), _c("main", {
+  return _c("div", [_c("main", {
     staticClass: "container"
   }, [_c("h1", {
     staticClass: "text-center my-4"
-  }, [_vm._v("Bienvenido  " + _vm._s(_vm.nombre))])])], 1);
+  }, [_vm._v("Bienvenido  " + _vm._s(_vm.usuario.nombres))])])]);
 };
 var staticRenderFns = [];
 render._withStripped = true;
@@ -7715,7 +7705,7 @@ var render = function render() {
     on: {
       click: _vm.abrirModalAgregarEmpresa
     }
-  }, [_vm._v("\n      Agregar Empresa\n    ")]), _vm._v(" "), _c("table", {
+  }, [_vm._v("Agregar Empresa")]), _vm._v(" "), _c("table", {
     staticClass: "table table-hover table-bordered mt-4"
   }, [_vm._m(1), _vm._v(" "), _vm.empresas.length > 0 ? _c("tbody", _vm._l(_vm.empresas, function (empresa) {
     return _c("tr", {
@@ -7741,7 +7731,7 @@ var render = function render() {
           return _vm.editarEmpresa(empresa);
         }
       }
-    }, [_vm._v("\n                Actualizar\n              ")]), _vm._v(" "), _c("button", {
+    }, [_vm._v("\n                                Actualizar\n                            ")]), _vm._v(" "), _c("button", {
       staticClass: "btn btn-danger custom-btn",
       attrs: {
         type: "button"
@@ -7751,7 +7741,7 @@ var render = function render() {
           return _vm.eliminarEmpresa(empresa.id);
         }
       }
-    }, [_vm._v("\n                Eliminar\n              ")])])])]);
+    }, [_vm._v("\n                                Eliminar\n                            ")])])])]);
   }), 0) : _c("tbody", [_vm._m(2)])]), _vm._v(" "), _c("nav", {
     attrs: {
       "aria-label": "Page navigation example"
@@ -7825,7 +7815,7 @@ var render = function render() {
       id: "modalAgregarEmpresa"
     }
   }, [_c("div", {
-    staticClass: "modal-dialog modal-lg"
+    staticClass: "modal-dialog"
   }, [_c("div", {
     staticClass: "modal-content"
   }, [_c("div", {
@@ -7846,43 +7836,10 @@ var render = function render() {
       "aria-hidden": "true"
     }
   }, [_vm._v("×")])])]), _vm._v(" "), _c("div", {
-    staticClass: "modal-body gridClass"
-  }, [_c("div", {
-    staticClass: "p-4"
-  }, [_c("picture", {
-    staticClass: "mb-3"
-  }, [_c("source", {
-    attrs: {
-      srcset: _vm.defaultBooleand ? _vm.defaultImagen : _vm.perfil.imagen,
-      type: "image"
-    }
-  }), _vm._v(" "), _c("img", {
-    staticClass: "img-fluid img-thumbnail cicle",
-    attrs: {
-      src: _vm.defaultBooleand ? _vm.defaultImagen : _vm.perfil.imagen,
-      alt: "..."
-    }
-  })])]), _vm._v(" "), _c("div", {
-    staticClass: "p-4"
+    staticClass: "modal-body"
   }, [_c("div", {
     staticClass: "form-group"
   }, [_c("div", {
-    staticClass: "form-group my-3"
-  }, [_c("label", {
-    attrs: {
-      "for": "changeIMG"
-    }
-  }, [_vm._v("CAMBIAR LA IMAGEN")]), _vm._v(" "), _c("input", {
-    staticClass: "form-control",
-    attrs: {
-      type: "file",
-      id: "changeIMG",
-      placeholder: "CAMBIAR LA IMAGEN"
-    },
-    on: {
-      change: _vm.changesDefauld
-    }
-  })]), _vm._v(" "), _c("div", {
     staticClass: "row",
     staticStyle: {
       "margin-bottom": "2%"
@@ -7963,7 +7920,7 @@ var render = function render() {
         _vm.$set(_vm.data, "rubro", $event.target.value);
       }
     }
-  })])])])])]), _vm._v(" "), _c("div", {
+  })])])])]), _vm._v(" "), _c("div", {
     staticClass: "modal-footer"
   }, [_c("button", {
     staticClass: "btn btn-secondary",
@@ -7974,7 +7931,7 @@ var render = function render() {
     on: {
       click: _vm.cerrarModalAgregarEmpresa
     }
-  }, [_vm._v("\n              Cancelar\n            ")]), _vm._v(" "), _c("button", {
+  }, [_vm._v("Cancelar")]), _vm._v(" "), _c("button", {
     staticClass: "btn btn-primary",
     attrs: {
       type: "button"
@@ -7982,7 +7939,7 @@ var render = function render() {
     on: {
       click: _vm.guardarEmpresa
     }
-  }, [_vm._v("\n              Guardar\n            ")])])])])])])]);
+  }, [_vm._v("Guardar")])])])])])])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
@@ -8036,7 +7993,7 @@ var staticRenderFns = [function () {
     attrs: {
       colspan: "8"
     }
-  }, [_vm._v("\n            No hay empresas para mostrar\n          ")])]);
+  }, [_vm._v("\n                        No hay empresas para mostrar\n                    ")])]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
@@ -8252,7 +8209,7 @@ var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
-    staticClass: "d-flex justify-content-center align-items-center",
+    staticClass: "w-100 d-flex justify-content-center align-items-center",
     staticStyle: {
       "margin-top": "15%"
     }
@@ -8364,8 +8321,15 @@ __webpack_require__.r(__webpack_exports__);
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("div", [_c("nav", {
-    staticClass: "navbar navbar-primary bg-primary fixed-top"
+  return _c("div", {
+    attrs: {
+      id: "app"
+    }
+  }, [_c("nav", {
+    staticClass: "navbar navbar-primary bg-primary position-static",
+    attrs: {
+      hidden: _vm.currentPath == "/" || _vm.currentPath == "/business"
+    }
   }, [_c("div", {
     staticClass: "container-fluid"
   }, [_vm._m(0), _vm._v(" "), _vm._m(1), _vm._v(" "), _c("div", {
@@ -8391,7 +8355,91 @@ var render = function render() {
     }
   })]), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body"
-  }, [_vm._m(2), _vm._v(" "), _c("button", {
+  }, [_c("ul", {
+    staticClass: "navbar-nav justify-content-end flex-grow-1 pe-3"
+  }, [_c("li", {
+    staticClass: "nav-item"
+  }, [_c("router-link", {
+    staticClass: "nav-link active text-white",
+    attrs: {
+      "aria-current": "page",
+      to: "/dashboard"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-house mr-3"
+  }), _vm._v(" Inicio")])], 1), _vm._v(" "), _c("li", {
+    staticClass: "nav-item"
+  }, [_c("router-link", {
+    staticClass: "nav-link text-white text-uppercase",
+    attrs: {
+      to: "/registro"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-circle-plus"
+  }), _vm._v(" Registrar empleados")])], 1), _vm._v(" "), _c("li", {
+    staticClass: "nav-item"
+  }, [_c("router-link", {
+    staticClass: "nav-link text-white text-uppercase",
+    attrs: {
+      to: "/importacionhoras"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-file-arrow-up"
+  }), _vm._v(" Agregar horas extras ")])], 1), _vm._v(" "), _c("li", {
+    staticClass: "nav-item"
+  }, [_c("router-link", {
+    staticClass: "nav-link text-white text-uppercase",
+    attrs: {
+      to: "/editarperfilusuario"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-user"
+  }), _vm._v(" Perfil ")])], 1), _vm._v(" "), _c("li", {
+    staticClass: "nav-item"
+  }, [_c("router-link", {
+    staticClass: "nav-link text-white text-uppercase",
+    attrs: {
+      to: "/empleados"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-users"
+  }), _vm._v(" Empleados")])], 1), _vm._v(" "), _c("li", {
+    staticClass: "nav-item"
+  }, [_c("router-link", {
+    staticClass: "nav-link text-white text-uppercase",
+    attrs: {
+      to: "/empresas"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-building"
+  }), _vm._v(" Empresas")])], 1), _vm._v(" "), _c("li", {
+    staticClass: "nav-item"
+  }, [_c("router-link", {
+    staticClass: "nav-link text-white text-uppercase",
+    attrs: {
+      to: "/activacionusuario"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-user-check"
+  }), _vm._v(" Activar Usuario")])], 1), _vm._v(" "), _c("li", {
+    staticClass: "nav-item"
+  }, [_c("router-link", {
+    staticClass: "nav-link text-white text-uppercase",
+    attrs: {
+      to: "/calendarios"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-calendar"
+  }), _vm._v(" Calendario")])], 1), _vm._v(" "), _c("li", {
+    staticClass: "nav-item"
+  }, [_c("router-link", {
+    staticClass: "nav-link text-white text-uppercase",
+    attrs: {
+      to: "/historialhoras"
+    }
+  }, [_c("i", {
+    staticClass: "fa-brands fa-searchengin"
+  }), _vm._v(" Historial horas extras")])], 1)]), _vm._v(" "), _c("button", {
     staticClass: "btn bg-black btn-primary text-uppercase btnGray",
     attrs: {
       type: "submit"
@@ -8399,20 +8447,111 @@ var render = function render() {
     on: {
       click: _vm.cerrarSesion
     }
-  }, [_vm._v("\n            Cerrar sesion\n          ")])])])])]), _vm._v(" "), _c("div", [_c("div", [_c("nav", {
-    staticClass: "flexMenu bg-primary"
+  }, [_vm._v("\n            Cerrar sesion\n          ")])])])])]), _vm._v(" "), _c("div", {
+    staticClass: "d-flex flex-row"
+  }, [_c("nav", {
+    staticClass: "flexMenu bg-primary",
+    attrs: {
+      hidden: _vm.currentPath == "/" || _vm.currentPath == "/business"
+    }
   }, [_c("ul", {
     staticClass: "ul"
-  }, [_vm._m(3), _vm._v(" "), _vm._m(4), _vm._v(" "), _vm._m(5), _vm._v(" "), _vm._m(6), _vm._v(" "), _vm._m(7), _vm._v(" "), _vm._m(8), _vm._v(" "), _vm._m(9), _vm._v(" "), _c("li", {
+  }, [_c("li", {
     staticClass: "li my-4"
-  }, [_c("a", {
+  }, [_c("router-link", {
     staticClass: "my-4 text-uppercase",
+    attrs: {
+      to: "/dashboard"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-house text-white"
+  })])], 1), _vm._v(" "), _c("li", {
+    staticClass: "li my-4"
+  }, [_c("router-link", {
+    staticClass: "my-4 text-uppercase",
+    attrs: {
+      to: "/importacionhoras"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-file-arrow-up text-white"
+  })])], 1), _vm._v(" "), _c("li", {
+    staticClass: "li my-4"
+  }, [_c("router-link", {
+    staticClass: "my-4 text-uppercase",
+    attrs: {
+      to: "/registro"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-circle-plus text-white"
+  })])], 1), _vm._v(" "), _c("li", {
+    staticClass: "li my-4"
+  }, [_c("router-link", {
+    staticClass: "my-4 text-uppercase",
+    attrs: {
+      to: "/editarperfilusuario"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-user text-white"
+  })])], 1), _vm._v(" "), _c("li", {
+    staticClass: "li my-4"
+  }, [_c("router-link", {
+    staticClass: "my-4 text-uppercase",
+    attrs: {
+      to: "/empleados"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-users text-white"
+  })])], 1), _vm._v(" "), _c("li", {
+    staticClass: "li my-4"
+  }, [_c("router-link", {
+    staticClass: "my-4 text-uppercase",
+    attrs: {
+      to: "/empresas"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-building text-white"
+  })])], 1), _vm._v(" "), _c("li", {
+    staticClass: "li my-4"
+  }, [_c("router-link", {
+    staticClass: "my-4 text-uppercase",
+    attrs: {
+      to: "/activacionusuario"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-user-check text-white"
+  })])], 1), _vm._v(" "), _c("li", {
+    staticClass: "li my-4"
+  }, [_c("router-link", {
+    staticClass: "my-4 text-uppercase",
+    attrs: {
+      to: "/calendarios"
+    }
+  }, [_c("i", {
+    staticClass: "fa-solid fa-calendar text-white"
+  })])], 1), _vm._v(" "), _c("li", {
+    staticClass: "li my-4"
+  }, [_c("router-link", {
+    staticClass: "my-4 text-uppercase",
+    attrs: {
+      to: "/historialhoras"
+    }
+  }, [_c("i", {
+    staticClass: "fa-brands fa-searchengin text-white"
+  })])], 1), _vm._v(" "), _c("li", {
+    staticClass: "li my-4"
+  }, [_c("router-link", {
+    staticClass: "my-4 text-uppercase",
+    attrs: {
+      to: "/"
+    },
     on: {
       click: _vm.cerrarSesion
     }
   }, [_c("i", {
     staticClass: "fa-regular fa-circle-xmark text-white"
-  })])])])])]), _vm._v(" "), _c("div")])]);
+  })])], 1)])]), _vm._v(" "), _c("main", {
+    staticClass: "w-100 d-flex flex-row justify-content-center h-100"
+  }, [_c("router-view")], 1)])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
@@ -8443,171 +8582,9 @@ var staticRenderFns = [function () {
       width: "80",
       height: "50",
       src: "assets/img/logopngblanco_Mesa de trabajo 1.png",
-      alt: "",
-      srcset: ""
+      alt: ""
     }
   })]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("ul", {
-    staticClass: "navbar-nav justify-content-end flex-grow-1 pe-3"
-  }, [_c("li", {
-    staticClass: "nav-item"
-  }, [_c("a", {
-    staticClass: "nav-link active text-white",
-    attrs: {
-      "aria-current": "page",
-      href: "?#/dashboard"
-    }
-  }, [_c("i", {
-    staticClass: "fa-solid fa-house mr-3"
-  }), _vm._v(" Inicio")])]), _vm._v(" "), _c("li", {
-    staticClass: "nav-item"
-  }, [_c("a", {
-    staticClass: "nav-link text-white text-uppercase",
-    attrs: {
-      href: "?#/registro"
-    }
-  }, [_c("i", {
-    staticClass: "fa-solid fa-circle-plus"
-  }), _vm._v(" registrar empleados")])]), _vm._v(" "), _c("li", {
-    staticClass: "nav-item"
-  }, [_c("a", {
-    staticClass: "nav-link text-white text-uppercase",
-    attrs: {
-      href: "?#/importacionhoras"
-    }
-  }, [_c("i", {
-    staticClass: "fa-solid fa-circle-plus"
-  }), _vm._v(" Agregar horas extras ")])]), _vm._v(" "), _c("li", {
-    staticClass: "nav-item"
-  }, [_c("a", {
-    staticClass: "nav-link text-white text-uppercase",
-    attrs: {
-      href: "?#/editarperfilusuario"
-    }
-  }, [_c("i", {
-    staticClass: "fa-solid fa-user"
-  }), _vm._v(" Perfil ")])]), _vm._v(" "), _c("li", {
-    staticClass: "nav-item"
-  }, [_c("a", {
-    staticClass: "nav-link text-white text-uppercase",
-    attrs: {
-      href: "?#/empleados"
-    }
-  }, [_c("i", {
-    staticClass: "fa-solid fa-users"
-  }), _vm._v(" Empleados")])]), _vm._v(" "), _c("li", {
-    staticClass: "nav-item"
-  }, [_c("a", {
-    staticClass: "nav-link text-white text-uppercase",
-    attrs: {
-      href: "?#/calendarios"
-    }
-  }, [_c("i", {
-    staticClass: "fa-solid fa-calendar"
-  }), _vm._v(" Calendario")])]), _vm._v(" "), _c("li", {
-    staticClass: "nav-item"
-  }, [_c("a", {
-    staticClass: "nav-link text-white text-uppercase",
-    attrs: {
-      href: "?#/historialhoras"
-    }
-  }, [_c("i", {
-    staticClass: "fa-brands fa-searchengin"
-  }), _vm._v(" Historial horas extras")])])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("li", {
-    staticClass: "li my-4"
-  }, [_c("a", {
-    staticClass: "my-4 text-uppercase",
-    attrs: {
-      href: "?#/dashboard"
-    }
-  }, [_c("i", {
-    staticClass: "fa-solid fa-house text-white"
-  })])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("li", {
-    staticClass: "li my-4"
-  }, [_c("a", {
-    staticClass: "my-4 text-uppercase",
-    attrs: {
-      href: "?#/registro"
-    }
-  }, [_c("i", {
-    staticClass: "fa-solid fa-circle-plus text-white"
-  })])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("li", {
-    staticClass: "li my-4"
-  }, [_c("a", {
-    staticClass: "my-4 text-uppercase",
-    attrs: {
-      href: "?#/importacionhoras"
-    }
-  }, [_c("i", {
-    staticClass: "fa-solid fa-circle-plus text-white"
-  })])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("li", {
-    staticClass: "li my-4"
-  }, [_c("a", {
-    staticClass: "my-4 text-uppercase",
-    attrs: {
-      href: "?#/editarperfilusuario"
-    }
-  }, [_c("i", {
-    staticClass: "fa-solid fa-user text-white"
-  })])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("li", {
-    staticClass: "li my-4"
-  }, [_c("a", {
-    staticClass: "my-4 text-uppercase",
-    attrs: {
-      href: "?#/empleados"
-    }
-  }, [_c("i", {
-    staticClass: "fa-solid fa-users text-white"
-  })])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("li", {
-    staticClass: "li my-4"
-  }, [_c("a", {
-    staticClass: "my-4 text-uppercase",
-    attrs: {
-      href: "?#/calendarios"
-    }
-  }, [_c("i", {
-    staticClass: "fa-solid fa-calendar text-white"
-  })])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("li", {
-    staticClass: "li my-4"
-  }, [_c("a", {
-    staticClass: "my-4 text-uppercase",
-    attrs: {
-      href: "?#/historialhoras"
-    }
-  }, [_c("i", {
-    staticClass: "fa-brands fa-searchengin text-white"
-  })])]);
 }];
 render._withStripped = true;
 
@@ -8751,7 +8728,7 @@ var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
-    staticClass: "d-flex justify-content-center"
+    staticClass: "w-100 d-flex justify-content-center"
   }, [_c("div", {
     staticClass: "col-9 mt-3"
   }, [_c("h1", {
@@ -9205,7 +9182,7 @@ var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
-    staticClass: "d-flex justify-content-center align-items-center"
+    staticClass: "w-100 d-flex justify-content-center align-items-center"
   }, [_c("div", {
     staticClass: "bg-white d-flex flex-column justify-content-center align-items-center w-50",
     staticStyle: {
@@ -13879,7 +13856,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.gridClass[data-v-3eed02b8] {\r\n  display: grid;\r\n  grid-template-columns: repeat(2, 1fr);\n}\n.spacer-cell[data-v-3eed02b8] {\r\n  width: 20px;\n}\n.content-container[data-v-3eed02b8] {\r\n  display: flex;\r\n  justify-content: space-around;\r\n  align-items: center;\r\n  width: 100%;\r\n  max-width: 800px;\r\n  margin: 0 auto;\n}\n.textbox[data-v-3eed02b8],\r\n.vdp-datepicker[data-v-3eed02b8] {\r\n  flex: 1;\r\n  padding: 10px;\r\n  margin: 0 10px;\n}\n.borderCircle[data-v-3eed02b8] {\r\n  border-radius: 20px;\r\n  border-color: white;\n}\r\n", ""]);
+exports.push([module.i, "\n.spacer-cell[data-v-3eed02b8] {\r\n    width: 20px;\n}\n.content-container[data-v-3eed02b8] {\r\n    display: flex;\r\n    justify-content: space-around;\r\n    align-items: center;\r\n    width: 100%;\r\n    max-width: 800px;\r\n    margin: 0 auto;\n}\n.textbox[data-v-3eed02b8],\r\n.vdp-datepicker[data-v-3eed02b8] {\r\n    flex: 1;\r\n    padding: 10px;\r\n    margin: 0 10px;\n}\n.borderCircle[data-v-3eed02b8] {\r\n    border-radius: 20px;\r\n    border-color: white;\n}\r\n", ""]);
 
 // exports
 
@@ -90215,6 +90192,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var v_mask__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! v-mask */ "./node_modules/v-mask/dist/v-mask.esm.js");
 /* harmony import */ var vue_toastification_dist_index_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue-toastification/dist/index.css */ "./node_modules/vue-toastification/dist/index.css");
 /* harmony import */ var vue_toastification_dist_index_css__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vue_toastification_dist_index_css__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _components_MenuFlotanteComponent_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/MenuFlotanteComponent.vue */ "./resources/js/components/MenuFlotanteComponent.vue");
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -90243,7 +90221,7 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 //Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-//Vue.component('login-component', require('./components/LoginComponent.vue').default);
+Vue.component('login-component', __webpack_require__(/*! ./components/LoginComponent.vue */ "./resources/js/components/LoginComponent.vue")["default"]);
 //Vue.component('dashboard-component', require('./components/DashboardComponent.vue').default);
 
 /**
@@ -90313,9 +90291,15 @@ Vue.filter('toCurrency', function (value) {
   return formatter.format(value);
 });
 var app = new Vue({
+  render: function render(h) {
+    return h(_components_MenuFlotanteComponent_vue__WEBPACK_IMPORTED_MODULE_5__["default"]);
+  },
   router: router
 }).$mount('#app');
-router.beforeEach(function (to, from, next) {});
+
+// router.beforeEach((to,from,next) => {
+
+// })
 
 /***/ }),
 
@@ -91550,8 +91534,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\laragon\www\PCHE-RENOVADO\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\laragon\www\PCHE-RENOVADO\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\laragon\www\PCHE-II\PCHE\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\laragon\www\PCHE-II\PCHE\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

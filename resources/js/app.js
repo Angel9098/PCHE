@@ -16,6 +16,7 @@ import VueMask from 'v-mask';
 
 import "vue-toastification/dist/index.css"
 
+import MenuFlotanteComponent from './components/MenuFlotanteComponent.vue';
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -28,7 +29,7 @@ import "vue-toastification/dist/index.css"
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 //Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-//Vue.component('login-component', require('./components/LoginComponent.vue').default);
+Vue.component('login-component', require('./components/LoginComponent.vue').default);
 //Vue.component('dashboard-component', require('./components/DashboardComponent.vue').default);
 
 /**
@@ -120,6 +121,7 @@ Vue.filter('toCurrency', function (value) {
 });
 
 const app = new Vue({
+    render:h=>h(MenuFlotanteComponent),
     router
 }).$mount('#app');
 
