@@ -123,6 +123,6 @@ const app = new Vue({
     router
 }).$mount('#app');
 
-router.beforeEach((to,from,next) => {
+// router.beforeEach((to,from,next) => {
 
-})
+// })
