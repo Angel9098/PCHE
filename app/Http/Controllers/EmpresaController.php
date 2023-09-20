@@ -62,16 +62,17 @@ class EmpresaController extends Controller
             $nombreImagen = uniqid() . '.' . $imagen->getClientOriginalExtension();
             $rutaImagen = $imagen->storeAs('public/imagenes', $nombreImagen);
 
+
             $empresa = new Empresa([
-                'nombre' => $request->input('descripcion'),
-                'direccion' => $request->input('fecha_corte'),
-                'direccion' => $request->input('rubro'),
-                'imagen' => $rutaImagen
+                'nombre' => $request->input('nombre'),
+                'direccion' => $request->input('direccion'),
+                'rubro' => $request->input('rubro'),
+                'imagen' => $nombreImagen
             ]);
 
             $empresa->save();
 
-            return response()->json(["message" => 'Empresa agregada con exito'], 201);
+            return response()->json(["message" => 'Empresa creada exitosamente'], 200);
         } catch (QueryException $ex) {
             return response()->json(["message" => 'Error al agregar empresa: ' . $ex->getMessage()], 500);
         }

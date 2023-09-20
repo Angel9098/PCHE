@@ -47,6 +47,7 @@
                                         <select v-model="filtros.selectedOption" @input="debounceSearchEmpleado"
                                             class="form-select">
                                             <option value="" disabled selected>Empresa</option>
+                                            <option value="">No seleccionar</option>
                                             <option v-for="empresa in empresas" :key="empresa.id" :value="empresa.id">
                                                 {{ empresa.id }} - {{ empresa.nombre }}
                                             </option>
@@ -151,6 +152,9 @@ export default {
         }, 300),
         async searchEmpleado() {
             try {
+                if (this.filtros.selectedOption === 1) {
+                    this.filtros.selectedOption = null;
+                }
                 const response = await axios.post("/empleados/filtro/busqueda", this.filtros);
                 this.empleados = response.data;
             } catch (error) {
