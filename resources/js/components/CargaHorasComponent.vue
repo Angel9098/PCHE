@@ -3,7 +3,7 @@
         <div class="w-75 d-flex flex-column justify-content-center align-items-center">
             <h1>Registro de Horas Extras</h1>
             <div id="drop-zone" class="col-11 d-flex flex-column justify-content-center align-items-center bg-light rounded-3 dropdrag-zone mt-5" @dragover="dragOver" @dragleave="dragLeave" @drop="drop">
-                <input id="archivo" type="file" ref="file" class="input-file" :accept="'application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel.sheet.macroEnabled.12'" @change="importarExcel">
+                <input id="archivo" type="file" ref="file" class="input-file" @change="importarExcel">
                 <transition name="slide-fade">
                     <div v-if="loaded == false" class="d-flex flex-column justify-content-center align-items-center">
                         <i class="fa-solid fa-file-excel text-primary" :style="'font-size: 60px'"></i>
@@ -42,7 +42,7 @@
                             <th scope="col">Nocturnas Asueto</th>
                         </thead>
                         <tbody class="text-center">
-                            <tr v-for="registro in items" :key="registro.idEmpleado">
+                            <tr v-for="registro in items" :key="registro.id">
                                 <td scope="row">{{ registro.idEmpleado }}</td>
                                 <td>{{ registro.nombre }}</td>
                                 <td>{{ registro.fecha }}</td>
@@ -79,6 +79,7 @@ export default {
     methods: {
         importarExcel() {
             this.fileExcel = this.$refs.file.files[0];
+            let extension = this.fileExcel.name.slice(this.fileExcel.name.lastIndexOf('.'), this.fileExcel.name.length);
             this.items = [];
             if (this.$refs.file.files.length > 1) {
                 this.$toast.error("Seleccione únicamente un archivo", {
@@ -90,7 +91,7 @@ export default {
                     icon: true
                 });
             } else {
-                if (this.fileExcel.type !== '') {
+                if (extension != '.xlsm') {
                     this.loaded = false;
                     this.$toast.error("Archivo Excel requerido", {
                         position: "top-right",
@@ -107,6 +108,7 @@ export default {
                         rows.forEach((element, index) => {
                             if (index > 4) {
                                 let registroHora = {
+                                    id: index,
                                     idEmpleado: element[0],
                                     nombre: element[1],
                                     fecha: element[2] == null ? element[2] : moment(element[2]).format('L'),

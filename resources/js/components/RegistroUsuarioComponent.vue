@@ -26,7 +26,7 @@
                                 <input id="job_title" type="text" class="form-control" v-model="usuario.dui" required v-mask="'########-#'">
                             </div>
                             <div class="form-group col-6">
-                                <label for="email">Correo Electrónico</label>
+                                <label for="email">Correo Electr&#243;nico</label>
                                 <input id="email" type="email" class="form-control" v-model="usuario.email" required>
                             </div>
                         </div>
@@ -39,12 +39,12 @@
                                     required>
                             </div>
                             <div class="form-group col-6">
-                                <label for="phoneEmergency">Teléfono</label>
+                                <label for="phoneEmergency">Tel&#233;fono</label>
                                 <input id="phoneEmergency" type="text" class="form-control" v-model="usuario.numero_emergencia" required v-mask="'####-####'">
                             </div>
                         </div>
 
-                        <h4 class="alert-heading pt-4">Empresa y horario</h4>
+                        <h4 class="alert-heading pt-4">Empresa</h4>
                         <hr>
                         <div class="d-flex flex-row justify-content-between gap-2">
                             <div class="form-group col-5">
@@ -57,7 +57,7 @@
                                 </select>
                             </div>
                             <div class="form-group col-6">
-                                <label for="area">Área</label>
+                                <label for="area">&#193;rea</label>
                                 <select id="area" class="form-select" v-model="usuario.area_id" @change="getHorarios"
                                     required :disabled="usuario.empresa == ''">
                                     <option v-if="areas.length === 0" :disabled="true">
@@ -74,10 +74,18 @@
                                 <label for="job_title">Cargo</label>
                                 <input id="job_title" type="text" class="form-control" v-model="usuario.cargo" required>
                             </div>
+                            <div class="form-group col-6">
+                                <label for="salary">Salario</label>
+                                <input id="salary" type="text" class="form-control" v-model="usuario.salario" required>
+                            </div>
+                        </div>
+
+                        <h4 class="alert-heading pt-4">Selecci&#243;n horario</h4>
+                        <hr>
+                        <div class="d-flex flex-row justify-content-start">
                             <div class="form-group col-4">
                                 <label for="hora">Turno</label>
-                                <select id="hora" class="form-select" v-model="turno" required
-                                    :placeholder="'Seleccione turno'" @change="filterHorario">
+                                <select id="hora" class="form-select" v-model="turno" required :placeholder="'Seleccione turno'" @change="filterHorario">
                                     <option :value="'all'">
                                         Todos
                                     </option>
@@ -146,7 +154,8 @@ export default {
                 dui: '',
                 horario_id: 0,
                 nombre_persona: '',
-                numero_emergencia: ''
+                numero_emergencia: '',
+                salario: 0
             },
             empresas: [],
             areas: [],
@@ -217,6 +226,7 @@ export default {
             this.usuario.horario_id = 0;
             this.usuario.nombre_persona = '';
             this.usuario.numero_emergencia = '';
+            this.usuario.salario = 0;
         }
 
     }
