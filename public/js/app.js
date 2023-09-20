@@ -5210,6 +5210,7 @@ __webpack_require__.r(__webpack_exports__);
     importarExcel: function importarExcel() {
       var _this = this;
       this.fileExcel = this.$refs.file.files[0];
+      var extension = this.fileExcel.name.slice(this.fileExcel.name.lastIndexOf('.'), this.fileExcel.name.length);
       this.items = [];
       if (this.$refs.file.files.length > 1) {
         this.$toast.error("Seleccione únicamente un archivo", {
@@ -5221,7 +5222,7 @@ __webpack_require__.r(__webpack_exports__);
           icon: true
         });
       } else {
-        if (this.fileExcel.type !== '') {
+        if (extension != '.xlsm') {
           this.loaded = false;
           this.$toast.error("Archivo Excel requerido", {
             position: "top-right",
@@ -5239,6 +5240,7 @@ __webpack_require__.r(__webpack_exports__);
             rows.forEach(function (element, index) {
               if (index > 4) {
                 var registroHora = {
+                  id: index,
                   idEmpleado: element[0],
                   nombre: element[1],
                   fecha: element[2] == null ? element[2] : moment__WEBPACK_IMPORTED_MODULE_1___default()(element[2]).format('L'),
@@ -5291,8 +5293,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _MenuFlotanteComponent_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MenuFlotanteComponent.vue */ "./resources/js/components/MenuFlotanteComponent.vue");
-
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -5320,9 +5320,7 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {});
     }
   },
-  components: {
-    MenuFlotanteComponentVue: _MenuFlotanteComponent_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
-  }
+  components: {}
 });
 
 /***/ }),
@@ -5854,7 +5852,8 @@ __webpack_require__.r(__webpack_exports__);
         dui: '',
         horario_id: 0,
         nombre_persona: '',
-        numero_emergencia: ''
+        numero_emergencia: '',
+        salario: 0
       },
       empresas: [],
       areas: [],
@@ -5941,6 +5940,7 @@ __webpack_require__.r(__webpack_exports__);
       this.usuario.horario_id = 0;
       this.usuario.nombre_persona = '';
       this.usuario.numero_emergencia = '';
+      this.usuario.salario = 0;
     }
   }
 });
@@ -6745,8 +6745,7 @@ var render = function render() {
     staticClass: "input-file",
     attrs: {
       id: "archivo",
-      type: "file",
-      accept: "application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel.sheet.macroEnabled.12"
+      type: "file"
     },
     on: {
       change: _vm.importarExcel
@@ -6841,7 +6840,7 @@ var render = function render() {
     staticClass: "text-center"
   }, _vm._l(_vm.items, function (registro) {
     return _c("tr", {
-      key: registro.idEmpleado
+      key: registro.id
     }, [_c("td", {
       attrs: {
         scope: "row"
@@ -6873,7 +6872,7 @@ var render = function render() {
     staticClass: "container"
   }, [_c("h1", {
     staticClass: "text-center my-4"
-  }, [_vm._v("Bienvenido  " + _vm._s(_vm.usuario.nombres))])])]);
+  }, [_vm._v("Bienvenido  " + _vm._s(_vm.nombre))])])]);
 };
 var staticRenderFns = [];
 render._withStripped = true;
@@ -8548,7 +8547,7 @@ var render = function render() {
       click: _vm.cerrarSesion
     }
   }, [_c("i", {
-    staticClass: "fa-regular fa-circle-xmark text-white"
+    staticClass: "fa-solid fa-right-from-bracket text-white"
   })])], 1)])]), _vm._v(" "), _c("main", {
     staticClass: "w-100 d-flex flex-row justify-content-center h-100"
   }, [_c("router-view")], 1)])]);
@@ -8940,7 +8939,7 @@ var render = function render() {
     }
   })])]), _vm._v(" "), _c("h4", {
     staticClass: "alert-heading pt-4"
-  }, [_vm._v("Empresa y horario")]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("div", {
+  }, [_vm._v("Empresa")]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("div", {
     staticClass: "d-flex flex-row justify-content-between gap-2"
   }, [_c("div", {
     staticClass: "form-group col-5"
@@ -9050,6 +9049,38 @@ var render = function render() {
       }
     }
   })]), _vm._v(" "), _c("div", {
+    staticClass: "form-group col-6"
+  }, [_c("label", {
+    attrs: {
+      "for": "salary"
+    }
+  }, [_vm._v("Salario")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.usuario.salario,
+      expression: "usuario.salario"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      id: "salary",
+      type: "text",
+      required: ""
+    },
+    domProps: {
+      value: _vm.usuario.salario
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.usuario, "salario", $event.target.value);
+      }
+    }
+  })])]), _vm._v(" "), _c("h4", {
+    staticClass: "alert-heading pt-4"
+  }, [_vm._v("Selección horario")]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("div", {
+    staticClass: "d-flex flex-row justify-content-start"
+  }, [_c("div", {
     staticClass: "form-group col-4"
   }, [_c("label", {
     attrs: {

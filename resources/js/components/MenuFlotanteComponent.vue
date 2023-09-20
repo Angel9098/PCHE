@@ -84,7 +84,7 @@
                     <router-link class="my-4 text-uppercase"  to="/historialhoras"><i class="fa-brands fa-searchengin text-white"></i> </router-link>
                 </li>
                 <li class="li my-4">
-                    <router-link class="my-4 text-uppercase" @click="cerrarSesion" to="/"><i class="fa-regular fa-circle-xmark text-white"></i> </router-link>
+                    <router-link class="my-4 text-uppercase" @click="cerrarSesion" to="/"><i class="fa-solid fa-right-from-bracket text-white"></i> </router-link>
                 </li>
             </ul>
         </nav>
