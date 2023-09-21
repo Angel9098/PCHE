@@ -100,6 +100,10 @@ const routes = [
     {
         path: '/empresas',
         component: require('./components/EmpresasComponent.vue').default
+    },
+    {
+        path: '/reporte',
+        component: require('./components/ReportePersonaComponent.vue').default
     }
 
 ]
