@@ -259,4 +259,15 @@ class EmpleadoController extends Controller
             return response()->json(['message' => 'ocurrio un error al generar la busqueda'], 500);
         }
     }
+    public function empleadosConHorasExtra()
+    {
+        $empleadosConHorasExtra = Empleado::with('horasExtra')->get();
+
+        /*         $empleado = Empleado::find(2);
+
+        $horasExtra = $empleado->horasExtra; */
+
+
+        return response()->json($empleadosConHorasExtra);
+    }
 }

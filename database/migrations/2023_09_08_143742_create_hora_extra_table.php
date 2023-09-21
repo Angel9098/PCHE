@@ -15,7 +15,6 @@ class CreateHoraExtraTable extends Migration
     {
         Schema::create('horas_extra', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_empleado');
             $table->integer('diurnas');
             $table->integer('nocturnas');
             $table->integer('diurnas_descanso');
@@ -25,9 +24,10 @@ class CreateHoraExtraTable extends Migration
             $table->integer('total_efectivo');
             $table->integer('total');
             $table->date('fecha_registro');
+            $table->unsignedBigInteger('empleado_id');
             $table->timestamps();
 
-            $table->foreign('id_empleado')->references('id')->on('empleados');
+            $table->foreign('empleado_id')->references('id')->on('empleados');
         });
     }
 

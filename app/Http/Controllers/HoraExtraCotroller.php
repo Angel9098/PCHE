@@ -43,8 +43,8 @@ class HoraExtraCotroller extends Controller
     public function allHoras()
     {
 
-        $horas = HoraExtra::with('empleados.horas_extra')->get();
+        $empleadosConHorasExtra = HoraExtra::all();
 
-        return response()->json($horas);
+        return response()->json($empleadosConHorasExtra);
     }
 }
