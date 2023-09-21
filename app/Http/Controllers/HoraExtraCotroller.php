@@ -8,36 +8,40 @@ use Illuminate\Http\Request;
 
 class HoraExtraCotroller extends Controller
 {
-    public function createHoraExtra(Request $request){
+    public function createHoraExtra(Request $request)
+    {
 
-        $id_empleado = $request->input('id_empleado');
-        $id_empleado = $request->input('lunes');
-        $id_empleado = $request->input('martes');
-        $id_empleado = $request->input('miercoles');
-        $id_empleado = $request->input('jueves');
-        $id_empleado = $request->input('viernes');
-        $id_empleado = $request->input('sabado');
-        $id_empleado = $request->input('domingo');
+        $registros = json_decode($request->input('registros'), true);
+        dd($registros);
+        foreach ($registros as $registro) {
+            $id_empleado = $registro['idEmpleado'];
+            $id_empleado = $registro['fecha'];
+            $diurnas = $registro['diurnas'];
+            $nocturnas = $registro['nocturnas'];
+            $diurnas_descanso = $registro['diurnas_descanso'];
+            $nocturnas_descanso = $registro['nocturnas_descanso'];
+            $diurnas_asueto = $registro['diurnas_asueto'];
+            $nocturnas_asueto = $registro['nocturnas_asueto'];
+        }
 
-
-
-        $hora_extra = new HoraExtra([
+        /* $hora_extra = new HoraExtra([
             'id_empleado' => $request->input('id_empleado'),
-            'lunes' => $request->input('lunes'),
-            'martes' => $request->input('martes'),
-            'miercoles' => $request->input('miercoles'),
-            'jueves' => $request->input('jueves'),
-            'viernes' => $request->input('viernes'),
-            'sabado' => $request->input('sabado'),
-            'domingo' => $request->input('domingo'),
+            'diurnas' => $request->input('diurnas'),
+            'nocturnas' => $request->input('nocturnas'),
+            'diurnas_descanso' => $request->input('diurnas_descanso'),
+            'nocturnas_descanso' => $request->input('nocturnas_descanso'),
+            'diurnas_asueto' => $request->input('diurnas_asueto'),
+            'nocturnas_asueto' => $request->input('nocturnas_asueto'),
+            'total_efectivo' => $request->input('total_efectivo'),
             'total' => $request->input('total'),
-        ]);
+        ]);*/
 
-        $hora_extra ->save();
+        // $hora_extra ->save();
         return response()->json(["message" => 'Horas extra agregado con exito'], 201);
     }
 
-    public function allHoras(){
+    public function allHoras()
+    {
 
         $horas = HoraExtra::with('empleados.horas_extra')->get();
 
