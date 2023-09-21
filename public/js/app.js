@@ -5194,6 +5194,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var read_excel_file__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! read-excel-file */ "./node_modules/read-excel-file/index.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -5254,6 +5257,14 @@ __webpack_require__.r(__webpack_exports__);
                 };
                 _this.items.push(registroHora);
               }
+            });
+            //Enviar info de registros
+            axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('horas_extra/crear', _this.items, {
+              headers: {
+                'Content-type': 'application/json'
+              }
+            }).then(function (resp) {
+              console.log(resp.data);
             });
           });
         }
@@ -5485,7 +5496,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             case 0:
               _context.prev = 0;
               _context.next = 3;
-              return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/empleados/busqueda", _this.filtros);
+              return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/empleados/filtro/busqueda", _this.filtros);
             case 3:
               response = _context.sent;
               _this.empleados = response.data;
@@ -5558,6 +5569,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      defaultImagen: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+      defaultBooleand: true,
+      file: File,
       empresas: [],
       data: {
         nombre: "",
@@ -5567,13 +5581,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       },
       nombreEmpresa: "",
       currentPage: 1,
-      lastPage: 1
+      lastPage: 1,
+      perfil: {
+        nombres: "",
+        imagen: ""
+      }
     };
   },
   created: function created() {
     this.fetchEmpresas();
   },
   methods: {
+    changesDefauld: function changesDefauld(event) {
+      this.defaultBooleand = false;
+      this.file = event.target.files[0];
+      var files = event.target.files[0];
+      this.perfil.imagen = URL.createObjectURL(files);
+    },
     dataGuardarEmpresa: function dataGuardarEmpresa() {
       var _this = this;
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
@@ -5601,19 +5625,32 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee, null, [[0, 8]]);
       }))();
     },
-    editarEmpresa: function editarEmpresa(empresa) {
-      this.data.nombre = empresa.nombre;
-      this.data.direccion = empresa.direccion;
-      this.data.rubro = empresa.rubro;
-      $("#modalAgregarEmpresa").modal("show");
+    editarEmpresa: function editarEmpresa(empresaId) {
+      var _this2 = this;
+      // Realizar una solicitud AJAX para obtener los datos actualizados de la empresa desde el endpoint.
+      $.ajax({
+        url: '/empresabyid?id=' + empresaId,
+        method: 'GET',
+        success: function success(data) {
+          _this2.data.nombre = data.nombre;
+          _this2.data.direccion = data.direccion;
+          _this2.data.rubro = data.rubro;
+          $("#modalAgregarEmpresa").modal("show");
+        },
+        error: function error(_error) {
+          console.error('Error al obtener los datos de la empresa:', _error);
+        }
+      });
     },
     eliminarEmpresa: function eliminarEmpresa(id) {
-      var _this2 = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("/empresas/".concat(id)).then(function () {
-        _this2.fetchEmpresas();
-      })["catch"](function (error) {
-        console.error("Error al eliminar empresa:", error);
-      });
+      var _this3 = this;
+      if (confirm("¿Estás seguro de que deseas eliminar esta empresa?")) {
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("/empresas/".concat(id)).then(function () {
+          _this3.fetchEmpresas();
+        })["catch"](function (error) {
+          console.error("Error al eliminar empresa:", error);
+        });
+      }
     },
     abrirModalAgregarEmpresa: function abrirModalAgregarEmpresa() {
       $("#modalAgregarEmpresa").modal("show");
@@ -5628,9 +5665,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return moment__WEBPACK_IMPORTED_MODULE_1___default()(date).format("DD/MM/YYYY");
     },
     fetchEmpresas: function fetchEmpresas() {
-      var _this3 = this;
+      var _this4 = this;
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/empresas").then(function (response) {
-        _this3.empresas = response.data.map(function (empresa) {
+        _this4.empresas = response.data.map(function (empresa) {
           return {
             id: empresa.id,
             nombre: empresa.nombre,
@@ -5644,7 +5681,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       });
     },
     seleccionar: function seleccionar() {
-      this.$router.push('/editarperfil');
+      this.$router.push("/editarperfil");
     },
     changePage: function changePage(page) {
       this.currentPage = page;
@@ -7704,7 +7741,7 @@ var render = function render() {
     on: {
       click: _vm.abrirModalAgregarEmpresa
     }
-  }, [_vm._v("Agregar Empresa")]), _vm._v(" "), _c("table", {
+  }, [_vm._v("\n      Agregar Empresa\n    ")]), _vm._v(" "), _c("table", {
     staticClass: "table table-hover table-bordered mt-4"
   }, [_vm._m(1), _vm._v(" "), _vm.empresas.length > 0 ? _c("tbody", _vm._l(_vm.empresas, function (empresa) {
     return _c("tr", {
@@ -7727,10 +7764,10 @@ var render = function render() {
       },
       on: {
         click: function click($event) {
-          return _vm.editarEmpresa(empresa);
+          return _vm.editarEmpresa(empresa.id);
         }
       }
-    }, [_vm._v("\n                                Actualizar\n                            ")]), _vm._v(" "), _c("button", {
+    }, [_vm._v("\n                Actualizar\n              ")]), _vm._v(" "), _c("button", {
       staticClass: "btn btn-danger custom-btn",
       attrs: {
         type: "button"
@@ -7740,7 +7777,7 @@ var render = function render() {
           return _vm.eliminarEmpresa(empresa.id);
         }
       }
-    }, [_vm._v("\n                                Eliminar\n                            ")])])])]);
+    }, [_vm._v("\n                Eliminar\n              ")])])])]);
   }), 0) : _c("tbody", [_vm._m(2)])]), _vm._v(" "), _c("nav", {
     attrs: {
       "aria-label": "Page navigation example"
@@ -7814,7 +7851,7 @@ var render = function render() {
       id: "modalAgregarEmpresa"
     }
   }, [_c("div", {
-    staticClass: "modal-dialog"
+    staticClass: "modal-dialog modal-lg"
   }, [_c("div", {
     staticClass: "modal-content"
   }, [_c("div", {
@@ -7835,10 +7872,43 @@ var render = function render() {
       "aria-hidden": "true"
     }
   }, [_vm._v("×")])])]), _vm._v(" "), _c("div", {
-    staticClass: "modal-body"
+    staticClass: "modal-body gridClass"
+  }, [_c("div", {
+    staticClass: "p-4"
+  }, [_c("picture", {
+    staticClass: "mb-3"
+  }, [_c("source", {
+    attrs: {
+      srcset: _vm.defaultBooleand ? _vm.defaultImagen : _vm.perfil.imagen,
+      type: "image"
+    }
+  }), _vm._v(" "), _c("img", {
+    staticClass: "img-fluid img-thumbnail cicle",
+    attrs: {
+      src: _vm.defaultBooleand ? _vm.defaultImagen : _vm.perfil.imagen,
+      alt: "..."
+    }
+  })])]), _vm._v(" "), _c("div", {
+    staticClass: "p-4"
   }, [_c("div", {
     staticClass: "form-group"
   }, [_c("div", {
+    staticClass: "form-group my-3"
+  }, [_c("label", {
+    attrs: {
+      "for": "changeIMG"
+    }
+  }, [_vm._v("CAMBIAR LA IMAGEN")]), _vm._v(" "), _c("input", {
+    staticClass: "form-control",
+    attrs: {
+      type: "file",
+      id: "changeIMG",
+      placeholder: "CAMBIAR LA IMAGEN"
+    },
+    on: {
+      change: _vm.changesDefauld
+    }
+  })]), _vm._v(" "), _c("div", {
     staticClass: "row",
     staticStyle: {
       "margin-bottom": "2%"
@@ -7919,7 +7989,7 @@ var render = function render() {
         _vm.$set(_vm.data, "rubro", $event.target.value);
       }
     }
-  })])])])]), _vm._v(" "), _c("div", {
+  })])])])])]), _vm._v(" "), _c("div", {
     staticClass: "modal-footer"
   }, [_c("button", {
     staticClass: "btn btn-secondary",
@@ -7930,7 +8000,7 @@ var render = function render() {
     on: {
       click: _vm.cerrarModalAgregarEmpresa
     }
-  }, [_vm._v("Cancelar")]), _vm._v(" "), _c("button", {
+  }, [_vm._v("\n              Cancelar\n            ")]), _vm._v(" "), _c("button", {
     staticClass: "btn btn-primary",
     attrs: {
       type: "button"
@@ -7938,7 +8008,7 @@ var render = function render() {
     on: {
       click: _vm.guardarEmpresa
     }
-  }, [_vm._v("Guardar")])])])])])])]);
+  }, [_vm._v("\n              Guardar\n            ")])])])])])])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
@@ -7992,7 +8062,7 @@ var staticRenderFns = [function () {
     attrs: {
       colspan: "8"
     }
-  }, [_vm._v("\n                        No hay empresas para mostrar\n                    ")])]);
+  }, [_vm._v("\n            No hay empresas para mostrar\n          ")])]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
@@ -13887,7 +13957,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.spacer-cell[data-v-3eed02b8] {\r\n    width: 20px;\n}\n.content-container[data-v-3eed02b8] {\r\n    display: flex;\r\n    justify-content: space-around;\r\n    align-items: center;\r\n    width: 100%;\r\n    max-width: 800px;\r\n    margin: 0 auto;\n}\n.textbox[data-v-3eed02b8],\r\n.vdp-datepicker[data-v-3eed02b8] {\r\n    flex: 1;\r\n    padding: 10px;\r\n    margin: 0 10px;\n}\n.borderCircle[data-v-3eed02b8] {\r\n    border-radius: 20px;\r\n    border-color: white;\n}\r\n", ""]);
+exports.push([module.i, "\n.gridClass[data-v-3eed02b8] {\n  display: grid;\n  grid-template-columns: repeat(2, 1fr);\n}\n.spacer-cell[data-v-3eed02b8] {\n  width: 20px;\n}\n.content-container[data-v-3eed02b8] {\n  display: flex;\n  justify-content: space-around;\n  align-items: center;\n  width: 100%;\n  max-width: 800px;\n  margin: 0 auto;\n}\n.textbox[data-v-3eed02b8],\n.vdp-datepicker[data-v-3eed02b8] {\n  flex: 1;\n  padding: 10px;\n  margin: 0 10px;\n}\n.borderCircle[data-v-3eed02b8] {\n  border-radius: 20px;\n  border-color: white;\n}\n", ""]);
 
 // exports
 

@@ -64,6 +64,7 @@
 <script>
 import readXlsxFile from 'read-excel-file';
 import moment from 'moment';
+import axios from 'axios';
 export default {
     data() {
         return {
@@ -122,6 +123,12 @@ export default {
                                 }
                                 this.items.push(registroHora);
                             }
+                        });
+                        //Enviar info de registros
+                        axios.post('horas_extra/crear', this.items, {
+                            headers: { 'Content-type': 'application/json' }
+                        }).then(resp => {
+                            console.log(resp.data);
                         });
                     });
                 }
