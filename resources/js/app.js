@@ -15,6 +15,8 @@ import VCalendar from 'v-calendar';
 import VueMask from 'v-mask';
 
 import "vue-toastification/dist/index.css"
+// Asumiendo que 'router' es el objeto Vue Router
+import store from './store'; // Asumiendo que 'store' es el objeto Vuex Store
 
 import MenuFlotanteComponent from './components/MenuFlotanteComponent.vue';
 /**
@@ -50,60 +52,75 @@ Vue.use(Toast, options);
 const routes = [
     {
         path: '/',
-        component: require('./components/LoginComponent.vue').default
+        name: 'Login',
+        component: require('./components/LoginComponent.vue').default,
+        meta: { requiresAuth: false }
     },
     {
         path: '/dashboard',
-        component: require('./components/DashboardComponent.vue').default
+        component: require('./components/DashboardComponent.vue').default,
+        meta: { requiresAuth: true }
     },
     {
         path: '/business',
-        component: require('./components/SelectBussinesComponent.vue').default
+        component: require('./components/SelectBussinesComponent.vue').default,
+        meta: { requiresAuth: true }
     },
     {
         path: '/registro',
-        component: require('./components/RegistroUsuarioComponent.vue').default
+        component: require('./components/RegistroUsuarioComponent.vue').default,
+        meta: { requiresAuth: true }
     },
     {
         path: '/activacionusuario',
-        component: require('./components/ActivacionUsuarioComponent.vue').default
+        component: require('./components/ActivacionUsuarioComponent.vue').default,
+        meta: { requiresAuth: true }
     },
     {
         path: '/editarperfil',
-        component: require('./components/EditarPerfilComponent.vue').default
+        component: require('./components/EditarPerfilComponent.vue').default,
+        meta: { requiresAuth: true }
     },
     {
         path: '/editarperfilusuario',
-        component: require('./components/EditarPerfilUsuarioComponent.vue').default
+        component: require('./components/EditarPerfilUsuarioComponent.vue').default,
+        meta: { requiresAuth: true }
     },
     {
         path: '/menu',
-        component: require('./components/MenuFlotanteComponent.vue').default
+        component: require('./components/MenuFlotanteComponent.vue').default,
+        meta: { requiresAuth: true }
     },
     {
         path: '/historialhoras',
-        component: require('./components/HistorialHorasComponent.vue').default
+        component: require('./components/HistorialHorasComponent.vue').default,
+        meta: { requiresAuth: true }
     },
     {
         path: '/importacionhoras',
-        component: require('./components/CargaHorasComponent.vue').default
+        component: require('./components/CargaHorasComponent.vue').default,
+        meta: { requiresAuth: true },
     },
     {
         path: '/calendarios',
-        component: require('./components/CalendarioComponent.vue').default
+        component: require('./components/CalendarioComponent.vue').default,
+        meta: { requiresAuth: true }
     },
     {
         path: '/empleados',
-        component: require('./components/EmpleadosListComponent.vue').default
+        component: require('./components/EmpleadosListComponent.vue').default,
+        meta: { requiresAuth: true }
     }
     ,
     {
         path: '/empresas',
-        component: require('./components/EmpresasComponent.vue').default
+        component: require('./components/EmpresasComponent.vue').default,
+        meta: { requiresAuth: true }
     },
     {
         path: '/reporte',
-        component: require('./components/ReportePersonaComponent.vue').default
+        component: require('./components/ReportePersonaComponent.vue').default,
+         meta: { requiresAuth: true }
     }
 
 ]
@@ -126,9 +143,22 @@ Vue.filter('toCurrency', function (value) {
 
 const app = new Vue({
     render:h=>h(MenuFlotanteComponent),
+    store,
     router
 }).$mount('#app');
 
-// router.beforeEach((to,from,next) => {
 
-// })
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(route => route.meta.requiresAuth)) {
+        if (!store.state.loggedIn) { // Corregí el nombre de la propiedad a "loggedIn"
+            next('/');
+        } else {
+            next();
+           // return this.$store.getters.currentUser;
+        }
+    } else {
+        next();
+       //  return this.$store.getters.currentUser;
+    }
+});
+

@@ -32,6 +32,7 @@
         "v-calendar": "^2.4.1",
         "v-mask": "^2.3.0",
         "vue-router": "^3.6.5",
-        "vue-toastification": "^1.7.14"
+        "vue-toastification": "^1.7.14",
+        "vuex": "^2.5.0"
     }
 }

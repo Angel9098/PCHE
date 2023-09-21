@@ -147,6 +147,7 @@ export default {
     },
     cerrarSesion(){
                 localStorage.removeItem('user');
+                this.$store.dispatch('logout');
                 this.$router.push('/');
             }
   },
