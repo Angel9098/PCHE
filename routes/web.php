@@ -36,8 +36,6 @@ Route::post('empleados/filtro/busqueda', 'EmpleadoController@bEmpleadoF')->name(
 Route::get('areas', 'AreaController@index')->name('areas');
 Route::get('horarios/area', 'AreaController@horariosArea')->name('areasbyempresa');
 
-//Route::get('dashboard', 'DashboardController@index')->name('dashboard')->middleware('auth');
-
 //rutas para horarios
 Route::get('horarios/consulta', 'HorarioController@consultaDehorarioPorEmpleado')->name('horariobypersona');
 
@@ -54,11 +52,11 @@ Route::post('actualizarcontra', 'EmpleadoController@actualizarContrasenia')->nam
 Route::get('empleados/busqueda/empresa', 'EmpleadoController@busquedaEmpleadoPorEmpresa')->name('empleadosBusquedaEmpresa');
 Route::get('empleadobyid', 'EmpleadoController@empleadoById');
 Route::get('empleados_area', 'EmpleadoController@allEmpleadosAreaEmpresa')->name('empleadosbyAreaEmpresa');
-
+Route::get('empleados/horas_extra', 'EmpleadoController@empleadosConHorasExtra')->name('empleadosbyHorasExtra');
 
 Route::post('horas_extra/crear', 'HoraExtraCotroller@createHoraExtra')->name('horas_extra');
 Route::get('horas_extra', 'HoraExtraCotroller@allHoras')->name('horas_extra.all');
-Route::get('horarios', 'HorarioController@index')->name('allHorarios');
+Route::get('limpiar_horas', 'HorarioController@limpiarTabla');
 
 //ruta subida imagenes
 Route::post('/editarusuario', 'AuthController@editarPerfilUser');
