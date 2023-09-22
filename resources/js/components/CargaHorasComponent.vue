@@ -30,6 +30,7 @@
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered table-sm mt-4 align-middle">
                         <thead class="text-center bg-primary text-white align-middle">
+                            <th scope="col">No</th>
                             <th scope="col">ID Empleado</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Fecha</th>
@@ -42,7 +43,8 @@
                         </thead>
                         <tbody>
                             <tr v-for="registro in items" :key="registro.id">
-                                <td scope="row" class="text-center">{{ registro.idEmpleado }}</td>
+                                <td scope="row" class="text-center">{{ registro.id }}</td>
+                                <td class="text-center">{{ registro.idEmpleado }}</td>
                                 <td>{{ registro.nombre }}</td>
                                 <td class="text-center">{{ registro.fecha }}</td>
                                 <td class="text-center">{{ registro.diurnas }}</td>
@@ -111,7 +113,7 @@ export default {
                         rows.forEach((element, index) => {
                             if (index > 4) {
                                 let registroHora = {
-                                    id: index,
+                                    id: index - 4,
                                     idEmpleado: element[0],
                                     nombre: element[1],
                                     fecha: element[2] == null ? element[2] : moment(element[2]).format('DD/MM/YYYY'),
@@ -193,7 +195,7 @@ export default {
         position: absolute;
     }
     
-    thead th:nth-child(2), tr td:nth-child(2) {
+    thead th:nth-child(3), tr td:nth-child(3) {
         width: 35%;
     }
     thead th:nth-child(4), tr td:nth-child(4) {

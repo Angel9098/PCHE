@@ -44,6 +44,9 @@
               <li class="nav-item">
                 <router-link class="nav-link text-white text-uppercase"  to="/historialhoras"><i class="fa-brands fa-searchengin "></i> Historial horas extras</router-link>
               </li>
+              <li class="nav-item">
+                <router-link class="nav-link text-white text-uppercase"  to="/seleccionararchivo"><i class="fa-brands fa-file-circle-check"></i> Selecci&#243;n archivo</router-link>
+              </li>
             </ul>
             <button @click="cerrarSesion" class="btn bg-black btn-primary text-uppercase btnGray" type="button">
               Cerrar sesion
@@ -82,6 +85,9 @@
                 </li>
                 <li class="li my-4">
                     <router-link class="my-4 text-uppercase"  to="/historialhoras"><i class="fa-brands fa-searchengin text-white"></i> </router-link>
+                </li>
+                <li class="li my-4">
+                    <router-link class="my-4 text-uppercase"  to="/seleccionararchivo"><i class="fa-solid fa-file-circle-check text-white"></i> </router-link>
                 </li>
                 <li class="li my-4">
                     <a class="my-4 text-uppercase" href=""><i class="fa-solid fa-right-from-bracket text-white" @click="cerrarSesion"></i> </a>
