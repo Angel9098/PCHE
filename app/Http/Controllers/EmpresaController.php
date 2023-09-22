@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Area;
 use App\Empresa;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -76,5 +77,26 @@ class EmpresaController extends Controller
         } catch (QueryException $ex) {
             return response()->json(["message" => 'Error al agregar empresa: ' . $ex->getMessage()], 500);
         }
+    }
+
+    public function getAreasEmpresa(Request $request){
+
+        $id = $request->query('id');
+
+        if (!$id) {
+            return response()->json(['error' => 'Falta el parámetro "id" en la consulta'], 400);
+        }
+
+        $empresas = Empresa::find($id);
+
+        if (!$empresas) {
+            return response()->json(['error' => 'empresa no encontrada'], 404);
+        }
+
+        $areas = $empresas->areas;
+
+        return response()->json($areas);
+
+
     }
 }
