@@ -15,6 +15,8 @@ class Area extends Model
         return $this->belongsTo(Empresa::class, 'empresa_id');
     }
 
+
+
     public function empleados()
     {
         return $this->hasMany(Empleado::class);

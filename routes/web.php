@@ -34,7 +34,9 @@ Route::post('empleados/filtro/busqueda', 'EmpleadoController@bEmpleadoF')->name(
 
 //Rutas para area
 Route::get('areas', 'AreaController@index')->name('areas');
+Route::get('areabyid', 'AreaController@areaById');
 Route::get('horarios/area', 'AreaController@horariosArea')->name('areasbyempresa');
+Route::get('empresa/areas', 'EmpresaController@getAreasEmpresa');
 
 //rutas para horarios
 Route::get('horarios/consulta', 'HorarioController@consultaDehorarioPorEmpleado')->name('horariobypersona');

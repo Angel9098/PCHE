@@ -15,6 +15,8 @@ class HoraExtraCotroller extends Controller
         try {
             $registros = json_decode($request->getContent(), true);
             $registrosDepurados = [];
+            $jefeArea = 1;
+            $noCarga = 1;
 
             foreach ($registros as $registro) {
                 $id_empleado = $registro['idEmpleado'];
@@ -48,8 +50,9 @@ class HoraExtraCotroller extends Controller
                 $diurnas_asueto = $registroDepurado['diurnasAsueto'];
                 $nocturnas_asueto = $registroDepurado['nocturnasAsueto'];
 
+
                 $hora_extra = new HoraExtra([
-                    'id_empleado' => $id_empleado,
+                    'empleado_id' => $id_empleado,
                     'fecha_registro' => $fechaRegis,
                     'diurnas' => $diurnas,
                     'nocturnas' => $nocturnas,
@@ -57,6 +60,8 @@ class HoraExtraCotroller extends Controller
                     'nocturnas_descanso' => $nocturnas_descanso,
                     'diurnas_asueto' => $diurnas_asueto,
                     'nocturnas_asueto' => $nocturnas_asueto,
+                    'no_carga' => $noCarga,
+                    'jefe_area' => $jefeArea,
                 ]);
 
                 $hora_extra->save();

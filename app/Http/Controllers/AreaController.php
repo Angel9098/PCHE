@@ -30,7 +30,14 @@ class AreaController extends Controller
         return response()->json(['message' => 'Áreas de la empresa recuperadas con éxito', 'areas' => $areas], 200);
     }
 
+    public function areaById(Request $request)
+    {
+        $idArea = $request->input('idArea');
 
+        $areas = Area::where('id', $idArea)->get();
+
+        return response()->json($areas);
+    }
 
     public function horariosArea(Request $request)
     {
@@ -43,15 +50,15 @@ class AreaController extends Controller
         return response()->json(['message' => 'Horarios disponibles para el área recuperados con éxito', 'horarios' => $horarios], 200);
     }
 
-    public function empresaArea($id){
+    public function empresaArea($id)
+    {
 
         $areas = DB::table('empresas')
-        ->join('areas', 'empresas.id', '=', 'areas.empresa_id')
-        ->where('empresas.id', $id)
-        ->select('empresas.nombre as empresa', 'areas.nombre as area')
-        ->get();
+            ->join('areas', 'empresas.id', '=', 'areas.empresa_id')
+            ->where('empresas.id', $id)
+            ->select('empresas.nombre as empresa', 'areas.nombre as area')
+            ->get();
 
         return response()->json($areas);
     }
-
 }
