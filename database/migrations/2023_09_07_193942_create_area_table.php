@@ -17,9 +17,9 @@ class CreateAreaTable extends Migration
             $table->id();
             $table->string('nombre');
             $table->unsignedBigInteger('empresa_id'); // Agregamos la clave foránea
+            $table->unsignedBigInteger('jefe_area'); // Agregamos la clave foránea
             $table->timestamps();
 
-            // Definimos la clave foránea
             $table->foreign('empresa_id')->references('id')->on('empresas');
         });
     }

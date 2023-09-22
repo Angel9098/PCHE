@@ -147,6 +147,13 @@ class EmpleadoController extends Controller
         }
     }
 
+    public function findEmpleadoById(Request $request)
+    {
+        $id = $request->input('id');
+        $empleado = Empleado::find($id);
+        return response()->json($empleado);
+    }
+
     public function actualizarContrasenia(Request $request)
     {
         try {
@@ -258,5 +265,16 @@ class EmpleadoController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => 'ocurrio un error al generar la busqueda'], 500);
         }
+    }
+    public function empleadosConHorasExtra()
+    {
+        $empleadosConHorasExtra = Empleado::with('horasExtra')->get();
+
+        /*         $empleado = Empleado::find(2);
+
+        $horasExtra = $empleado->horasExtra; */
+
+
+        return response()->json($empleadosConHorasExtra);
     }
 }

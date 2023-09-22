@@ -34,12 +34,13 @@ Route::post('empleados/filtro/busqueda', 'EmpleadoController@bEmpleadoF')->name(
 
 //Rutas para area
 Route::get('areas', 'AreaController@index')->name('areas');
+Route::get('areabyid', 'AreaController@areaById');
 Route::get('horarios/area', 'AreaController@horariosArea')->name('areasbyempresa');
-
-//Route::get('dashboard', 'DashboardController@index')->name('dashboard')->middleware('auth');
-
+Route::get('empresa/areas', 'EmpresaController@getAreasEmpresa');
+Route::post('empresa/update', 'EmpresaController@update')->name('updateEmpresa');
 //rutas para horarios
 Route::get('horarios/consulta', 'HorarioController@consultaDehorarioPorEmpleado')->name('horariobypersona');
+Route::get('horarios', 'HorarioController@index')->name('horarios');
 
 //Rutas para empleado
 Route::get('empleados', 'EmpleadoController@allempleados')->name('empleados');
@@ -54,11 +55,14 @@ Route::post('actualizarcontra', 'EmpleadoController@actualizarContrasenia')->nam
 Route::get('empleados/busqueda/empresa', 'EmpleadoController@busquedaEmpleadoPorEmpresa')->name('empleadosBusquedaEmpresa');
 Route::get('empleadobyid', 'EmpleadoController@empleadoById');
 Route::get('empleados_area', 'EmpleadoController@allEmpleadosAreaEmpresa')->name('empleadosbyAreaEmpresa');
+Route::get('empleados/horas_extra', 'EmpleadoController@empleadosConHorasExtra')->name('empleadosbyHorasExtra');
+
+Route::get('findempleadobyid', 'EmpleadoController@findEmpleadoById');
 
 
 Route::post('horas_extra/crear', 'HoraExtraCotroller@createHoraExtra')->name('horas_extra');
-Route::get('horas_extra', 'HoraExtraCotroller@allHoras')->name('horas_extra.all');
-Route::get('horarios', 'HorarioController@index')->name('allHorarios');
+Route::post('horas_extra', 'HoraExtraCotroller@allHoras')->name('horas_extra.all');
+Route::get('limpiar_horas', 'HorarioController@limpiarTabla');
 
 //ruta subida imagenes
 Route::post('/editarusuario', 'AuthController@editarPerfilUser');
@@ -69,4 +73,5 @@ Route::post('cortes/crear', 'CorteController@create')->name('crearCorte');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', 'DashboardController@index')->name('dashboard');
+
 });

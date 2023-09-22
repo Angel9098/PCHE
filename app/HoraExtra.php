@@ -9,10 +9,11 @@ class HoraExtra extends Model
     protected $table = 'horas_extra';
 
     protected $fillable = [
-        'id_empleado', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo', 'total'
+        'empleado_id', 'diurnas', 'nocturnas', 'diurnas_descanso', 'diurnas_descanso', 'nocturnas_descanso', 'diurnas_asueto', 'nocturnas_asueto', 'total', 'fecha_registro', 'no_carga', 'jefe_area'
     ];
 
-    public function empleado(){
+    public function empleado()
+    {
         return $this->belongsTo(Empleado::class);
     }
 }

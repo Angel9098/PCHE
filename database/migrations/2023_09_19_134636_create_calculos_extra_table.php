@@ -17,13 +17,18 @@ class CreateCalculosExtraTable extends Migration
         Schema::create('calculos_extra', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_corte');
-            $table->unsignedBigInteger('id_hora_extra');
+            $table->unsignedBigInteger('empleado_id');
+            $table->integer('jefe_area');
+            $table->integer('salario_mensual');
+            $table->integer('total_horas');
+            $table->integer('salario_neto');
             $table->integer('salario_total');
             $table->date('fecha_calculo');
             $table->timestamps();
 
             $table->foreign('id_corte')->references('id')->on('cortes');
-            $table->foreign('id_hora_extra')->references('id')->on('horas_extra');
+
+            $table->foreign('empleado_id')->references('id')->on('empleados');
         });
     }
 

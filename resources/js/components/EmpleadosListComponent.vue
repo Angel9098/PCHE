@@ -148,6 +148,7 @@ export default {
     },
     methods: {
         debounceSearchEmpleado: _.debounce(function () {
+
             this.searchEmpleado();
         }, 300),
         async searchEmpleado() {
@@ -155,8 +156,13 @@ export default {
                 if (this.filtros.selectedOption === 1) {
                     this.filtros.selectedOption = null;
                 }
-                const response = await axios.post("/empleados/filtro/busqueda", this.filtros);
-                this.empleados = response.data;
+                debugger;
+                if ((filtros.nombre === "") && (filtros.apellido === "") && (filtros.dui === "") && (filtros.cargo === "") && (filtros.email === "") && (filtros.selectedOption === "")) {
+                    this.fetchEmpleados();
+                } else {
+                    const response = await axios.post("/empleados/filtro/busqueda", this.filtros);
+                    this.empleados = response.data;
+                }
             } catch (error) {
                 console.error("Error al buscar empleados:", error.response ? error.response.data : error.message);
             }

@@ -54,22 +54,28 @@ export default {
   methods: {
     fetchEmpresas() {
       // Llamar al endpoint de empresas utilizando Axios (cambia this.$axios a axios)
-      axios
-        .get("/empresas")
-        .then((response) => {
+      axios.get("/empresas").then((response) => {
           // Formatear las empresas como 'id-nombre' y almacenarlas en 'empresas'
           this.empresas = response.data.map((empresa) => ({
             id: empresa.id,
             nombre: empresa.nombre,
           }));
-        })
-        .catch((error) => {
+        }).catch((error) => {
           console.error("Error al cargar empresas:", error);
         });
     },
     seleccionar() {
       // Manejar la acción de selección aquí
-      this.$router.push('/dashboard');
+      if (this.selectedOption == '') {
+        this.$toast.error('Seleccione empresa', {
+          timeout: 3000,
+          position: 'bottom-center',
+          icon: true,
+        });
+      } else {
+        localStorage.setItem('empresaID', JSON.stringify(this.selectedOption));
+        this.$router.push('/dashboard');
+      }
     },
   },
 }
