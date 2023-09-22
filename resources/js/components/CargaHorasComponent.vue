@@ -33,7 +33,6 @@
                             <th scope="col">ID Empleado</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Fecha</th>
-                            <th scope="col">Sueldo</th>
                             <th scope="col">Diurnas</th>
                             <th scope="col">Nocturnas</th>
                             <th scope="col">Diurnas Descanso</th>
@@ -41,21 +40,24 @@
                             <th scope="col">Diurnas Asueto</th>
                             <th scope="col">Nocturnas Asueto</th>
                         </thead>
-                        <tbody class="text-center">
+                        <tbody>
                             <tr v-for="registro in items" :key="registro.id">
-                                <td scope="row">{{ registro.idEmpleado }}</td>
+                                <td scope="row" class="text-center">{{ registro.idEmpleado }}</td>
                                 <td>{{ registro.nombre }}</td>
-                                <td>{{ registro.fecha }}</td>
-                                <td>{{ registro.sueldo | toCurrency }}</td>
-                                <td>{{ registro.diurnas }}</td>
-                                <td>{{ registro.nocturnas }}</td>
-                                <td>{{ registro.diurnasDescanso }}</td>
-                                <td>{{ registro.nocturnasDescanso }}</td>
-                                <td>{{ registro.diurnasAsueto }}</td>
-                                <td>{{ registro.nocturnasAsueto }}</td>
+                                <td class="text-center">{{ registro.fecha }}</td>
+                                <td class="text-center">{{ registro.diurnas }}</td>
+                                <td class="text-center">{{ registro.nocturnas }}</td>
+                                <td class="text-center">{{ registro.diurnasDescanso }}</td>
+                                <td class="text-center">{{ registro.nocturnasDescanso }}</td>
+                                <td class="text-center">{{ registro.diurnasAsueto }}</td>
+                                <td class="text-center">{{ registro.nocturnasAsueto }}</td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                <div class="col-12 d-flex flex-row justify-content-start gap-5">
+                    <button type="button" class="btn btn-primary" @click="save"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+                    <button type="button" class="btn btn-secondary" @click="remove"><i class="fa-solid fa-xmark"></i> Cancelar</button>
                 </div>
             </div>
         </transition>
@@ -112,7 +114,7 @@ export default {
                                     id: index,
                                     idEmpleado: element[0],
                                     nombre: element[1],
-                                    fecha: element[2] == null ? element[2] : moment(element[2]).format('L'),
+                                    fecha: element[2] == null ? element[2] : moment(element[2]).format('DD/MM/YYYY'),
                                     sueldo: element[3],
                                     diurnas: element[4] == null ? 0 : element[4],
                                     nocturnas: element[5] == null ? 0 : element[5],
@@ -123,12 +125,6 @@ export default {
                                 }
                                 this.items.push(registroHora);
                             }
-                        });
-                        //Enviar info de registros
-                        axios.post('horas_extra/crear', this.items, {
-                            headers: { 'Content-type': 'application/json' }
-                        }).then(resp => {
-                            console.log(resp.data);
                         });
                     });
                 }
@@ -153,6 +149,30 @@ export default {
             this.$refs.file.files = null;
             this.fileExcel = new File();
             this.items = [];
+        },
+        save() {
+            //Enviar info de registros
+            axios.post('horas_extra/crear', this.items, {
+                headers: { 'Content-type': 'application/json' }
+            }).then(() => {
+                this.$toast.success('Horas extra ingresadas', {
+                    position: "top-right",
+                    timeout: 3000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    closeButton: "button",
+                    icon: true
+                });
+            }).catch((error) => {
+                this.$toast.success('Error. Horas extra no ingresadas', {
+                    position: "top-right",
+                    timeout: 3000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    closeButton: "button",
+                    icon: true
+                });
+            });            
         }
     }
 }
@@ -174,7 +194,7 @@ export default {
     }
     
     thead th:nth-child(2), tr td:nth-child(2) {
-        width: 25%;
+        width: 35%;
     }
     thead th:nth-child(4), tr td:nth-child(4) {
         width: 6%;

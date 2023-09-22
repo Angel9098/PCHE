@@ -28,10 +28,12 @@
     "dependencies": {
         "@popperjs/core": "^2.11.8",
         "html2pdf.js": "^0.9.3",
+        "chart.js": "^3.0.0",
         "moment": "^2.29.4",
         "read-excel-file": "^5.6.1",
         "v-calendar": "^2.4.1",
         "v-mask": "^2.3.0",
+        "vue-chartjs": "^4.1.2",
         "vue-router": "^3.6.5",
         "vue-toastification": "^1.7.14",
         "vuex": "^2.5.0"

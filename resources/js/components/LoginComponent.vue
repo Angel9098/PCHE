@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex justify-content-center align-items-center" style="margin-top: 15%;">
+  <div class="w-100 d-flex justify-content-center align-items-center" style="margin-top: 15%;">
 <!--         <div class="d-flex flex-column col-5 paddingOff" style="background-color: #1b4d76;">
           <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
               <ol class="carousel-indicators">
@@ -29,11 +29,11 @@
           <form class="w-50 d-flex flex-column gap-3">
               <div class="form-group">
                   <label for="user">Usuario</label>
-                  <input type="text" class="form-control" id="user" placeholder="Escriba usuario" aria-describedby="userHelp" v-model="objLogin.email" @keyup.enter="Ingresar">
+                  <input type="text" class="form-control" id="user" placeholder="Escriba usuario" aria-describedby="userHelp" v-model="objLogin.email" @keyup.enter="login">
               </div>
               <div class="form-group">
                   <label for="pass">Contraseña</label>
-                  <input type="password" class="form-control" id="pass" placeholder="Escriba contraseña" aria-describedby="passHelp" v-model="objLogin.password" @keyup.enter="Ingresar">
+                  <input type="password" class="form-control" id="pass" placeholder="Escriba contraseña" aria-describedby="passHelp" v-model="objLogin.password" @keyup.enter="login">
               </div>
               <div class="form-group d-flex flex-row justify-content-center">
                   <button type="button" class="btn btn-primary" @click="login">
@@ -56,9 +56,13 @@
     },
     methods: {
       async login() {
-        if (!this.objLogin.email || !this.objLogin.password) {
-          this.showToast('Por favor, ingrese usuario y contraseña.');
+        if (!this.objLogin.email) {
+          this.showToast('Ingrese usuario');
           return;
+        }
+          if (!this.objLogin.password) {
+            this.showToast('Ingrese contraseña');
+            return;
         }
   
         try {
@@ -70,10 +74,10 @@
           this.$router.push('/business');
         } catch (error) {
           if (error.response && error.response.status === 401) {
-            this.showToast('Credenciales incorrectas. Intente de nuevo.');
+            this.showToast('Credenciales incorrectas. Intente de nuevo');
           } else {
             console.log(error)
-            this.showToast('Error en el servidor. Por favor, inténtelo de nuevo más tarde.');
+            this.showToast('Error en el servidor. Por favor, inténtelo de nuevo más tarde');
           }
         }
       },

@@ -100,11 +100,11 @@
                         </div>
                         <div class="d-flex flex-row col-12 mt-2">
                             <table class="table table-hover table-sm table-bordered">
-                                <thead class="text-center table-dark">
+                                <thead class="text-center table-primary">
                                     <tr>
-                                        <th scope="col" class="text-white">Selección</th>
-                                        <th scope="col" class="text-white">Horario</th>
-                                        <th scope="col" class="text-white">Horas por semana</th>
+                                        <th scope="col">Selecci&#243;n</th>
+                                        <th scope="col">Horario</th>
+                                        <th scope="col">Horas por semana</th>
                                     </tr>
                                 </thead>
                                 <tbody>

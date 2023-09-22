@@ -45,7 +45,7 @@
                 <router-link class="nav-link text-white text-uppercase"  to="/historialhoras"><i class="fa-brands fa-searchengin "></i> Historial horas extras</router-link>
               </li>
             </ul>
-            <button @click="cerrarSesion" class="btn bg-black btn-primary text-uppercase btnGray" type="submit">
+            <button @click="cerrarSesion" class="btn bg-black btn-primary text-uppercase btnGray" type="button">
               Cerrar sesion
             </button>
           </div>
@@ -84,7 +84,7 @@
                     <router-link class="my-4 text-uppercase"  to="/historialhoras"><i class="fa-brands fa-searchengin text-white"></i> </router-link>
                 </li>
                 <li class="li my-4">
-                    <router-link class="my-4 text-uppercase" @click="cerrarSesion" to="/"><i class="fa-solid fa-right-from-bracket text-white"></i> </router-link>
+                    <a class="my-4 text-uppercase" href=""><i class="fa-solid fa-right-from-bracket text-white" @click="cerrarSesion"></i> </a>
                 </li>
             </ul>
         </nav>
@@ -96,26 +96,30 @@
 </template>
 <style>
 
-.flexMenu {
-    margin: 0%;
-    width: 40px;
-    height: 100vh;
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    z-index: 1200;
-}
-.ul .li {
-    list-style: none;
-}
-ol, ul, dl {
-    margin-top: 20px;
-    margin-bottom: 1rem;
-}
+  .flexMenu {
+      margin: 0%;
+      width: 40px;
+      height: 100vh;
+      display: grid;
+      justify-content: center;
+      align-items: center;
+      z-index: 1200;
+  }
+  .ul .li {
+      list-style: none;
+  }
+  ol, ul, dl {
+      margin-top: 20px;
+      margin-bottom: 1rem;
+  }
 
-ol, ul {
-    padding-left: 0rem;
-}
+  ol, ul {
+      padding-left: 0rem;
+  }
+
+  a:hover{
+    cursor: pointer;
+  }
 
 </style>
 <script>
@@ -137,19 +141,18 @@ export default {
   methods: {
     //empleadobyid
     leerData() {
-      const { empleado_id } = JSON.parse(localStorage.getItem("user"));
-      axios
-        .get(`empleadobyid?idEmpleado=${empleado_id}`)
-        .then((result) => {
+      const empleadoId = JSON.parse(localStorage.getItem("user")).empleado_id;
+      axios .get(`empleadobyid?idEmpleado=${empleadoId}`)
+      .then((result) => {
           this.nombre = result.data[0].nombres;
-        })
-        .catch((error) => {});
+        }).catch((error) => {});
     },
     cerrarSesion(){
-                localStorage.removeItem('user');
-                this.$store.dispatch('logout');
-                this.$router.push('/');
-            }
+      localStorage.removeItem('user');
+      localStorage.removeItem('empresaID');
+      this.$store.dispatch('logout');
+      this.$router.push('/');
+    }
   },
 };
 </script>
