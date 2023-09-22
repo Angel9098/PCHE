@@ -147,6 +147,13 @@ class EmpleadoController extends Controller
         }
     }
 
+    public function findEmpleadoById(Request $request)
+    {
+        $id = $request->input('id');
+        $empleado = Empleado::find($id);
+        return response()->json($empleado);
+    }
+
     public function actualizarContrasenia(Request $request)
     {
         try {

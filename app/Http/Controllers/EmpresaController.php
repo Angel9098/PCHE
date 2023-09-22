@@ -111,7 +111,7 @@ class EmpresaController extends Controller
 
     public function getAreasEmpresa(Request $request){
 
-        $id = $request->query('id');
+        $id = $request->input('id');
 
         if (!$id) {
             return response()->json(['error' => 'Falta el parámetro "id" en la consulta'], 400);

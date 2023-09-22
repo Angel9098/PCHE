@@ -42,29 +42,40 @@ class HoraExtraCotroller extends Controller
             foreach ($registrosDepurados as $registroDepurado) {
 
                 $id_empleado = $registroDepurado['idEmpleado'];
+
+                $empleado = Empleado::where('dui', $id_empleado)->first();
+
                 $fechaRegis = $registro['fecha'];
+                $fechaFormateada = date('Y-m-d', strtotime($fechaRegis));
                 $diurnas = $registroDepurado['diurnas'];
                 $nocturnas = $registroDepurado['nocturnas'];
                 $diurnas_descanso = $registroDepurado['diurnasDescanso'];
                 $nocturnas_descanso = $registroDepurado['nocturnasDescanso'];
                 $diurnas_asueto = $registroDepurado['diurnasAsueto'];
                 $nocturnas_asueto = $registroDepurado['nocturnasAsueto'];
+                $total = 1;
 
+                $empleadoRegistrado = HoraExtra::where('empleado_id', $empleado->id)
+                    ->where('fecha_registro', $fechaFormateada)
+                    ->first();
 
-                $hora_extra = new HoraExtra([
-                    'empleado_id' => $id_empleado,
-                    'fecha_registro' => $fechaRegis,
-                    'diurnas' => $diurnas,
-                    'nocturnas' => $nocturnas,
-                    'diurnas_descanso' => $diurnas_descanso,
-                    'nocturnas_descanso' => $nocturnas_descanso,
-                    'diurnas_asueto' => $diurnas_asueto,
-                    'nocturnas_asueto' => $nocturnas_asueto,
-                    'no_carga' => $noCarga,
-                    'jefe_area' => $jefeArea,
-                ]);
+                if ($empleadoRegistrado === null) {
+                    $hora_extra = new HoraExtra([
+                        'empleado_id' => $empleado->id,
+                        'fecha_registro' => $fechaFormateada,
+                        'diurnas' => $diurnas,
+                        'nocturnas' => $nocturnas,
+                        'diurnas_descanso' => $diurnas_descanso,
+                        'nocturnas_descanso' => $nocturnas_descanso,
+                        'diurnas_asueto' => $diurnas_asueto,
+                        'nocturnas_asueto' => $nocturnas_asueto,
+                        'total' => $total,
+                        'no_carga' => $noCarga,
+                        'jefe_area' => $jefeArea,
+                    ]);
 
-                $hora_extra->save();
+                    $hora_extra->save();
+                }
             }
             return response()->json(["message" => 'Horas extra agregado con exito'], 201);
         } catch (\Exception $e) {
@@ -72,10 +83,26 @@ class HoraExtraCotroller extends Controller
         }
     }
 
-    public function allHoras()
+    public function allHoras(Request $request)
     {
+        $idArea = $request->input('selectArea');
+        $idEmpresa = $request->input('selectEmpresa');
 
-        $empleadosConHorasExtra = HoraExtra::all();
+        $horasExtrasQuery = HoraExtra::query();
+
+        if ($idEmpresa !== "NA" && $idEmpresa !== null) {
+            $horasExtrasQuery->whereHas('empleado.area', function ($query) use ($idEmpresa) {
+                $query->where('empresa_id', $idEmpresa);
+            });
+        }
+
+        if ($idArea !== "NA" && $idArea !== null) {
+            $horasExtrasQuery->whereHas('empleado', function ($query) use ($idArea) {
+                $query->where('area_id', $idArea);
+            });
+        }
+
+        $empleadosConHorasExtra = $horasExtrasQuery->with('empleado')->get();
 
         return response()->json($empleadosConHorasExtra);
     }

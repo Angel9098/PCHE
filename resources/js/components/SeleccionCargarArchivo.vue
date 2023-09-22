@@ -13,7 +13,7 @@
                     <div class="form-group d-flex" style="width: 100%;">
                         <select v-model="filtros.selectEmpresa" @input="debounceSearchArea" class="form-select">
                             <option value="" disabled selected>Seleccionar Empresa</option>
-                            <option value="">No seleccionar</option>
+                            <option value="no">No seleccionar</option>
                             <option v-for="empresa in empresas" :key="empresa.id" :value="empresa.id">
                                 {{ empresa.id }} - {{ empresa.nombre }}
                             </option>
@@ -21,13 +21,13 @@
                     </div>
                 </div>
 
-                <div class="col-2">
+                <div class="col-3">
                     <div class="form-group d-flex" style="width: 100%;">
                         <select v-model="filtros.selectArea" @input="debounceSearchEmpleado" class="form-select">
                             <option value="" disabled selected>Seleccionar Area</option>
-                            <option value="">No seleccionar</option>
-                            <option v-for="empresa in empresas" :key="empresa.id" :value="empresa.id">
-                                {{ empresa.id }} - {{ empresa.nombre }}
+                            <option value="no">No seleccionar</option>
+                            <option v-for="area in areas" :key="area.id" :value="area.id">
+                                {{ area.id }} - {{ area.nombre }}
                             </option>
                         </select>
                     </div>
@@ -35,8 +35,11 @@
                 <div class="col-2">
                     <input v-model="duiJefe" type="text" placeholder="Dui jefe" class="form-control mb-2" disabled />
                 </div>
-                <div class="col-2">
+                <div class="col-3">
                     <input v-model="nombreJefe" type="text" placeholder="Nombre jefe" class="form-control mb-2" disabled />
+                </div>
+                <div class="col-2">
+                    <input v-model="email" type="text" placeholder="Email" class="form-control mb-2" disabled />
                 </div>
             </div>
         </div>
@@ -58,18 +61,25 @@
                             <th scope="col">Diurnas Asueto</th>
                             <th scope="col">Nocturnas Asueto</th>
                         </thead>
-                        <tbody class="text-center">
-                            <tr v-for="registro in items" :key="registro.id">
-                                <td scope="row">{{ registro.idEmpleado }}</td>
-                                <td>{{ registro.nombre }}</td>
-                                <td>{{ registro.fecha }}</td>
-                                <td>{{ registro.sueldo | toCurrency }}</td>
+                        <tbody class="text-center" v-if="horasExtras.length > 0">
+                            <tr v-for="registro in horasExtras" :key="registro.id">
+                                <td scope="row">{{ registro.empleado.dui }}</td>
+                                <td>{{ registro.empleado.nombres }}</td>
+                                <td>{{ registro.fecha_registro }}</td>
+                                <td>{{ registro.empleado.salario | toCurrency }}</td>
                                 <td>{{ registro.diurnas }}</td>
                                 <td>{{ registro.nocturnas }}</td>
-                                <td>{{ registro.diurnasDescanso }}</td>
-                                <td>{{ registro.nocturnasDescanso }}</td>
-                                <td>{{ registro.diurnasAsueto }}</td>
-                                <td>{{ registro.nocturnasAsueto }}</td>
+                                <td>{{ registro.diurnas_descanso }}</td>
+                                <td>{{ registro.nocturnas_descanso }}</td>
+                                <td>{{ registro.diurnas_asueto }}</td>
+                                <td>{{ registro.nocturnas_asueto }}</td>
+                            </tr>
+                        </tbody>
+                        <tbody v-else>
+                            <tr>
+                                <td colspan="8" class="text-center">
+                                    No hay registros para mostrar
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -104,9 +114,11 @@ export default {
         return {
             empleados: [],
             empresas: [],
+            horasExtras: [],
             areas: [],
             duiJefe: "",
             nombreJefe: "",
+            email: "",
             filtros: {
                 selectEmpresa: "",
                 selectArea: "",
@@ -118,36 +130,41 @@ export default {
     },
     created() {
         this.fetchEmpresas();
-        // this.fetchEmpleados();
+        this.buscarRegistrosByEmpresa()
     },
     methods: {
         debounceSearchArea: _.debounce(function () {
-
-            //this.searchEmpleado();
+            if (this.filtros.selectEmpresa === "no") {
+                this.filtros.selectEmpresa = "NA";
+                this.areas = [];
+                this.filtros.selectArea = "NA";
+            }
             this.buscarArea();
+            this.buscarRegistrosByEmpresa(this.filtros);
+
         }, 300),
         debounceSearchEmpleado: _.debounce(function () {
-            const areaId = this.filtros.selectArea;
-            console.log(areaId);
-            if (areaId === 1) {
+            if (this.filtros.selectArea === "no") {
+                this.filtros.selectArea = "NA";
                 this.duiJefe = "";
+                this.email = "";
                 this.nombreJefe = "";
+
             }
+            const areaId = this.filtros.selectArea;
             this.searchAreaById(areaId);
+            this.buscarRegistrosByEmpresa(this.filtros);
+
         }, 300),
         async buscarArea() {
-            if (this.filtros.selectEmpresa === 1) {
-                this.filtros.selectEmpresa = null;
-                this.filtros.selectArea = null;
-            }
-            console.log(this.filtros.selectEmpresa);
+
+            const areaId = this.filtros.selectEmpresa;
             axios
-                .get("/areasbysearch")
+                .get("/empresa/areas?id=" + areaId)
                 .then((response) => {
                     this.areas = response.data.map((area) => ({
                         id: area.id,
                         nombre: area.nombre,
-                        idJefeArea: area.jefe_area,
                     }));
                 })
                 .catch((error) => {
@@ -160,11 +177,12 @@ export default {
                 method: 'GET',
                 success: (data) => {
                     $.ajax({
-                        url: '/empleadobyid?idEmpleado=' + data.jefe_area,
+                        url: '/findempleadobyid?id=' + data.jefe_area,
                         method: 'GET',
                         success: (data2) => {
-                            this.duiJefe = data2.nombre;
-                            this.nombreJefe = data2.nombre;
+                            this.duiJefe = data2.dui;
+                            this.nombreJefe = data2.nombres;
+                            this.email = data2.email;
                         },
                         error: (error) => {
 
@@ -191,6 +209,14 @@ export default {
                 });
         },
 
+        async fetchHorasExtras() {
+            const response = await axios.post("horas_extra");
+            this.horasExtras = response.data;
+        },
+        async buscarRegistrosByEmpresa() {
+            const response = await axios.post("horas_extra", this.filtros);
+            this.horasExtras = response.data;
+        },
         changePage(page) {
             this.currentPage = page;
             this.fetchEmpleados();

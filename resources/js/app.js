@@ -120,8 +120,14 @@ const routes = [
     {
         path: '/reporte',
         component: require('./components/ReportePersonaComponent.vue').default,
-         meta: { requiresAuth: true }
+        meta: { requiresAuth: true }
+    },
+    {
+        path: '/seleccionararchivo',
+        component: require('./components/SeleccionCargarArchivo.vue').default,
+        meta: { requiresAuth: true }
     }
+
 
 
 ]
@@ -143,7 +149,7 @@ Vue.filter('toCurrency', function (value) {
 });
 
 const app = new Vue({
-    render:h=>h(MenuFlotanteComponent),
+    render: h => h(MenuFlotanteComponent),
     store,
     router
 }).$mount('#app');
@@ -155,11 +161,11 @@ router.beforeEach((to, from, next) => {
             next('/');
         } else {
             next();
-           // return this.$store.getters.currentUser;
+            // return this.$store.getters.currentUser;
         }
     } else {
         next();
-       //  return this.$store.getters.currentUser;
+        //  return this.$store.getters.currentUser;
     }
 });
 

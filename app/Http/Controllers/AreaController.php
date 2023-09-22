@@ -32,11 +32,11 @@ class AreaController extends Controller
 
     public function areaById(Request $request)
     {
-        $idArea = $request->input('idArea');
+        $idArea = $request->input('id');
 
-        $areas = Area::where('id', $idArea)->get();
+        $area = Area::find($idArea);
 
-        return response()->json($areas);
+        return response()->json($area);
     }
 
     public function horariosArea(Request $request)
