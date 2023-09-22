@@ -40,6 +40,7 @@ Route::get('empresa/areas', 'EmpresaController@getAreasEmpresa');
 
 //rutas para horarios
 Route::get('horarios/consulta', 'HorarioController@consultaDehorarioPorEmpleado')->name('horariobypersona');
+Route::get('horarios', 'HorarioController@index')->name('horarios');
 
 //Rutas para empleado
 Route::get('empleados', 'EmpleadoController@allempleados')->name('empleados');
