@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Area;
 use App\Empresa;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
@@ -76,6 +77,35 @@ class EmpresaController extends Controller
             return response()->json(["message" => 'Empresa creada exitosamente'], 200);
         } catch (QueryException $ex) {
             return response()->json(["message" => 'Error al agregar empresa: ' . $ex->getMessage()], 500);
+        }
+    }
+
+    public function update(Request $request)
+    {
+        try {
+            $empresaId = $request->input('id');
+
+            $empresa = Empresa::findOrFail($empresaId);
+
+            if ($request->hasFile('imagen')) {
+                // Procesa la nueva imagen y actualiza la ruta de la imagen
+                $imagen = $request->file('imagen');
+                $nombreImagen = uniqid() . '.' . $imagen->getClientOriginalExtension();
+                $rutaImagen = $imagen->storeAs('public/imagenes', $nombreImagen);
+                $empresa->imagen = $nombreImagen;
+            }
+
+            $empresa->nombre = $request->input('nombre');
+            $empresa->direccion = $request->input('direccion');
+            $empresa->rubro = $request->input('rubro');
+
+            $empresa->save();
+
+            return response()->json(["message" => 'Empresa actualizada exitosament'], 200);
+        }  catch (ModelNotFoundException $ex) {
+            return response()->json(["message" => 'Empresa no encontrada'], 404);
+        } catch (QueryException $ex) {
+            return response()->json(["message" => 'Error al actualizar empresa: ' . $ex->getMessage()], 500);
         }
     }
 
