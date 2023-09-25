@@ -70,7 +70,7 @@
                     </div>
                 </div>
 
-                <div class="d-flex flex-row justify-content-center" style="margin-bottom: 2%;">
+                <div class="d-flex flex-row justify-content-center gap-2" style="margin-bottom: 2%;">
                     <div class="col-4">
                         <div class="d-flex flex-row align-items-center">
                             <div class="col-3">

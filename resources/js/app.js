@@ -126,6 +126,11 @@ const routes = [
         path: '/seleccionararchivo',
         component: require('./components/SeleccionCargarArchivo.vue').default,
         meta: { requiresAuth: true }
+    },
+    {
+        path: '/areas',
+        component: require('./components/AreasComponent.vue').default,
+        meta: { requiresAuth: true }
     }
 
 
