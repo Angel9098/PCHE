@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Area;
 use Illuminate\Http\Request;
 use \App\Empleado;
+use App\HoraExtra;
 use App\UserAct;
 use App\Usuario;
 use GuzzleHttp\Psr7\Message;
@@ -78,7 +79,8 @@ class EmpleadoController extends Controller
                 'horario_id' => 'required|exists:horarios,id',
                 'dui' => 'required|string',
                 'numero_emergencia' => 'required|string',
-                'nombre_persona' => 'required|string'
+                'avisar_contacto' => 'required|string',
+                'salario' => 'required|string'
             ]);
 
             $dui = $request->input('dui');
@@ -97,7 +99,8 @@ class EmpleadoController extends Controller
                 $empleado->dui = $request->input('dui');
                 $empleado->horario_id = $request->input('horario_id');
                 $empleado->numero_emergencia = $request->input('numero_emergencia');
-                $empleado->nombre_persona = $request->input('nombre_persona');
+                $empleado->avisar_contacto = $request->input('avisar_contacto');
+                $empleado->salario = $request->input('salario');
                 $empleado->save();
 
                 return response()->json(['message' => 'Empleado creado con éxito', 'empleado' => $empleado, 200]);
@@ -266,14 +269,31 @@ class EmpleadoController extends Controller
             return response()->json(['message' => 'ocurrio un error al generar la busqueda'], 500);
         }
     }
-    public function empleadosConHorasExtra()
+    public function empleadosConHorasExtra(Request $request)
     {
-        $empleadosConHorasExtra = Empleado::with('horasExtra')->get();
+        $empleadoId = $request->query('empleadoId');
+        $areaId = $request->query('areaId');
 
-        /*         $empleado = Empleado::find(2);
+        $query = HoraExtra::with('empleado.area.empresa');
 
-        $horasExtra = $empleado->horasExtra; */
+        if ($empleadoId) {
+            $query->whereHas('empleado', function ($query) use ($empleadoId) {
+                $query->where('id', $empleadoId);
+            });
+        }
 
+        if ($areaId) {
+            $query->whereHas('empleado.area', function ($query) use ($areaId) {
+                $query->where('id', $areaId);
+            });
+        }
+
+/*         $empleadosAreaHorasExtra = HoraExtra::with('empleado.area.empresa')
+        ->whereHas('empleado', function($query) use ($empleadoId){
+            $query->where('id',$empleadoId);
+        }) ->get(); */
+
+        $empleadosConHorasExtra = $query->get();
 
         return response()->json($empleadosConHorasExtra);
     }
