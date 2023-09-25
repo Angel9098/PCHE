@@ -8,7 +8,7 @@
             <h2 style="text-align: left;" class="mt-5">FILTROS DE BUSQUEDA</h2>
         </div>
         <div class="container mt-4">
-            <div class="row">
+            <div class="row" style="margin-bottom: 2%;">
                 <div class="col-2">
                     <div class="form-group d-flex" style="width: 100%;">
                         <select v-model="filtros.selectEmpresa" @input="debounceSearchArea" class="form-select">
@@ -42,25 +42,51 @@
                     <input v-model="email" type="text" placeholder="Email" class="form-control mb-2" disabled />
                 </div>
             </div>
+            <div class="row">
+                <div class="col-3">
+                    <div class="row">
+                        <div class="col-3">
+                            <label for="fechaHasta">Desde:</label>
+                        </div>
+                        <div class="col-9">
+                            <input v-model="filtros.fechaDesde" type="date" id="fechaHasta" class="form-control mb-2">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="row">
+                        <div class="col-3">
+                            <label for="fechaHasta">Hasta:</label>
+                        </div>
+                        <div class="col-9">
+                            <input v-model="filtros.fechaHasta" type="date" id="fechaHasta" class="form-control mb-2">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="container">
-            <h2 class="h1 text-center mt-5">REGISTROS DE HORAS EXTRAS</h2>
+        <div class="col-12">
+            <div class="row">
+                <h2 class="h1 text-center mt-5">HISTORIAL DE HORAS EXTRAS</h2>
+            </div>
             <div class="col-11 d-flex flex-column">
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered table-sm mt-4 align-middle">
-                        <thead class="text-center bg-primary text-white align-middle">
-                            <th scope="col">ID Empleado</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Fecha</th>
-                            <th scope="col">Sueldo</th>
-                            <th scope="col">Diurnas</th>
-                            <th scope="col">Nocturnas</th>
-                            <th scope="col">Diurnas Descanso</th>
-                            <th scope="col">Nocturnas Descanso</th>
-                            <th scope="col">Diurnas Asueto</th>
-                            <th scope="col">Nocturnas Asueto</th>
+                        <thead class="text-center bg-primary text-white">
+                            <th scope="col" class="col-2">ID Empleado</th>
+                            <th scope="col" class="col-3">Nombre</th>
+                            <th scope="col" class="col-1">Fecha</th>
+                            <th scope="col" class="col-2">Sueldo</th>
+                            <th scope="col" class="col-1">Diurnas</th>
+                            <th scope="col" class="col-1">Nocturnas</th>
+                            <th scope="col" class="col-1">Diurnas Descanso</th>
+                            <th scope="col" class="col-1">Nocturnas Descanso</th>
+                            <th scope="col" class="col-1">Diurnas Asueto</th>
+                            <th scope="col" class="col-1">Nocturnas Asueto</th>
                         </thead>
+
+
                         <tbody class="text-center" v-if="horasExtras.length > 0">
                             <tr v-for="registro in horasExtras" :key="registro.id">
                                 <td scope="row">{{ registro.empleado.dui }}</td>
@@ -85,6 +111,7 @@
                     </table>
                 </div>
             </div>
+
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
                     <li class="page-item" :class="{ disabled: currentPage === 1 }">
@@ -103,6 +130,16 @@
                 </ul>
             </nav>
 
+            <div class="row">
+                <div class="col-10">
+                </div>
+                <div class="col-1">
+                    <button @click="procesar()" class="btn btn-custom btn-3d">Procesar</button>
+                </div>
+                <div class="col-1">
+
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -122,6 +159,8 @@ export default {
             filtros: {
                 selectEmpresa: "",
                 selectArea: "",
+                fechaDesde: "",
+                fechaHasta: "",
             },
 
             currentPage: 1,
@@ -170,6 +209,9 @@ export default {
                 .catch((error) => {
                     console.error("Error al cargar areas:", error);
                 });
+        },
+        procesar() {
+
         },
         async searchAreaById(areaId) {
             $.ajax({
@@ -240,6 +282,27 @@ export default {
     flex: 1;
     padding: 10px;
     margin: 0 10px;
+}
+
+.btn-custom {
+    background-image: linear-gradient(to bottom, #57b5cc, #3a92a7);
+    color: #fff;
+    border-color: #2a7484;
+}
+
+.btn-custom:hover {
+    background-image: linear-gradient(to bottom, #3a92a7, #57b5cc);
+}
+
+/* Ajustar el color del texto para que resalte más */
+.btn-custom.btn-3d {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+    font-weight: bold;
+}
+
+.btn-custom.btn-3d:hover {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+    transform: translateY(-1px);
 }
 
 .borderCircle {

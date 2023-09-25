@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <nav class="navbar navbar-primary bg-primary position-static" :hidden="currentPath =='/' || currentPath =='/business'">
+    <nav class="navbar navbar-primary bg-primary position-static" :hidden="currentPath == '/' || currentPath == '/business'">
       <div class="container-fluid">
         <button class="navbar-toggler bg-white" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -147,11 +147,13 @@ export default {
   methods: {
     //empleadobyid
     leerData() {
-      const empleadoId = JSON.parse(localStorage.getItem("user")).empleado_id;
-      axios .get(`empleadobyid?idEmpleado=${empleadoId}`)
-      .then((result) => {
-          this.nombre = result.data[0].nombres;
-        }).catch((error) => {});
+      if (localStorage.getItem("user") !== null) {
+        const empleadoId = JSON.parse(localStorage.getItem("user")).empleado_id;
+
+        axios.get(`empleadobyid?idEmpleado=${empleadoId}`).then((result) => {
+            this.nombre = result.data[0].nombres;
+          }).catch((error) => { });
+      }
     },
     cerrarSesion(){
       localStorage.removeItem('user');
