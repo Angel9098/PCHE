@@ -64,7 +64,7 @@
                                         Sin elementos disponibles
                                     </option>
                                     <option v-for="a in areas" :key="a.id" :value="a.id">
-                                        {{ a.nombre }}
+                                        {{ a.nombre_area }}
                                     </option>
                                 </select>
                             </div>
@@ -192,7 +192,7 @@ export default {
             axios.get(`areas?idEmpresa=${this.usuario.empresa}`, {
                 headers: { 'Content-type': 'application/json' }
             }).then(resp => {
-                this.areas = resp.data.areas;
+                this.areas = resp.data;
             });
         },
         getHorarios() {
