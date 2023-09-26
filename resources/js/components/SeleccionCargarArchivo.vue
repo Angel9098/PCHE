@@ -46,10 +46,11 @@
                 <div class="col-3">
                     <div class="row">
                         <div class="col-3">
-                            <label for="fechaHasta">Desde:</label>
+                            <label for="fechaDesde">Desde:</label>
                         </div>
                         <div class="col-9">
-                            <input v-model="filtros.fechaDesde" type="date" id="fechaHasta" class="form-control mb-2">
+                            <input v-model="filtros.fechaDesde" @input="debounceSearchFechas" type="date" id="fechaDesde"
+                                class="form-control mb-2">
                         </div>
                     </div>
                 </div>
@@ -59,7 +60,8 @@
                             <label for="fechaHasta">Hasta:</label>
                         </div>
                         <div class="col-9">
-                            <input v-model="filtros.fechaHasta" type="date" id="fechaHasta" class="form-control mb-2">
+                            <input v-model="filtros.fechaHasta" @input="debounceSearchFechas" type="date" id="fechaHasta"
+                                class="form-control mb-2">
                         </div>
                     </div>
                 </div>
@@ -134,7 +136,7 @@
                 <div class="col-10">
                 </div>
                 <div class="col-1">
-                    <button @click="procesar()" class="btn btn-custom btn-3d">Procesar</button>
+                    <button @click="procesarCalculos()" class="btn btn-custom btn-3d">Procesar</button>
                 </div>
                 <div class="col-1">
 
@@ -163,6 +165,7 @@ export default {
                 fechaHasta: "",
             },
 
+
             currentPage: 1,
             lastPage: 1,
         };
@@ -181,6 +184,14 @@ export default {
             this.buscarArea();
             this.buscarRegistrosByEmpresa(this.filtros);
 
+        }, 300),
+        debounceSearchFechas: _.debounce(function () {
+            if (this.filtros.selectEmpresa === "no") {
+                this.filtros.selectEmpresa = "NA";
+                this.areas = [];
+                this.filtros.selectArea = "NA";
+            }
+            this.buscarRegistrosByEmpresa(this.filtros);
         }, 300),
         debounceSearchEmpleado: _.debounce(function () {
             if (this.filtros.selectArea === "no") {
@@ -210,9 +221,9 @@ export default {
                     console.error("Error al cargar areas:", error);
                 });
         },
-        procesar() {
 
-        },
+
+
         async searchAreaById(areaId) {
             $.ajax({
                 url: '/areabyid?id=' + areaId,
@@ -237,6 +248,7 @@ export default {
             });
         },
 
+
         fetchEmpresas() {
             axios
                 .get("/empresas")
@@ -251,13 +263,14 @@ export default {
                 });
         },
 
-        async fetchHorasExtras() {
-            const response = await axios.post("horas_extra");
-            this.horasExtras = response.data;
-        },
         async buscarRegistrosByEmpresa() {
             const response = await axios.post("horas_extra", this.filtros);
             this.horasExtras = response.data;
+        },
+        async procesarCalculos() {
+
+            const response = await axios.post("calculo_horas", this.horasExtras);
+            var mensaje = response.data;
         },
         changePage(page) {
             this.currentPage = page;

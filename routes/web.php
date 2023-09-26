@@ -56,8 +56,11 @@ Route::get('empleados/busqueda/empresa', 'EmpleadoController@busquedaEmpleadoPor
 Route::get('empleadobyid', 'EmpleadoController@empleadoById');
 Route::get('empleados_area', 'EmpleadoController@allEmpleadosAreaEmpresa')->name('empleadosbyAreaEmpresa');
 Route::get('empleados/horas_extra', 'EmpleadoController@empleadosConHorasExtra')->name('empleadosbyHorasExtra');
-
 Route::get('findempleadobyid', 'EmpleadoController@findEmpleadoById');
+
+//rutas para los calculos
+Route::post('/calculo_horas', 'CalculosHorasController@createCalculo');
+Route::post('/calculos', 'CalculosHorasController@allCalculos');
 
 
 Route::post('horas_extra/crear', 'HoraExtraCotroller@createHoraExtra')->name('horas_extra');
@@ -73,5 +76,4 @@ Route::post('cortes/crear', 'CorteController@create')->name('crearCorte');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', 'DashboardController@index')->name('dashboard');
-
 });
