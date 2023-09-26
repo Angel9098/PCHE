@@ -51,7 +51,7 @@
                   ><i class="fa-solid fa-house mr-3"></i> Inicio</router-link
                 >
               </li>
-              <li class="nav-item">
+              <li v-if="userRoles === 'administrador'" class="nav-item">
                 <router-link
                   class="nav-link text-white text-uppercase"
                   to="/registro"
@@ -59,7 +59,7 @@
                   empleados</router-link
                 >
               </li>
-              <li class="nav-item">
+              <li v-if="userRoles === 'jefe'" class="nav-item">
                 <router-link
                   class="nav-link text-white text-uppercase"
                   to="/importacionhoras"
@@ -67,28 +67,28 @@
                   extras
                 </router-link>
               </li>
-              <li class="nav-item">
+              <li v-if="userRoles === 'jefe'" class="nav-item">
                 <router-link
                   class="nav-link text-white text-uppercase"
                   to="/editarperfilusuario"
                   ><i class="fa-solid fa-user"></i> Perfil
                 </router-link>
               </li>
-              <li class="nav-item">
+              <li v-if="userRoles === 'administrador'" class="nav-item">
                 <router-link
                   class="nav-link text-white text-uppercase"
                   to="/empleados"
                   ><i class="fa-solid fa-users"></i> Empleados</router-link
                 >
               </li>
-              <li class="nav-item">
+              <li v-if="userRoles === 'administrador'" class="nav-item">
                 <router-link
                   class="nav-link text-white text-uppercase"
                   to="/empresas"
                   ><i class="fa-solid fa-building"></i> Empresas</router-link
                 >
               </li>
-              <li class="nav-item">
+              <li v-if="userRoles === 'administrador'" class="nav-item">
                 <router-link
                   class="nav-link text-white text-uppercase"
                   to="/activacionusuario"
@@ -96,14 +96,14 @@
                   Usuario</router-link
                 >
               </li>
-              <li class="nav-item">
+              <li v-if="userRoles === 'administrador'" class="nav-item">
                 <router-link
                   class="nav-link text-white text-uppercase"
                   to="/calendarios"
                   ><i class="fa-solid fa-calendar"></i> Calendario</router-link
                 >
               </li>
-              <li class="nav-item">
+              <li v-if="userRoles === 'administrador'"  class="nav-item">
                 <router-link
                   class="nav-link text-white text-uppercase"
                   to="/historialhoras"
@@ -111,7 +111,7 @@
                   extras</router-link
                 >
               </li>
-              <li class="nav-item">
+              <li v-if="userRoles === 'administrador'" class="nav-item">
                 <router-link
                   class="nav-link text-white text-uppercase"
                   to="/seleccionararchivo"
@@ -144,12 +144,12 @@
               ><i class="fa-solid fa-house text-white"></i>
             </router-link>
           </li>
-          <li class="li my-4">
+          <li v-if="userRoles === 'jefe'" class="li my-4">
             <router-link class="my-4 text-uppercase" to="/importacionhoras"
               ><i class="fa-solid fa-file-arrow-up text-white"></i>
             </router-link>
           </li>
-          <li class="li my-4">
+          <li v-if="userRoles === 'administrador'" class="li my-4">
             <router-link class="my-4 text-uppercase" to="/registro"
               ><i class="fa-solid fa-circle-plus text-white"></i>
             </router-link>
@@ -159,32 +159,32 @@
               ><i class="fa-solid fa-user text-white"></i>
             </router-link>
           </li>
-          <li class="li my-4">
+          <li v-if="userRoles === 'administrador'" class="li my-4">
             <router-link class="my-4 text-uppercase" to="/empleados"
               ><i class="fa-solid fa-users text-white"></i
             ></router-link>
           </li>
-          <li class="li my-4">
+          <li v-if="userRoles === 'administrador'" class="li my-4">
             <router-link class="my-4 text-uppercase" to="/empresas"
               ><i class="fa-solid fa-building text-white"></i
             ></router-link>
           </li>
-          <li class="li my-4">
+          <li v-if="userRoles === 'administrador'" class="li my-4">
             <router-link class="my-4 text-uppercase" to="/activacionusuario"
               ><i class="fa-solid fa-user-check text-white"></i
             ></router-link>
           </li>
-          <li class="li my-4">
+          <li v-if="userRoles === 'administrador'" class="li my-4">
             <router-link class="my-4 text-uppercase" to="/calendarios"
               ><i class="fa-solid fa-calendar text-white"></i>
             </router-link>
           </li>
-          <li class="li my-4">
+          <li v-if="userRoles === 'administrador'" class="li my-4">
             <router-link class="my-4 text-uppercase" to="/historialhoras"
               ><i class="fa-brands fa-searchengin text-white"></i>
             </router-link>
           </li>
-          <li class="li my-4">
+          <li  v-if="userRoles === 'administrador'" class="li my-4">
             <router-link class="my-4 text-uppercase" to="/seleccionararchivo"
               ><i class="fa-solid fa-file-circle-check text-white"></i>
             </router-link>
