@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Area;
 use Illuminate\Http\Request;
 use App\Empleado;
+use Exception;
 use Illuminate\Support\Facades\DB;
 
 class AreaController extends Controller
@@ -60,5 +61,90 @@ class AreaController extends Controller
             ->get();
 
         return response()->json($areas);
+    }
+
+    public function createArea(Request $request){
+
+        try {
+            // Validar los datos antes de crear el área
+            $validatedData = $request->validate([
+                'nombre' => 'required|string',
+                'empresa_id' => 'required|integer',
+                'jefe_area' => 'required|string',
+            ]);
+
+            $area = new Area();
+            $area->nombre = $request->input('nombre');
+            $area->empresa_id = $request->input('empresa_id');
+            $area->jefe_area = $request->input('jefe_area');
+            $area->save();
+
+            return response()->json(['message' => 'Area de empresa creada con éxito', 'area' => $area, 201]);
+
+        } catch (\Exception $e) {
+            // Manejar cualquier error y devolver una respuesta de error adecuada
+            return response()->json(['error' => 'No se pudo crear el área. Detalles: ' . $e->getMessage()], 500);
+        }
+
+    }
+
+    public function updateArea(Request $request){
+
+        try {
+            $idArea = $request->input('id');
+            $area = Area::find($idArea);
+
+            if (!$area) {
+                return response()->json(['message' => 'Area no encontrada'], 404);
+            }
+
+            // Validar los datos antes de editar el área
+            $validatedData = $request->validate([
+                'nombre' => 'required|string',
+                'empresa_id' => 'required|integer',
+                'jefe_area' => 'required|string',
+            ]);
+
+            $area->nombre = $request->input('nombre');
+            $area->empresa_id = $request->input('empresa_id');
+            $area->jefe_area = $request->input('jefe_area');
+            $area->save();
+
+            return response()->json(['message' => 'Area de empresa actualizada con éxito', 'area' => $area, 201]);
+
+        } catch (\Exception $e) {
+            // Manejar cualquier error y devolver una respuesta de error adecuada
+            return response()->json(['error' => 'No se pudo editar el área. Detalles: ' . $e->getMessage()], 500);
+        }
+
+    }
+
+    public function deleteArea(Request $request){
+
+        try {
+            $id = $request->input('id');
+
+            $area = Area::findOrFail($id);
+            $area->delete();
+
+            return response()->json(['message' => 'Area eliminada con éxito'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error al eliminar el area'], 500);
+        }
+
+    }
+
+    public function listaDetalleAreas(){
+
+            // Realizar la consulta utilizando Eloquent
+            $resultados = DB::table('areas as a')
+            ->join('empresas as e', 'a.empresa_id', '=', 'e.id')
+            ->join('empleados as em', 'a.jefe_area', '=', 'em.id')
+            ->select('a.nombre as nombre_area', 'e.nombre as nombre_empresa', 'em.nombres as nombre_jefe_area')
+            ->get();
+
+            // Devolver los resultados en formato JSON
+            return response()->json($resultados);
+
     }
 }

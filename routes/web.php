@@ -33,11 +33,12 @@ Route::get('empresabyid', 'EmpresaController@empresaById');
 Route::post('empleados/filtro/busqueda', 'EmpleadoController@bEmpleadoF')->name('empleadosBusquedafiltro');
 
 //Rutas para area
-Route::get('areas', 'AreaController@index')->name('areas');
+Route::get('areas', 'AreaController@listaDetalleAreas')->name('areasdetalle');
 Route::get('areabyid', 'AreaController@areaById');
 Route::get('horarios/area', 'AreaController@horariosArea')->name('areasbyempresa');
 Route::get('empresa/areas', 'EmpresaController@getAreasEmpresa');
 Route::post('empresa/update', 'EmpresaController@update')->name('updateEmpresa');
+
 //rutas para horarios
 Route::get('horarios/consulta', 'HorarioController@consultaDehorarioPorEmpleado')->name('horariobypersona');
 Route::get('horarios', 'HorarioController@index')->name('horarios');
