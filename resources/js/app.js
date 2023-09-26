@@ -48,7 +48,20 @@ const options = {
 };
 
 Vue.use(Toast, options);
+localStorage.setItem('userAdmin' , 'jefe');
 
+if (JSON.parse(localStorage.getItem("user")) !== null) {
+    const empleadoId = JSON.parse(localStorage.getItem("user"));
+    console.log(empleadoId)
+  
+    axios
+      .get(`empleadobyid?idEmpleado=${empleadoId.empleado_id}`)
+      .then((result) => {
+         console.log(result.data[0])
+      })
+      .catch((error) => {});
+  }
+// 
 const routes = [
     {
         path: '/',
@@ -69,22 +82,51 @@ const routes = [
     {
         path: '/registro',
         component: require('./components/RegistroUsuarioComponent.vue').default,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true },
+        beforeEnter: (to, from, next) => {
+            if (localStorage.getItem('userAdmin') === 'administrador') {
+              next(); // Permite el acceso si el usuario es administrador
+            } else {
+              next('/access-denied'); // Redirige a una página de acceso denegado si no es administrador
+            }
+          }
     },
     {
         path: '/activacionusuario',
         component: require('./components/ActivacionUsuarioComponent.vue').default,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true },
+        beforeEnter: (to, from, next) => {
+            if (localStorage.getItem('userAdmin') === 'administrador') {
+              next(); // Permite el acceso si el usuario es administrador
+            } else {
+              next('/access-denied'); // Redirige a una página de acceso denegado si no es administrador
+            }
+          }
     },
     {
         path: '/editarperfil',
         component: require('./components/EditarPerfilComponent.vue').default,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true },
+        beforeEnter: (to, from, next) => {
+            if (localStorage.getItem('userAdmin') === 'administrador') {
+              next(); // Permite el acceso si el usuario es administrador
+            } else {
+              next('/access-denied'); // Redirige a una página de acceso denegado si no es administrador
+            }
+          }
     },
     {
         path: '/editarperfilusuario',
         component: require('./components/EditarPerfilUsuarioComponent.vue').default,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true },
+        beforeEnter: (to, from, next) => {
+            if (localStorage.getItem('userAdmin') === 'jefe') {
+              next(); // Permite el acceso si el usuario es administrador
+            } else {
+              next('/access-denied'); // Redirige a una página de acceso denegado si no es administrador
+            }
+          }
+
     },
     {
         path: '/menu',
@@ -94,47 +136,106 @@ const routes = [
     {
         path: '/historialhoras',
         component: require('./components/HistorialHorasComponent.vue').default,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true },
+        beforeEnter: (to, from, next) => {
+            if (localStorage.getItem('userAdmin') === 'administrador') {
+              next(); // Permite el acceso si el usuario es administrador
+            } else {
+              next('/access-denied'); // Redirige a una página de acceso denegado si no es administrador
+            }
+          }
     },
     {
         path: '/importacionhoras',
         component: require('./components/CargaHorasComponent.vue').default,
         meta: { requiresAuth: true },
+        beforeEnter: (to, from, next) => {
+            if (localStorage.getItem('userAdmin') === 'jefe') {
+              next(); // Permite el acceso si el usuario es administrador
+            } else {
+              next('/access-denied'); // Redirige a una página de acceso denegado si no es administrador
+            }
+          }
     },
     {
         path: '/calendarios',
         component: require('./components/CalendarioComponent.vue').default,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true },
+        beforeEnter: (to, from, next) => {
+            if (localStorage.getItem('userAdmin') === 'administrador') {
+              next(); // Permite el acceso si el usuario es administrador
+            } else {
+              next('/access-denied'); // Redirige a una página de acceso denegado si no es administrador
+            }
+          }
+
     },
     {
         path: '/empleados',
         component: require('./components/EmpleadosListComponent.vue').default,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true },
+        beforeEnter: (to, from, next) => {
+            if (localStorage.getItem('userAdmin') === 'administrador') {
+              next(); // Permite el acceso si el usuario es administrador
+            } else {
+              next('/access-denied'); // Redirige a una página de acceso denegado si no es administrador
+            }
+          }
     }
     ,
     {
         path: '/empresas',
         component: require('./components/EmpresasComponent.vue').default,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true },
+        beforeEnter: (to, from, next) => {
+            if (localStorage.getItem('userAdmin') === 'administrador') {
+              next(); // Permite el acceso si el usuario es administrador
+            } else {
+              next('/access-denied'); // Redirige a una página de acceso denegado si no es administrador
+            }
+          }
     },
     {
         path: '/reporte',
         component: require('./components/ReportePersonaComponent.vue').default,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true },
+        beforeEnter: (to, from, next) => {
+            if (localStorage.getItem('userAdmin') === 'administrador') {
+              next(); // Permite el acceso si el usuario es administrador
+            } else {
+              next('/access-denied'); // Redirige a una página de acceso denegado si no es administrador
+            }
+          }
     },
     {
         path: '/seleccionararchivo',
         component: require('./components/SeleccionCargarArchivo.vue').default,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true },
+        beforeEnter: (to, from, next) => {
+            if (localStorage.getItem('userAdmin') === 'administrador') {
+              next(); // Permite el acceso si el usuario es administrador
+            } else {
+              next('/access-denied'); // Redirige a una página de acceso denegado si no es administrador
+            }
+          }
     },
     {
         path: '/areas',
         component: require('./components/AreasComponent.vue').default,
+        meta: { requiresAuth: true },
+        beforeEnter: (to, from, next) => {
+            if (localStorage.getItem('userAdmin') === 'administrador') {
+              next(); // Permite el acceso si el usuario es administrador
+            } else {
+              next('/access-denied'); // Redirige a una página de acceso denegado si no es administrador
+            }
+          }
+    },
+    {
+        path: '/access-denied',
+        component: require('./components/Access-deniedComponent.vue').default,
         meta: { requiresAuth: true }
     }
-
-
-
 ]
 
 const router = new VueRouter({

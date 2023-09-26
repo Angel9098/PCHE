@@ -140,7 +140,8 @@ class AreaController extends Controller
             $resultados = DB::table('areas as a')
             ->join('empresas as e', 'a.empresa_id', '=', 'e.id')
             ->join('empleados as em', 'a.jefe_area', '=', 'em.id')
-            ->select('a.nombre as nombre_area', 'e.nombre as nombre_empresa', 'em.nombres as nombre_jefe_area')
+            ->select('a.id', 'a.nombre as nombre_area', 'e.nombre as nombre_empresa',
+                    DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe_area'))
             ->get();
 
             // Devolver los resultados en formato JSON

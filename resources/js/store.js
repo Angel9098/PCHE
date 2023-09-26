@@ -7,11 +7,15 @@ const store = new Vuex.Store({
   state: {
     loggedIn: false,
     user: null, // Puedes almacenar información del usuario aquí
+    userRol:  null
   },
   mutations: {
     setLoggedIn(state, user) {
       state.loggedIn = true;
       state.user = user;
+      state.userRol = user.rol;
+      localStorage.setItem('userAdmin' , `${state.userRol}`);
+      console.log(state.userRol)
     },
     setLoggedOut(state) {
       state.loggedIn = false;
@@ -20,7 +24,7 @@ const store = new Vuex.Store({
   },
   actions: {
     logins({ commit }, user) {
-     
+      
       // Aquí puedes realizar la autenticación, por ejemplo, mediante una llamada a la API
       // Una vez autenticado, puedes obtener la información del usuario y pasarla a la mutación
       const authenticatedUser = user; // Cambia esto con la información real del usuario

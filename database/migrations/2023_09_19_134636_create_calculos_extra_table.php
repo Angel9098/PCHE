@@ -14,7 +14,7 @@ class CreateCalculosExtraTable extends Migration
      */
     public function up()
     {
-        Schema::create('calculos_extra', function (Blueprint $table) {
+        Schema::create('calculos_horas', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_corte');
             $table->unsignedBigInteger('empleado_id');

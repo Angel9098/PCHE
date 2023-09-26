@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\CalculosExtra;
 use App\Empleado;
+use App\HoraExtra;
 use Illuminate\Http\Request;
 
 class CalculosHorasController extends Controller
@@ -16,22 +17,24 @@ class CalculosHorasController extends Controller
         try {
             $registros = json_decode($request->getContent(), true);
 
-            dd($registros);
+
             foreach ($registros as $registro) {
-                $id_empleado = $registro['idEmpleado'];
-                $empleado = Empleado::where('dui', $id_empleado)->first();
+                $id_empleado = $registro['empleado_id'];
+                $empleado = Empleado::where('id', $id_empleado)->first();
+
+                $idEliminar = $registro['id'];
                 $jefeArea = $registro['jefe_area'];
-                $fecha = $registro['fecha'];
+                $fecha = $registro['fecha_registro'];
                 $fechaFormateada = date('Y-m-d', strtotime($fecha));
                 $diurnas = $registro['diurnas'];
                 $nocturnas = $registro['nocturnas'];
-                $diurnas_descanso = $registro['diurnasDescanso'];
-                $nocturnas_descanso = $registro['nocturnasDescanso'];
-                $diurnas_asueto = $registro['diurnasAsueto'];
-                $nocturnas_asueto = $registro['nocturnasAsueto'];
+                $diurnas_descanso = $registro['diurnas_descanso'];
+                $nocturnas_descanso = $registro['nocturnas_asueto'];
+                $diurnas_asueto = $registro['diurnas_asueto'];
+                $nocturnas_asueto = $registro['diurnas_descanso'];
 
                 $empleadoRegistrado = CalculosExtra::where('empleado_id', $empleado->id)
-                    ->where('fecha_registro', $fechaFormateada)
+                    ->where('fecha_calculo', $fechaFormateada)
                     ->first();
 
                 if ($empleadoRegistrado == null) {
@@ -43,16 +46,21 @@ class CalculosHorasController extends Controller
 
                     $salarioTotal = $salarioGanado + $salarioMensual;
 
+                    $idCorte = 1;
                     $CalculoHora = new CalculosExtra([
                         'empleado_id' => $empleado->id,
                         'jefe_area' => $jefeArea,
+                        'id_corte' => $idCorte,
                         'fecha_calculo' => $fechaFormateada,
                         'salario_mensual' => $salarioMensual,
                         'total_horas' => $sumatoria,
-                        'salario_ganado' => $salarioGanado,
+                        'salario_neto' => $salarioGanado,
                         'salario_total' => $salarioTotal,
                     ]);
                     $CalculoHora->save();
+
+                    $horaDelete = HoraExtra::findOrFail($idEliminar);
+                    $horaDelete->delete();
                 }
             }
 
@@ -70,7 +78,7 @@ class CalculosHorasController extends Controller
         $fechaDesde = $request->input('fechaDesde');
         $fechaHasta = $request->input('fechaHasta');
 
-        $horasExtrasQuery = CalculosExtra::query()->with('empleado');
+        $horasExtrasQuery = CalculosExtra::query()->with('empleado.area.empresa');
 
         if ($idEmpresa !== "NA" && $idEmpresa !== null) {
             $horasExtrasQuery->whereHas('empleado.area', function ($query) use ($idEmpresa) {
