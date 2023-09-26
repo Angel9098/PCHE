@@ -63,8 +63,8 @@
                                             <label for="fechaDesde">Desde:</label>
                                         </div>
                                         <div class="col-9">
-                                            <input v-model="filtros.fechaDesde" type="date" id="fechaDesde"
-                                                class="form-control mb-2">
+                                            <input v-model="filtros.fechaDesde" @change="buscarRegistrosByEmpresa"
+                                                type="date" id="fechaDesde" class="form-control mb-2">
                                         </div>
                                     </div>
                                 </div>
@@ -74,12 +74,13 @@
                                             <label for="fechaHasta">Hasta:</label>
                                         </div>
                                         <div class="col-9">
-                                            <input v-model="filtros.fechaHasta" type="date" id="fechaHasta"
-                                                class="form-control mb-2">
+                                            <input v-model="filtros.fechaHasta" @change="buscarRegistrosByEmpresa"
+                                                type="date" id="fechaHasta" class="form-control mb-2">
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -103,8 +104,8 @@
                             <th scope="col" class="col-1">salario_ganado</th>
                             <th scope="col" class="col-1">salario_total</th>
                         </thead>
-                        <tbody class="text-center" v-if="horasExtras.length > 0">
-                            <tr v-for="registro in horasExtras" :key="registro.id">
+                        <tbody class="text-center" v-if="calculosHoras.length > 0">
+                            <tr v-for="registro in calculosHoras" :key="registro.id">
                                 <td scope="row">{{ registro.empleado.dui }}</td>
                                 <td>{{ registro.empleado.nombres }}</td>
                                 <td>{{ registro.fecha_registro }}</td>
@@ -174,7 +175,7 @@ export default {
         return {
             empleados: [],
             empresas: [],
-            horasExtras: [],
+            calculosHoras: [],
             areas: [],
             duiJefe: "",
             nombreJefe: "",
@@ -204,6 +205,14 @@ export default {
             this.buscarArea();
             this.buscarRegistrosByEmpresa(this.filtros);
 
+        }, 300),
+        debounceSearchFechas: _.debounce(function () {
+            if (this.filtros.selectEmpresa === "no") {
+                this.filtros.selectEmpresa = "NA";
+                this.areas = [];
+                this.filtros.selectArea = "NA";
+            }
+            this.buscarRegistrosByEmpresa(this.filtros);
         }, 300),
         debounceSearchEmpleado: _.debounce(function () {
             if (this.filtros.selectArea === "no") {
@@ -277,33 +286,11 @@ export default {
                 });
         },
 
-        async fetchHorasExtras() {
-            const response = await axios.post("horas_extra");
-            this.horasExtras = response.data;
-        },
         async buscarRegistrosByEmpresa() {
-
-            const dummyData = [
-                {
-                    id: 1,
-                    empleado: {
-                        dui: "12345678-9",
-                        nombres: "Juan Pérez",
-                        salario: 2000,
-                    },
-                    fecha_registro: "2023-09-22",
-                    diurnas: "IRIBEM ",
-                    nocturnas: "TECNOLOGIA",
-                    diurnas_descanso: 10,
-                    nocturnas_descanso: 150,
-                    diurnas_asueto: 1350,
-                },
-                // Agregar más registros ficticios si es necesario
-            ];
-
-            this.horasExtras = dummyData;
-
+            const response = await axios.post("calculos", this.filtros);
+            this.calculosHoras = response.data;
         },
+
         changePage(page) {
             this.currentPage = page;
             this.fetchEmpleados();
@@ -356,7 +343,6 @@ export default {
     border-color: white;
 }
 
-/* Estilo para el acordeón con efecto 3D */
 .accordion-button {
     background-color: #032a55;
     color: #fff;
@@ -382,7 +368,6 @@ export default {
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Cambiar el ícono de flecha en el botón */
 .accordion-button::after {
     content: "\f078";
     /* Código Unicode para una flecha hacia abajo */
@@ -392,13 +377,10 @@ export default {
     margin-left: 10px;
 }
 
-/* Cambiar el ícono de flecha cuando el acordeón se abre */
 .accordion-button[aria-expanded="true"]::after {
     content: "\f077";
-    /* Código Unicode para una flecha hacia arriba */
 }
 
-/* Estilizar el contenido del acordeón */
 .accordion-body {
     background-color: #f9f9f9;
     padding: 15px;
