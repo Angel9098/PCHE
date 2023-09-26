@@ -132,9 +132,6 @@ const routes = [
         component: require('./components/AreasComponent.vue').default,
         meta: { requiresAuth: true }
     }
-
-
-
 ]
 
 const router = new VueRouter({
