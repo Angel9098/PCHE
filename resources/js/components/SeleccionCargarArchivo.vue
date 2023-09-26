@@ -271,6 +271,9 @@ export default {
 
             const response = await axios.post("calculo_horas", this.horasExtras);
             var mensaje = response.data;
+            this.$toast.success('Calculos realizados');
+            this.buscarRegistrosByEmpresa(this.filtros);
+
         },
         changePage(page) {
             this.currentPage = page;
@@ -298,13 +301,13 @@ export default {
 }
 
 .btn-custom {
-    background-image: linear-gradient(to bottom, #57b5cc, #3a92a7);
+    background-image: linear-gradient(to bottom, #06495a, #05333f);
     color: #fff;
-    border-color: #2a7484;
+    border-color: #033b47;
 }
 
 .btn-custom:hover {
-    background-image: linear-gradient(to bottom, #3a92a7, #57b5cc);
+    background-image: linear-gradient(to bottom, #06495a, #05333f);
 }
 
 /* Ajustar el color del texto para que resalte más */

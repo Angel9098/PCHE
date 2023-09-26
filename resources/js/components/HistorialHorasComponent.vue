@@ -108,13 +108,13 @@
                             <tr v-for="registro in calculosHoras" :key="registro.id">
                                 <td scope="row">{{ registro.empleado.dui }}</td>
                                 <td>{{ registro.empleado.nombres }}</td>
-                                <td>{{ registro.fecha_registro }}</td>
+                                <td>{{ registro.fecha_calculo }}</td>
                                 <td>{{ registro.empleado.salario | toCurrency }}</td>
-                                <td>{{ registro.diurnas }}</td>
-                                <td>{{ registro.nocturnas }}</td>
-                                <td>{{ registro.diurnas_descanso }}</td>
-                                <td>{{ registro.nocturnas_descanso }}</td>
-                                <td>{{ registro.diurnas_asueto }}</td>
+                                <td>{{ registro.empleado.area.nombre }}</td>
+                                <td>{{ registro.empleado.area.empresa.nombre }}</td>
+                                <td>{{ registro.total_horas }}</td>
+                                <td>{{ registro.salario_neto }}</td>
+                                <td>{{ registro.salario_total }}</td>
                             </tr>
                         </tbody>
                         <tbody v-else>
@@ -310,13 +310,13 @@ export default {
 }
 
 .btn-custom {
-    background-image: linear-gradient(to bottom, #57b5cc, #3a92a7);
+    background-image: linear-gradient(to bottom, #06495a, #05333f);
     color: #fff;
     border-color: #2a7484;
 }
 
 .btn-custom:hover {
-    background-image: linear-gradient(to bottom, #3a92a7, #57b5cc);
+    background-image: linear-gradient(to bottom, #06495a, #05333f);
 }
 
 /* Ajustar el color del texto para que resalte más */

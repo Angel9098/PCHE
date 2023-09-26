@@ -17,7 +17,6 @@ class HoraExtraCotroller extends Controller
             $registrosDepurados = [];
             $jefeArea = 1;
             $noCarga = 1;
-
             foreach ($registros as $registro) {
                 $id_empleado = $registro['idEmpleado'];
                 $fecha = $registro['fecha'];
