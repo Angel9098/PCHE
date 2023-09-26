@@ -9,14 +9,14 @@
                         <hr>
                         <div class="d-flex flex-row justify-content-between gap-2">
                             <div class="form-group col-5">
-                                <label for="name">Nombre</label>
+                                <label for="name">Nombres</label>
                                 <input id="name" type="text" class="form-control" v-model="usuario.nombres" required>
                                 <div class="invalid-feedback">
                                     Ingrese nombre
                                 </div>
                             </div>
                             <div class="form-group col-6">
-                                <label for="last_name">Apellido</label>
+                                <label for="last_name">Apellidos</label>
                                 <input id="last_name" type="text" class="form-control" v-model="usuario.apellidos" required>
                             </div>
                         </div>
@@ -35,7 +35,7 @@
                         <div class="d-flex flex-row justify-content-between gap-2 mt-2">
                             <div class="form-group col-5">
                                 <label for="nameEmergency">Nombre completo</label>
-                                <input id="nameEmergency" type="text" class="form-control" v-model="usuario.nombre_persona"
+                                <input id="nameEmergency" type="text" class="form-control" v-model="usuario.avisar_contacto"
                                     required>
                             </div>
                             <div class="form-group col-6">
@@ -153,7 +153,7 @@ export default {
                 empresa: '',
                 dui: '',
                 horario_id: 0,
-                nombre_persona: '',
+                avisar_contacto: '',
                 numero_emergencia: '',
                 salario: 0
             },
@@ -224,7 +224,7 @@ export default {
             this.usuario.empresa = '';
             this.usuario.dui = '';
             this.usuario.horario_id = 0;
-            this.usuario.nombre_persona = '';
+            this.usuario.avisar_contacto = '';
             this.usuario.numero_emergencia = '';
             this.usuario.salario = 0;
         }

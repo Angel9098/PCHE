@@ -355,6 +355,9 @@ export default {
         async buscarRegistrosByEmpresa() {
             const response = await axios.post("horas_extra", this.filtros);
             this.horasExtras = response.data;
+            this.horasExtras.forEach(element => {
+                element.empleado.salario = Number(element.empleado.salario);
+            });
         },
         async procesarCalculos() {
 
