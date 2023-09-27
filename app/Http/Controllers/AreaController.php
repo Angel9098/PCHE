@@ -134,15 +134,22 @@ class AreaController extends Controller
 
     }
 
-    public function listaDetalleAreas(){
+    public function listaDetalleAreas(Request $request){
+
+            $idArea = $request->input('id_area');
 
             // Realizar la consulta utilizando Eloquent
-            $resultados = DB::table('areas as a')
+            $query = DB::table('areas as a')
             ->join('empresas as e', 'a.empresa_id', '=', 'e.id')
             ->join('empleados as em', 'a.jefe_area', '=', 'em.id')
             ->select('a.id', 'a.nombre as nombre_area', 'e.nombre as nombre_empresa',
-                    DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe_area'), 'a.jefe_area as id_jefe')
-            ->get();
+                    DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe_area'), 'a.jefe_area as id_jefe');
+
+            if (!empty($idArea)) {
+                $query->where('a.id', $idArea);
+            }
+
+            $resultados = $query->get();
 
             // Devolver los resultados en formato JSON
             return response()->json($resultados);
