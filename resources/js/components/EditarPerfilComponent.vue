@@ -1,200 +1,227 @@
-
-
 <template>
-  <main class="container m-auto">
-    <h1 class="text-center my-4">Actualización de pérfil</h1>
-    <article class="card">
-      <div class="floatCenter">
-        <h2 class="text-center my-3">Vista previa</h2>
-        <picture class="mb-3">
-          <source
-            :srcset="defaultBooleand ? defaultImagen : perfil.imagen"
-            type="image"
-          />
-          <img
-            :src="defaultBooleand ? defaultImagen : perfil.imagen"
-            class="img-fluid img-thumbnail cicle"
-            alt="..."
-          />
-        </picture>
+    <main class="container m-auto">
+        <h1 class="text-center my-4">Actualización de pérfil</h1>
+        <article class="card">
+            <div class="floatCenter">
+                <h2 class="text-center my-3">Vista previa</h2>
+                <picture class="mb-3">
+                    <source
+                        :srcset="
+                            defaultBooleand ? defaultImagen : perfilIMG.imagen
+                        "
+                        type="image"
+                    />
+                    <img
+                        :src="defaultBooleand ? defaultImagen : perfilIMG.imagen"
+                        class="img-fluid img-thumbnail cicle"
+                        alt="..."
+                    />
+                </picture>
 
-        <p class="font-weight-bold">NOMBRE DE PÉRFIL :</p>
-        <p>{{ perfil.nombres }}</p>
-        <p class="font-weight-bold">CARGO O PUESTO :</p>
-        <p>{{ perfil.cargo }}</p>
-        <p class="font-weight-bold">DESCRIPCIÓN DEL PUESTO :</p>
-        <p>{{ perfil.description }}</p>
-      </div>
-      <div>
-        <form class="formContent">
-          <!-- CAMBIAR LA IMAGEN -->
-          <div class="form-group">
-            <label for="changeIMG">CAMBIAR LA IMAGEN</label>
-            <input
-              type="file"
-              class="form-control"
-              id="changeIMG"
-              placeholder="CAMBIAR LA IMAGEN"
-              @change="changesDefauld"
-            />
-          </div>
-          <!-- CAMBIAR EL NOMBRE -->
-          <div class="form-group">
-            <label for="changeNombre">CAMBIAR EL NOMBRE</label>
-            <input
-              type="fiTEXTe"
-              class="form-control"
-              id="changeNombre"
-              placeholder="CAMBIAR EL NOMBRE"
-              v-model="perfil.nombres"
-            />
-          </div>
-          <!-- CAMBIAR PUESTO O CARGO -->
-          <div class="form-group">
-            <label for="changePuesto">CAMBIAR PUESTO O CARGO</label>
-            <input
-              type="fiTEXTe"
-              class="form-control"
-              id="changePuesto"
-              placeholder="CAMBIAR PUESTO O CARGO"
-              v-model="perfil.cargo"
-            />
-          </div>
-          <!-- DESCRIPCION DEL PUESTO -->
-          <div class="mb-3">
-            <label for="validationTextarea">DESCRIPCIÓN DEL PUESTO</label>
-            <textarea
-              class="form-control is-invalid"
-              id="validationTextarea"
-              placeholder="Required example textarea"
-              required
-              v-model="perfil.description"
-            ></textarea>
-            <div class="invalid-feedback">
-              Please enter a message in the textarea.
+                <p class="font-weight-bold">NOMBRE DE PÉRFIL :</p>
+                <p>{{ perfil.nombres }}</p>
+                <p class="font-weight-bold">CARGO O PUESTO :</p>
+                <p>{{ perfil.cargo }}</p>
+                <p class="font-weight-bold">DESCRIPCIÓN DEL PUESTO :</p>
+                <p>{{ perfil.description }}</p>
             </div>
-          </div>
-          <div class="floatCenter">
-            <button
-              @click="sendInfromation()"
-              type="button"
-              class="btn btn-dark"
-            >
-              GUARDAR CAMBIOS <i class="fa-solid fa-circle-plus"></i>
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary my-3"
-              data-bs-toggle="modal"
-              data-bs-target="#exampleModal"
-            >
-              Cambiar contraseña <i class="fa-solid fa-pen-to-square"></i>
-            </button>
-          </div>
-        </form>
-      </div>
-    </article>
-    <!-- ****** -->
+            <div>
+                <form class="formContent">
+                    <!-- CAMBIAR LA IMAGEN -->
+                    <div class="form-group">
+                        <label for="changeIMG">CAMBIAR LA IMAGEN</label>
+                        <input
+                            type="file"
+                            class="form-control"
+                            id="changeIMG"
+                            placeholder="CAMBIAR LA IMAGEN"
+                            @change="changesDefauld"
+                        />
+                    </div>
+                    <!-- CAMBIAR EL NOMBRE -->
+                    <div class="form-group">
+                        <label for="changeNombre">CAMBIAR EL NOMBRE {{ perfil.nombres  }}</label>
+                        <input
+                            type="fiTEXTe"
+                            class="form-control"
+                            id="changeNombre"
+                            placeholder="CAMBIAR EL NOMBRE"
+                            v-model="perfil.nombres"
+                        />
+                    </div>
+                    <!-- CAMBIAR PUESTO O CARGO -->
+                    <div class="form-group">
+                        <label for="changePuesto">CAMBIAR PUESTO O CARGO</label>
+                        <input
+                            type="fiTEXTe"
+                            class="form-control"
+                            id="changePuesto"
+                            placeholder="CAMBIAR PUESTO O CARGO"
+                            v-model="perfil.cargo"
+                        />
+                    </div>
+                    <!-- DESCRIPCION DEL PUESTO -->
+                    <div class="mb-3">
+                        <label for="validationTextarea"
+                            >DESCRIPCIÓN DEL PUESTO</label
+                        >
+                        <textarea
+                            class="form-control is-invalid"
+                            id="validationTextarea"
+                            placeholder="Required example textarea"
+                            required
+                            v-model="perfil.description"
+                        ></textarea>
+                        <div class="invalid-feedback">
+                            Please enter a message in the textarea.
+                        </div>
+                    </div>
+                    <div class="floatCenter">
+                        <button
+                            @click="sendInfromation()"
+                            type="button"
+                            class="btn btn-dark"
+                        >
+                            GUARDAR CAMBIOS
+                            <i class="fa-solid fa-circle-plus"></i>
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-primary my-3"
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModal"
+                        >
+                            Cambiar contraseña
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </article>
+        <!-- ****** -->
 
-    <div
-      class="modal fade"
-      id="exampleModal"
-      tabindex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">
-              Nombre de persona
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <modal-change-password></modal-change-password>
-          </div>
+        <div
+            class="modal fade"
+            id="exampleModal"
+            tabindex="-1"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            Nombre de persona
+                        </h5>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                    <div class="modal-body">
+                        <modal-change-password></modal-change-password>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    <!-- ******* -->
-  </main>
+        <!-- ******* -->
+
+        
+    </main>
 </template>
 
 <style scoped>
 .card {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
 }
 .cicle {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
 }
 .floatCenter {
-  display: flex;
-  flex-direction: column;
-  justify-items: center;
-  align-items: center;
-  border-right: 3px solid rgba(0, 0, 0, 0.726);
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    border-right: 3px solid rgba(0, 0, 0, 0.726);
 }
 .formContent {
-  margin: 10%;
+    margin: 10%;
 }
 </style>
 <script>
 import axios from "axios";
 
 import ModalChangePassword from "./ModalChangePassword.vue";
-export default {
-  data() {
-    return {
-      defaultImagen:
-        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-      defaultBooleand: true,
-      file: File,
-      perfil: {
-        nombres: "",
-        imagen: "",
-        cargo: "",
-        description: "",
-      },
-    };
-  },
-  components: {
-    ModalChangePassword,
-  },
-  methods: {
-    changesDefauld(event) {
-      this.defaultBooleand = false;
-      this.file = event.target.files[0];
-      
-      const files = event.target.files[0];
-      this.perfil.imagen = URL.createObjectURL(files);
-    },
-    sendInfromation() {
-      console.log(this.file)
-        const sendFiles = new FormData();
-        sendFiles.append('imagen', this.file,this.file.name);
 
-        axios.post(
-        "/subir_archivo",
-         sendFiles 
-      )
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      
-      // return new  Promise.all();
+export default {
+    data() {
+        return {
+            defaultImagen:
+                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+            defaultBooleand: true,
+            file: File,
+            perfil: {
+                nombres: "",
+                apellidos: "",
+                cargo: "",
+                dui: "",
+                email: "",
+                numero_emergencia: "",
+                avisar_contacto: "",
+                salario: "",
+            },
+            perfilIMG: {
+              imagen: ""
+            }
+        };
     },
-  },
+    mounted() {
+        this.leerData();
+    },
+    components: {
+        ModalChangePassword,
+    },
+    methods: {
+        leerData() {
+            if (JSON.parse(localStorage.getItem("user")) !== null) {
+                const empleadoId = JSON.parse(localStorage.getItem("user"));
+                this.perfilIMG.imagen = empleadoId.imagen
+                axios
+                    .get(`empleadobyid?idEmpleado=${empleadoId.empleado_id}`)
+                    .then((result) => {
+                        console.log(result.data[0].nombres);
+                        this.perfil = result.data[0];
+                    })
+                    .catch((error) => {});
+            }
+        },
+        changesDefauld(event) {
+            this.defaultBooleand = false;
+            this.file = event.target.files[0];
+
+            const files = event.target.files[0];
+          this.perfilIMG.imagen = URL.createObjectURL(files);
+        },
+        sendInfromation() {
+            console.log(this.file);
+            const sendFiles = new FormData();
+            sendFiles.append("imagen", this.file, this.file.name);
+            axios
+                .post("/subir_archivo", sendFiles)
+                .then((response) => {
+                    console.log(response);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+
+            // return new  Promise.all();
+        },
+    },
 };
 </script>

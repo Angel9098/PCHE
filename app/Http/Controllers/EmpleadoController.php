@@ -227,9 +227,6 @@ class EmpleadoController extends Controller
             $idEmpresa = $request->input('selectedOption');
 
 
-            if (empty($nombres) && empty($apellidos) && empty($dui) && empty($email) && empty($cargo) && empty($idEmpresa)) {
-                return response()->json(['message' => 'datos vienen vacios'], 500);
-            }
 
             $empleados = Empleado::with('area.empresa')
                 ->where(function ($query) use ($nombres) {
@@ -288,7 +285,7 @@ class EmpleadoController extends Controller
             });
         }
 
-/*         $empleadosAreaHorasExtra = HoraExtra::with('empleado.area.empresa')
+        /*         $empleadosAreaHorasExtra = HoraExtra::with('empleado.area.empresa')
         ->whereHas('empleado', function($query) use ($empleadoId){
             $query->where('id',$empleadoId);
         }) ->get(); */

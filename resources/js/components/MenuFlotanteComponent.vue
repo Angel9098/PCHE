@@ -225,13 +225,27 @@
                                     </router-link>
                                 </button>
                                 <button
-                                    v-if="userRoles === 'jefe'"
+                                    v-if="userRoles === 'jefe' || userRoles === 'administrador'"
                                     class="dropdown-item"
                                     type="button"
                                 >
                                     <router-link
                                         class="my-4 text-uppercase"
                                         to="/editarperfilusuario"
+                                        ><i
+                                            class="fa-solid fa-user text-black"
+                                        ></i>
+                                        Perfil
+                                    </router-link>
+                                </button>
+                                <button
+                                    v-if="userRoles === 'administrador'"
+                                    class="dropdown-item"
+                                    type="button"
+                                >
+                                    <router-link
+                                        class="my-4 text-uppercase"
+                                        to="/editarperfil"
                                         ><i
                                             class="fa-solid fa-user text-black"
                                         ></i>
