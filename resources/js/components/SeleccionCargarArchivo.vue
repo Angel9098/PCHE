@@ -89,17 +89,29 @@
 
                         <tbody class="text-center" v-if="horasExtras.length > 0">
                             <tr v-for="registro in horasExtras" :key="registro.id">
-                                <td scope="row">{{ registro.empleado.dui }}</td>
-                                <td>{{ registro.empleado.nombres }}</td>
-                                <td>{{ registro.fecha_registro }}</td>
-                                <td>{{ registro.empleado.salario | toCurrency }}</td>
-                                <td>{{ registro.diurnas }}</td>
-                                <td>{{ registro.nocturnas }}</td>
-                                <td>{{ registro.diurnas_descanso }}</td>
-                                <td>{{ registro.nocturnas_descanso }}</td>
-                                <td>{{ registro.diurnas_asueto }}</td>
-                                <td>{{ registro.nocturnas_asueto }}</td>
-                            </tr>
+    <td scope="row">{{ registro.empleado.dui }}</td>
+    <td>{{ registro.empleado.nombres + " " + registro.empleado.apellidos }}</td>
+    <td>{{ formatFecha(registro.fecha_registro) }}</td>
+    <td>{{ registro.empleado.salario | toCurrency }}</td>
+    <td>{{ registro.diurnas !== 0 ? registro.diurnas : '-' }}</td>
+    <td>{{ registro.nocturnas !== 0 ? registro.nocturnas : '-' }}</td>
+    <td>{{ registro.diurnas_descanso !== 0 ? registro.diurnas_descanso : '-' }}</td>
+    <td>{{ registro.nocturnas_descanso !== 0 ? registro.nocturnas_descanso : '-' }}</td>
+    <td>{{ registro.diurnas_asueto !== 0 ? registro.diurnas_asueto : '-' }}</td>
+    <td>{{ registro.nocturnas_asueto !== 0 ? registro.nocturnas_asueto : '-' }}</td>
+</tr>
+                            <tr >
+    <td></td>
+    <td></td>
+    <td>Total</td>
+    <td>{{  totalsueldo | toCurrency }}</td>
+    <td>{{ totalDiurnas !== 0 ? totalDiurnas : '-' }}</td>
+    <td>{{ totalNocturnas !== 0 ? totalNocturnas : '-' }}</td>
+    <td>{{ totalDiurnasDescanso !== 0 ? totalDiurnasDescanso : '-' }}</td>
+    <td>{{ totalNocturnasDescanso !== 0 ? totalNocturnasDescanso : '-' }}</td>
+    <td>{{ totalDiurnasAsueto !== 0 ? totalDiurnasAsueto : '-' }}</td>
+    <td>{{ totalNocturnasAsueto !== 0 ? totalNocturnasAsueto : '-' }}</td>
+</tr>
                         </tbody>
                         <tbody v-else>
                             <tr>
@@ -150,14 +162,18 @@
           <img src="/assets/img/latinMobile.png" alt="logo" class="logo">
         </div>
         <div class="title-container">
-          <h2 class="title">PCHE</h2>
-          <h4>Reporte de Horas de Empleado</h4>
-          <p class="company-name">{{ companyName }}</p>
-        </div>
+  <h2 class="title">PCHE</h2>
+  <h4>Reporte de Horas de Empleado</h4>
+  <p v-if="empresas.length === 1">Empresa: {{ empresas[0].nombre }}</p>
+  <p v-else>Empresas: Todas</p>
+</div>
         <div class="area-date-container">
-          <p v-for="area in areas" :key="area.id" :value="area.id" class="area">Area: {{ area.id }} - {{ area.nombre }}</p>
-          <p class="date">{{ currentDate }}</p>
-        </div>
+    <p v-if="areas && areas.length > 0">
+        <span v-for="area in areas" :key="area.id" :value="area.id" class="area"> Area: {{ area.id }} - {{ area.nombre }}</span>
+    </p>
+    <p v-else>Areas: Todas</p>
+    <p class="date">Fecha de Emisión: {{ currentDate }}</p>
+</div>
       </div>
 
       <!-- Tabla con las 7 columnas -->
@@ -179,18 +195,30 @@
             </thead>
 
             <tbody class="text-center" v-if="horasExtras.length > 0">
-              <tr v-for="registro in horasExtras" :key="registro.id">
-                <td scope="row">{{ registro.empleado.dui }}</td>
-                <td>{{ registro.empleado.nombres }}</td>
-                <td>{{ registro.fecha_registro }}</td>
-                <td>{{ registro.empleado.salario | toCurrency }}</td>
-                <td>{{ registro.diurnas }}</td>
-                <td>{{ registro.nocturnas }}</td>
-                <td>{{ registro.diurnas_descanso }}</td>
-                <td>{{ registro.nocturnas_descanso }}</td>
-                <td>{{ registro.diurnas_asueto }}</td>
-                <td>{{ registro.nocturnas_asueto }}</td>
-              </tr>
+                <tr v-for="registro in horasExtras" :key="registro.id">
+    <td scope="row">{{ registro.empleado.dui }}</td>
+    <td>{{ registro.empleado.nombres + " " + registro.empleado.apellidos }}</td>
+    <td>{{ formatFecha(registro.fecha_registro) }}</td>
+    <td>{{ registro.empleado.salario | toCurrency }}</td>
+    <td>{{ registro.diurnas !== 0 ? registro.diurnas : '-' }}</td>
+    <td>{{ registro.nocturnas !== 0 ? registro.nocturnas : '-' }}</td>
+    <td>{{ registro.diurnas_descanso !== 0 ? registro.diurnas_descanso : '-' }}</td>
+    <td>{{ registro.nocturnas_descanso !== 0 ? registro.nocturnas_descanso : '-' }}</td>
+    <td>{{ registro.diurnas_asueto !== 0 ? registro.diurnas_asueto : '-' }}</td>
+    <td>{{ registro.nocturnas_asueto !== 0 ? registro.nocturnas_asueto : '-' }}</td>
+</tr>
+              <tr >
+    <td></td>
+    <td></td>
+    <td>Total</td>
+    <td>{{  totalsueldo | toCurrency }}</td>
+    <td>{{ totalDiurnas !== 0 ? totalDiurnas : '-' }}</td>
+    <td>{{ totalNocturnas !== 0 ? totalNocturnas : '-' }}</td>
+    <td>{{ totalDiurnasDescanso !== 0 ? totalDiurnasDescanso : '-' }}</td>
+    <td>{{ totalNocturnasDescanso !== 0 ? totalNocturnasDescanso : '-' }}</td>
+    <td>{{ totalDiurnasAsueto !== 0 ? totalDiurnasAsueto : '-' }}</td>
+    <td>{{ totalNocturnasAsueto !== 0 ? totalNocturnasAsueto : '-' }}</td>
+</tr>
             </tbody>
             <tbody v-else>
               <tr>
@@ -205,6 +233,10 @@
       <!-- Espaciador para separar la tabla del pie de página -->
       <div class="spacer"></div>
 
+      <div>
+        <p>Emitido por: </p>
+      </div>
+
       <!-- Paginación como pie de página -->
       <div class="pagination">
         pg {{ currentPage }} de {{ totalPages }}
@@ -218,6 +250,7 @@
 <script>
 import axios from "axios";
 import html2pdf from "html2pdf.js";
+import moment from "moment";
 
 export default {
     data() {
@@ -239,6 +272,7 @@ export default {
             currentPage: 1,
             lastPage: 1,
             showPdfTemplate: false,
+            currentDate: new Date().toLocaleDateString(),
         };
     },
     created() {
@@ -355,8 +389,24 @@ export default {
         async buscarRegistrosByEmpresa() {
             const response = await axios.post("horas_extra", this.filtros);
             this.horasExtras = response.data;
+            // Calcular los totales
+            this.totalsueldo =0;
+            this.totalDiurnas = 0;
+            this.totalNocturnas = 0;
+            this.totalDiurnasDescanso = 0;
+            this.totalNocturnasDescanso = 0;
+            this.totalDiurnasAsueto = 0;
+            this.totalNocturnasAsueto = 0;
+
             this.horasExtras.forEach(element => {
                 element.empleado.salario = Number(element.empleado.salario);
+                this.totalsueldo += element.empleado.salario;
+                this.totalDiurnas += element.diurnas;
+                this.totalNocturnas += element.nocturnas;
+                this.totalDiurnasDescanso += element.diurnas_descanso;
+                this.totalNocturnasDescanso += element.nocturnas_descanso;
+                this.totalDiurnasAsueto += element.diurnas_asueto;
+                this.totalNocturnasAsueto += element.nocturnas_asueto;
             });
         },
         async procesarCalculos() {
@@ -370,7 +420,10 @@ this.buscarRegistrosByEmpresa(this.filtros);
         changePage(page) {
             this.currentPage = page;
             this.fetchEmpleados();
-        }
+        },
+        formatFecha(date) {
+            return moment(date).format("DD/MM/YYYY");
+        },
     },
 };
 </script>
