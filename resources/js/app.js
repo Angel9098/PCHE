@@ -53,7 +53,7 @@ localStorage.setItem('userAdmin' , 'jefe');
 if (JSON.parse(localStorage.getItem("user")) !== null) {
     const empleadoId = JSON.parse(localStorage.getItem("user"));
     console.log(empleadoId)
-  
+    localStorage.setItem('userAdmin' , `${empleadoId.rol}`)
     axios
       .get(`empleadobyid?idEmpleado=${empleadoId.empleado_id}`)
       .then((result) => {
@@ -61,7 +61,7 @@ if (JSON.parse(localStorage.getItem("user")) !== null) {
       })
       .catch((error) => {});
   }
-// 
+//
 const routes = [
     {
         path: '/',

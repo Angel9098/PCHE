@@ -89,6 +89,9 @@
                 >
               </li>
               <li v-if="userRoles === 'administrador'" class="nav-item">
+                <router-link class="nav-link text-white text-uppercase" to="/areas"><i class="fa-solid fa-network-wired"></i> &#193;reas</router-link>
+              </li>
+              <li v-if="userRoles === 'administrador'" class="nav-item">
                 <router-link
                   class="nav-link text-white text-uppercase"
                   to="/activacionusuario"
@@ -170,6 +173,9 @@
             ></router-link>
           </li>
           <li v-if="userRoles === 'administrador'" class="li my-4">
+            <router-link class="my-4 text-uppercase" to="/areas"><i class="fa-solid fa-network-wired text-white"></i></router-link>
+          </li>
+          <li v-if="userRoles === 'administrador'" class="li my-4">
             <router-link class="my-4 text-uppercase" to="/activacionusuario"
               ><i class="fa-solid fa-user-check text-white"></i
             ></router-link>
@@ -207,73 +213,77 @@
 </template>
 <style>
 .flexMenu {
-  margin: 0%;
-  width: 40px;
-  height: 100vh;
-  display: grid;
-  justify-content: center;
-  align-items: center;
-  z-index: 1200;
+    margin: 0%;
+    width: 40px;
+    height: 100vh;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    z-index: 1200;
 }
+
 .ul .li {
-  list-style: none;
+    list-style: none;
 }
+
 ol,
 ul,
 dl {
-  margin-top: 20px;
-  margin-bottom: 1rem;
+    margin-top: 20px;
+    margin-bottom: 1rem;
 }
 
 ol,
 ul {
-  padding-left: 0rem;
+    padding-left: 0rem;
 }
 
 a:hover {
-  cursor: pointer;
+    cursor: pointer;
 }
 </style>
 <script>
 import axios from "axios";
 export default {
-  data() {
-    return {
-      nombre: "",
-    };
-  },
-  mounted() {
-    this.leerData();
-  },
-  computed: {
-    currentPath() {
-      return this.$route.path;
+    data() {
+        return {
+            nombre: "",
+        };
     },
-    userRoles() {
-      if (this.$store.state.userRol !== null) {return this.$store.state.userRol;} 
+    mounted() {
+        this.leerData();
     },
-  },
-  methods: {
-    //empleadobyid
-    leerData() {
+    computed: {
+        currentPath() {
+            return this.$route.path;
+        },
+        userRoles() {
+            if (this.$store.state.userRol !== null) { return this.$store.state.userRol; } else {
+                return localStorage.getItem('userAdmin')
+            }
+        },
+    },
+    methods: {
+        //empleadobyid
+        leerData() {
 
-      if (JSON.parse(localStorage.getItem("user")) !== null) {
-        const empleadoId = JSON.parse(localStorage.getItem("user"));
-        axios
-          .get(`empleadobyid?idEmpleado=${empleadoId.empleado_id}`)
-          .then((result) => {
-            this.nombre = result.data[0].nombres;
-          })
-          .catch((error) => {});
-      }
+            if (JSON.parse(localStorage.getItem("user")) !== null) {
+                const empleadoId = JSON.parse(localStorage.getItem("user"));
+                axios
+                    .get(`empleadobyid?idEmpleado=${empleadoId.empleado_id}`)
+                    .then((result) => {
+                        this.nombre = result.data[0].nombres;
+                    })
+                    .catch((error) => { });
+            }
+        },
+        cerrarSesion() {
+            localStorage.removeItem("user");
+            localStorage.removeItem("empresaID");
+            this.$store.dispatch("logout");
+            this.$router.push("/");
+        },
     },
-    cerrarSesion() {
-      localStorage.removeItem("user");
-      localStorage.removeItem("empresaID");
-      this.$store.dispatch("logout");
-      this.$router.push("/");
-    },
-  },
 };
 </script>
 

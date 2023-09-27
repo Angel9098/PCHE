@@ -2,7 +2,7 @@
 
 <template>
   <main class="container m-auto">
-    <h1 class="text-center my-4 text-uppercase">Actualización de pérfil</h1>
+    <h1 class="text-center my-4 text-uppercase">Actualización de perfil</h1>
     <article class="card">
       <div class="floatCenter">
         <picture class="mb-3">
@@ -17,7 +17,7 @@
           />
         </picture>
 
-        <p class="font-weight-bold">NOMBRE DE PÉRFIL :</p>
+        <p class="font-weight-bold">NOMBRE DE PERFIL :</p>
         <p>{{ perfil.nombres }}</p>
         <p class="font-weight-bold">CARGO O PUESTO :</p>
         <p>{{ perfil.cargo }}</p>

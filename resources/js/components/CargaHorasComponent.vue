@@ -118,12 +118,12 @@ export default {
                                     nombre: element[1],
                                     fecha: element[2] == null ? element[2] : moment(element[2]).format('DD/MM/YYYY'),
                                     sueldo: element[3],
-                                    diurnas: element[4] == null ? 0 : element[4],
-                                    nocturnas: element[5] == null ? 0 : element[5],
-                                    diurnasDescanso: element[6] == null ? 0 : element[6],
-                                    nocturnasDescanso: element[7] == null ? 0 : element[7],
-                                    diurnasAsueto: element[8] == null ? 0 : element[8],
-                                    nocturnasAsueto: element[9] == null ? 0 : element[9]
+                                    diurnas: element[4] == null ? '-' : element[4],
+                                    nocturnas: element[5] == null ? '-' : element[5],
+                                    diurnasDescanso: element[6] == null ? '-' : element[6],
+                                    nocturnasDescanso: element[7] == null ? '-' : element[7],
+                                    diurnasAsueto: element[8] == null ? '-' : element[8],
+                                    nocturnasAsueto: element[9] == null ? '-' : element[9]
                                 }
                                 this.items.push(registroHora);
                             }
