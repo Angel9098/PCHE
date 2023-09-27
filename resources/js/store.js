@@ -14,8 +14,8 @@ const store = new Vuex.Store({
       state.loggedIn = true;
       state.user = user;
       state.userRol = user.rol;
+      localStorage.setItem('session' , state.loggedIn);
       localStorage.setItem('userAdmin' , `${state.userRol}`);
-      console.log(state.userRol)
     },
     setLoggedOut(state) {
       state.loggedIn = false;
@@ -32,6 +32,8 @@ const store = new Vuex.Store({
     },
     logouts({ commit }) {
       // Lógica para cerrar sesión, si es necesario
+      localStorage.setItem('session' , false);
+      localStorage.clear();
       commit('setLoggedOut');
     },
   },

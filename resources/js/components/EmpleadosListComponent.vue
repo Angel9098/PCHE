@@ -157,7 +157,7 @@ export default {
                     this.filtros.selectedOption = null;
                 }
 
-                if ((filtros.nombre === "") && (filtros.apellido === "") && (filtros.dui === "") && (filtros.cargo === "") && (filtros.email === "") && (filtros.selectedOption === "")) {
+                if ((this.filtros.nombre === "") && (this.filtros.apellido === "") && (this.filtros.dui === "") && (this.filtros.cargo === "") && (this.filtros.email === "") && (this.filtros.selectedOption === "")) {
                     this.fetchEmpleados();
                 } else {
                     const response = await axios.post("/empleados/filtro/busqueda", this.filtros);
