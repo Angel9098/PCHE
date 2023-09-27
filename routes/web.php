@@ -41,6 +41,7 @@ Route::get('empresa/areas', 'EmpresaController@getAreasEmpresa');
 Route::post('areas/create', 'AreaController@createArea');
 Route::put('areas/update', 'AreaController@updateArea');
 Route::delete('areas/delete', 'AreaController@deleteArea');
+Route::get('areas/jefes', 'AreaController@listaJefeEmpleado');
 
 //rutas para horarios
 Route::get('horarios/consulta', 'HorarioController@consultaDehorarioPorEmpleado')->name('horariobypersona');
