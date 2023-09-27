@@ -136,7 +136,7 @@ class AreaController extends Controller
 
     public function listaDetalleAreas(Request $request){
 
-            $idArea = $request->input('id_area');
+            $idEmpresa = $request->input('id_empresa');
 
             // Realizar la consulta utilizando Eloquent
             $query = DB::table('areas as a')
@@ -145,8 +145,8 @@ class AreaController extends Controller
             ->select('a.id', 'a.nombre as nombre_area', 'e.nombre as nombre_empresa',
                     DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe_area'), 'a.jefe_area as id_jefe');
 
-            if (!empty($idArea)) {
-                $query->where('a.id', $idArea);
+            if (!empty($idEmpresa)) {
+                $query->where('e.id', $idEmpresa);
             }
 
             $resultados = $query->get();
