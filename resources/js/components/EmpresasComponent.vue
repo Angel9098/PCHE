@@ -173,36 +173,32 @@ export default {
             this.perfil.imagen = URL.createObjectURL(files);
         },
         async dataGuardarEmpresa() {
-            try {
 
-                const formData = new FormData();
-                formData.append('imagen', this.file, this.file.name);
-                formData.append('nombre', this.data.nombre);
-                formData.append('direccion', this.data.direccion);
-                formData.append('rubro', this.data.rubro);
 
-                const response = await axios.post("/empresa", formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
+            const formData = new FormData();
+            formData.append('imagen', this.file, this.file.name);
+            formData.append('nombre', this.data.nombre);
+            formData.append('direccion', this.data.direccion);
+            formData.append('rubro', this.data.rubro);
 
-                if (response.status === 200) {
-                    this.$toast.success('Empresa creada con exito');
-                    this.cerrarModalAgregarEmpresa();
-
-                    this.fetchEmpresas();
+            const response = await axios.post("/empresa", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
                 }
-                this.data.nombre = "";
-                this.data.direccion = "";
-                this.data.rubro = "";
-                this.file = null;
-                this.file.name = null;
+            });
 
-            } catch (error) {
-                this.$toast.error('No se ha podido crear la empresa');
-
+            if (response.status === 200) {
+                this.$toast.success('Empresa creada con exito');
+                this.cerrarModalAgregarEmpresa();
+                this.fetchEmpresas();
             }
+            this.data.nombre = "";
+            this.data.direccion = "";
+            this.data.rubro = "";
+            this.file = null;
+            this.file.name = null;
+
+
         },
 
         editarEmpresa(empresaId) {

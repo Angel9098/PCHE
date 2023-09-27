@@ -47,13 +47,13 @@
                                     </div>
                                 </div>
                                 <div class="col-2">
-                                    <input v-model="dui" type="text" placeholder="DUI" class="form-control mb-2" />
+                                    <input v-model="filtros.dui" @input="debounceSearchEmpleado" type="text" placeholder="DUI" class="form-control mb-2" />
                                 </div>
                                 <div class="col-2">
-                                    <input v-model="nombre" type="text" placeholder="Nombre" class="form-control mb-2" />
+                                    <input v-model="filtros.nombre" @input="debounceSearchEmpleado" type="text" placeholder="Nombre" class="form-control mb-2" />
                                 </div>
                                 <div class="col-2">
-                                    <input v-model="email" type="text" placeholder="Email" class="form-control mb-2" />
+                                    <input v-model="filtros.email"  @input="debounceSearchEmpleado" type="text" placeholder="Email" class="form-control mb-2" />
                                 </div>
                             </div>
                             <div class="row">
@@ -183,6 +183,9 @@ export default {
             filtros: {
                 selectEmpresa: "",
                 selectArea: "",
+                dui: "",
+                nombre: "",
+                email: "",
                 fechaDesde: "",
                 fechaHasta: "",
             },
