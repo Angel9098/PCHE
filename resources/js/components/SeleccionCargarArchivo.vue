@@ -1,7 +1,7 @@
 <template>
     <div class="bg-white d-flex flex-column justify-content-center align-items-center col-12 col-xs-12">
 
-        <div class="center-image d-flex flex-column justify-content-center align-items-center" style="margin-bottom: 1%">
+        <div  class="center-image d-flex flex-column justify-content-center align-items-center" style="margin-bottom: 1%">
             <img src="assets/img/latinMobile.png" alt="logo" class="w-75" />
         </div>
         <div class="container mt-4">
@@ -89,17 +89,29 @@
 
                         <tbody class="text-center" v-if="horasExtras.length > 0">
                             <tr v-for="registro in horasExtras" :key="registro.id">
-                                <td scope="row">{{ registro.empleado.dui }}</td>
-                                <td>{{ registro.empleado.nombres }}</td>
-                                <td>{{ registro.fecha_registro }}</td>
-                                <td>{{ registro.empleado.salario | toCurrency }}</td>
-                                <td>{{ registro.diurnas }}</td>
-                                <td>{{ registro.nocturnas }}</td>
-                                <td>{{ registro.diurnas_descanso }}</td>
-                                <td>{{ registro.nocturnas_descanso }}</td>
-                                <td>{{ registro.diurnas_asueto }}</td>
-                                <td>{{ registro.nocturnas_asueto }}</td>
-                            </tr>
+    <td scope="row">{{ registro.empleado.dui }}</td>
+    <td>{{ registro.empleado.nombres + " " + registro.empleado.apellidos }}</td>
+    <td>{{ formatFecha(registro.fecha_registro) }}</td>
+    <td>{{ registro.empleado.salario | toCurrency }}</td>
+    <td>{{ registro.diurnas !== 0 ? registro.diurnas : '-' }}</td>
+    <td>{{ registro.nocturnas !== 0 ? registro.nocturnas : '-' }}</td>
+    <td>{{ registro.diurnas_descanso !== 0 ? registro.diurnas_descanso : '-' }}</td>
+    <td>{{ registro.nocturnas_descanso !== 0 ? registro.nocturnas_descanso : '-' }}</td>
+    <td>{{ registro.diurnas_asueto !== 0 ? registro.diurnas_asueto : '-' }}</td>
+    <td>{{ registro.nocturnas_asueto !== 0 ? registro.nocturnas_asueto : '-' }}</td>
+</tr>
+                            <tr >
+    <td></td>
+    <td></td>
+    <td>Total</td>
+    <td>{{  totalsueldo | toCurrency }}</td>
+    <td>{{ totalDiurnas !== 0 ? totalDiurnas : '-' }}</td>
+    <td>{{ totalNocturnas !== 0 ? totalNocturnas : '-' }}</td>
+    <td>{{ totalDiurnasDescanso !== 0 ? totalDiurnasDescanso : '-' }}</td>
+    <td>{{ totalNocturnasDescanso !== 0 ? totalNocturnasDescanso : '-' }}</td>
+    <td>{{ totalDiurnasAsueto !== 0 ? totalDiurnasAsueto : '-' }}</td>
+    <td>{{ totalNocturnasAsueto !== 0 ? totalNocturnasAsueto : '-' }}</td>
+</tr>
                         </tbody>
                         <tbody v-else>
                             <tr>
@@ -111,117 +123,134 @@
                     </table>
                 </div>
             </div>
-            <div class="col-11 d-flex flex-row">
-                <!-- Mueve el navegador de paginación aquí, debajo de la tabla -->
-                <nav aria-label="Page navigation example" class="mt-4">
-                    <ul class="pagination">
-                        <li class="page-item" :class="{ disabled: currentPage === 1 }">
-                            <a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)"
-                                aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <li class="page-item" v-for="page in lastPage" :key="page"
-                            :class="{ active: page === currentPage }">
-                            <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
-                        </li>
-                        <li class="page-item" :class="{ disabled: currentPage === lastPage }">
-                            <a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-
-        <div class="row container">
-            <div class="col-12 d-flex flex-row justify-content-end gap-4">
-                <button @click="procesarCalculos()" class="btn btn-custom btn-3d">Procesar</button>
-                <button @click="generatePDF()" class="btn btn-custom btn-3d">Generar PDF</button>
-            </div>
-            <div class="col-1">
-            </div>
-        </div>
-        <div v-if="showPdfTemplate" class="pdf-content">
-            <!-- Contenido para el PDF -->
-            <div ref="pdfContent" class="pdf-wrapper">
-                <!-- Encabezado -->
-                <div class="header">
-                    <div class="logo-container">
-                        <img src="/assets/img/latinMobile.png" alt="logo" class="logo">
-                    </div>
-                    <div class="title-container">
-                        <h2 class="title">PCHE</h2>
-                        <h4>Reporte de Horas de Empleado</h4>
-                        <p v-for="empresa in empresas" :key="empresa.id" :value="empresa.id">{{ empresa.nombre }}</p>
-                    </div>
-                    <div class="area-date-container">
-                        <p v-if="areas.length > 0" v-for="area in areas" :key="area.id" :value="area.id" class="area"> Area:
-                            {{ area.id }} - {{ area.nombre }}</p>
-                        <p v-else>Todas</p>
-                        <p class="date">{{ currentDate }}</p>
-                    </div>
-                </div>
-
-                <!-- Tabla con las 7 columnas -->
-                <div class="col-12">
-                    <div class="col-12 d-flex flex-column">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-bordered table-sm mt-4 align-middle">
-                                <thead class="text-center bg-primary text-white">
-                                    <th scope="col" class="col-2">ID Empleado</th>
-                                    <th scope="col" class="col-3">Nombre</th>
-                                    <th scope="col" class="col-1">Fecha</th>
-                                    <th scope="col" class="col-2">Sueldo</th>
-                                    <th scope="col" class="col-1">Diurnas</th>
-                                    <th scope="col" class="col-1">Nocturnas</th>
-                                    <th scope="col" class="col-1">Diurnas Descanso</th>
-                                    <th scope="col" class="col-1">Nocturnas Descanso</th>
-                                    <th scope="col" class="col-1">Diurnas Asueto</th>
-                                    <th scope="col" class="col-1">Nocturnas Asueto</th>
-                                </thead>
-
-                                <tbody class="text-center" v-if="horasExtras.length > 0">
-                                    <tr v-for="registro in horasExtras" :key="registro.id">
-                                        <td scope="row">{{ registro.empleado.dui }}</td>
-                                        <td>{{ registro.empleado.nombres }}</td>
-                                        <td>{{ registro.fecha_registro }}</td>
-                                        <td>{{ registro.empleado.salario | toCurrency }}</td>
-                                        <td>{{ registro.diurnas }}</td>
-                                        <td>{{ registro.nocturnas }}</td>
-                                        <td>{{ registro.diurnas_descanso }}</td>
-                                        <td>{{ registro.nocturnas_descanso }}</td>
-                                        <td>{{ registro.diurnas_asueto }}</td>
-                                        <td>{{ registro.nocturnas_asueto }}</td>
-                                    </tr>
-                                </tbody>
-                                <tbody v-else>
-                                    <tr>
-                                        <td colspan="10" class="text-center">
-                                            No hay registros para mostrar
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <!-- Espaciador para separar la tabla del pie de página -->
-                    <div class="spacer"></div>
-
-                    <!-- Paginación como pie de página -->
-                    <div class="pagination">
-                        pg {{ currentPage }} de {{ totalPages }}
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="col-11 d-flex flex-row">
+      <!-- Mueve el navegador de paginación aquí, debajo de la tabla -->
+      <nav aria-label="Page navigation example" class="mt-4">
+        <ul class="pagination">
+          <li class="page-item" :class="{ disabled: currentPage === 1 }">
+            <a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          <li class="page-item" v-for="page in lastPage" :key="page" :class="{ active: page === currentPage }">
+            <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
+          </li>
+          <li class="page-item" :class="{ disabled: currentPage === lastPage }">
+            <a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
+</div>
+
+            <div class="row container">
+                <div class="col-12 d-flex flex-row justify-content-end gap-4">
+                    <button @click="procesarCalculos()" class="btn btn-custom btn-3d">Procesar</button>
+                    <button @click="generatePDF()" class="btn btn-custom btn-3d">Generar PDF</button>
+                </div>
+                <div class="col-1">
+                </div>
+        </div>
+            <div v-if="showPdfTemplate" class="pdf-content">
+                <!-- Contenido para el PDF -->
+    <div ref="pdfContent" class="pdf-wrapper">
+      <!-- Encabezado -->
+      <div class="header">
+        <div class="logo-container">
+          <img src="/assets/img/latinMobile.png" alt="logo" class="logo">
+        </div>
+        <div class="title-container">
+  <h2 class="title">PCHE</h2>
+  <h4>Reporte de Horas de Empleado</h4>
+  <p v-if="empresas.length === 1">Empresa: {{ empresas[0].nombre }}</p>
+  <p v-else>Empresas: Todas</p>
+</div>
+        <div class="area-date-container">
+    <p v-if="areas && areas.length > 0">
+        <span v-for="area in areas" :key="area.id" :value="area.id" class="area"> Area: {{ area.id }} - {{ area.nombre }}</span>
+    </p>
+    <p v-else>Areas: Todas</p>
+    <p class="date">Fecha de Emisión: {{ currentDate }}</p>
+</div>
+      </div>
+
+      <!-- Tabla con las 7 columnas -->
+      <div class="col-12">
+      <div class="col-12 d-flex flex-column">
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered table-sm mt-4 align-middle">
+            <thead class="text-center bg-primary text-white">
+              <th scope="col" class="col-2">ID Empleado</th>
+              <th scope="col" class="col-3">Nombre</th>
+              <th scope="col" class="col-1">Fecha</th>
+              <th scope="col" class="col-2">Sueldo</th>
+              <th scope="col" class="col-1">Diurnas</th>
+              <th scope="col" class="col-1">Nocturnas</th>
+              <th scope="col" class="col-1">Diurnas Descanso</th>
+              <th scope="col" class="col-1">Nocturnas Descanso</th>
+              <th scope="col" class="col-1">Diurnas Asueto</th>
+              <th scope="col" class="col-1">Nocturnas Asueto</th>
+            </thead>
+
+            <tbody class="text-center" v-if="horasExtras.length > 0">
+                <tr v-for="registro in horasExtras" :key="registro.id">
+    <td scope="row">{{ registro.empleado.dui }}</td>
+    <td>{{ registro.empleado.nombres + " " + registro.empleado.apellidos }}</td>
+    <td>{{ formatFecha(registro.fecha_registro) }}</td>
+    <td>{{ registro.empleado.salario | toCurrency }}</td>
+    <td>{{ registro.diurnas !== 0 ? registro.diurnas : '-' }}</td>
+    <td>{{ registro.nocturnas !== 0 ? registro.nocturnas : '-' }}</td>
+    <td>{{ registro.diurnas_descanso !== 0 ? registro.diurnas_descanso : '-' }}</td>
+    <td>{{ registro.nocturnas_descanso !== 0 ? registro.nocturnas_descanso : '-' }}</td>
+    <td>{{ registro.diurnas_asueto !== 0 ? registro.diurnas_asueto : '-' }}</td>
+    <td>{{ registro.nocturnas_asueto !== 0 ? registro.nocturnas_asueto : '-' }}</td>
+</tr>
+              <tr >
+    <td></td>
+    <td></td>
+    <td>Total</td>
+    <td>{{  totalsueldo | toCurrency }}</td>
+    <td>{{ totalDiurnas !== 0 ? totalDiurnas : '-' }}</td>
+    <td>{{ totalNocturnas !== 0 ? totalNocturnas : '-' }}</td>
+    <td>{{ totalDiurnasDescanso !== 0 ? totalDiurnasDescanso : '-' }}</td>
+    <td>{{ totalNocturnasDescanso !== 0 ? totalNocturnasDescanso : '-' }}</td>
+    <td>{{ totalDiurnasAsueto !== 0 ? totalDiurnasAsueto : '-' }}</td>
+    <td>{{ totalNocturnasAsueto !== 0 ? totalNocturnasAsueto : '-' }}</td>
+</tr>
+            </tbody>
+            <tbody v-else>
+              <tr>
+                <td colspan="10" class="text-center">
+                  No hay registros para mostrar
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Espaciador para separar la tabla del pie de página -->
+      <div class="spacer"></div>
+
+      <div>
+        <p>Emitido por: Cristian Zayas </p>
+      </div>
+
+      <!-- Paginación como pie de página -->
+      <div class="pagination">
+        pg {{ currentPage }} de {{ totalPages }}
+      </div>
+    </div>
+  </div>
+  </div>
+        </div>
 </template>
 
 <script>
 import axios from "axios";
 import html2pdf from "html2pdf.js";
+import moment from "moment";
 
 export default {
     data() {
@@ -243,6 +272,8 @@ export default {
             currentPage: 1,
             lastPage: 1,
             showPdfTemplate: false,
+            currentDate: new Date().toLocaleDateString(),
+            totalPages: 1,
         };
     },
     created() {
@@ -329,27 +360,27 @@ export default {
                 });
         },
         generatePDF() {
-            // Mostrar la sección de contenido para generar el PDF
-            this.showPdfTemplate = true;
+  // Mostrar la sección de contenido para generar el PDF
+  this.showPdfTemplate = true;
 
-            // Utilizar this.$nextTick para esperar a que el DOM se actualice
-            this.$nextTick(() => {
-                const content = this.$refs.pdfContent;
-                const pdfOptions = {
-                    margin: 10,
-                    filename: "documento.pdf",
-                    image: { type: "jpeg", quality: 0.98 },
-                    html2canvas: { scale: 2 },
-                    jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
-                };
+  // Utilizar this.$nextTick para esperar a que el DOM se actualice
+  this.$nextTick(() => {
+    const content = this.$refs.pdfContent;
+    const pdfOptions = {
+      margin: 10,
+      filename: "documento.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
+    };
 
-                // Utilizar html2pdf dentro de this.$nextTick
-                html2pdf().from(content).set(pdfOptions).save();
+    // Utilizar html2pdf dentro de this.$nextTick
+    html2pdf().from(content).set(pdfOptions).save();
 
-                // Ocultar la sección de contenido después de generar el PDF
-                this.showPdfTemplate = false;
-            });
-        },
+    // Ocultar la sección de contenido después de generar el PDF
+    this.showPdfTemplate = false;
+  });
+},
 
 
         async fetchHorasExtras() {
@@ -359,22 +390,41 @@ export default {
         async buscarRegistrosByEmpresa() {
             const response = await axios.post("horas_extra", this.filtros);
             this.horasExtras = response.data;
+            // Calcular los totales
+            this.totalsueldo =0;
+            this.totalDiurnas = 0;
+            this.totalNocturnas = 0;
+            this.totalDiurnasDescanso = 0;
+            this.totalNocturnasDescanso = 0;
+            this.totalDiurnasAsueto = 0;
+            this.totalNocturnasAsueto = 0;
+
             this.horasExtras.forEach(element => {
                 element.empleado.salario = Number(element.empleado.salario);
+                this.totalsueldo += element.empleado.salario;
+                this.totalDiurnas += element.diurnas;
+                this.totalNocturnas += element.nocturnas;
+                this.totalDiurnasDescanso += element.diurnas_descanso;
+                this.totalNocturnasDescanso += element.nocturnas_descanso;
+                this.totalDiurnasAsueto += element.diurnas_asueto;
+                this.totalNocturnasAsueto += element.nocturnas_asueto;
             });
         },
         async procesarCalculos() {
 
-            const response = await axios.post("calculo_horas", this.horasExtras);
-            var mensaje = response.data;
-            this.$toast.success('Calculos realizados');
-            this.buscarRegistrosByEmpresa(this.filtros);
+        const response = await axios.post("calculo_horas", this.horasExtras);
+        var mensaje = response.data;
+        this.$toast.success('Calculos realizados');
+        this.buscarRegistrosByEmpresa(this.filtros);
 
-        },
+},
         changePage(page) {
             this.currentPage = page;
             this.fetchEmpleados();
-        }
+        },
+        formatFecha(date) {
+            return moment(date).format("DD/MM/YYYY");
+        },
     },
 };
 </script>
@@ -421,90 +471,69 @@ export default {
     border-radius: 20px;
     border-color: white;
 }
-
 .pdf-wrapper {
-    position: relative;
-    min-height: 100%;
+  position: relative;
+  min-height: 100%;
 }
-
 .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
 }
-
 .logo-container {
-    flex: 0 0 auto;
+  flex: 0 0 auto;
 }
-
 .logo {
-    width: 150px;
-    height: 100px;
+  width: 150px;
+  height: 100px;
 }
-
 .title-container {
-    flex: 1;
-    text-align: center;
+  flex: 1;
+  text-align: center;
 }
-
-.title,
+.title, h4 {
+  margin: 0;
+}
 h4 {
-    margin: 0;
+  margin-top: 20px;
 }
-
-h4 {
-    margin-top: 20px;
-}
-
 .company-name {
-    font-size: 1.2em;
-    margin: 0;
-    text-align: center;
+  font-size: 1.2em;
+  margin: 0;
+  text-align: center;
 }
-
 .area-date-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
-
-.area,
-.date {
-    margin: 0;
+.area, .date {
+  margin: 0;
 }
-
 .table-margin {
-    margin: 20px 0;
+  margin: 20px 0;
 }
-
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
 }
-
-table,
-th,
-td {
-    border: 1px solid black;
+table, th, td {
+  border: 1px solid black;
 }
-
-th,
-td {
-    padding: 8px;
-    text-align: left;
+th, td {
+  padding: 8px;
+  text-align: left;
 }
-
 .spacer {
-    height: 50px;
+  height: 50px;
 }
-
 .pagination {
-    bottom: 0;
-    right: 0;
-    text-align: right;
-    margin-top: 20px;
-    font-size: 0.9em;
+  bottom: 0;
+  right: 0;
+  text-align: right;
+  margin-top: 20px;
+  font-size: 0.9em;
 }
 </style>
