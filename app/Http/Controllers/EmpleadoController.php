@@ -241,7 +241,7 @@ class EmpleadoController extends Controller
                 })
                 ->where(function ($query) use ($dui) {
                     if (!empty($dui)) {
-                        $query->where('dui', '=', $dui);
+                        $query->where('dui', 'LIKE', "%$dui%");
                     }
                 })
                 ->where(function ($query) use ($email) {
