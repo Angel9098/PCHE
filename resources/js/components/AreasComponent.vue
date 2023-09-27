@@ -2,7 +2,7 @@
     <div class="container d-flex flex-column justify-content-center align-items-center mt-4">
         <h1>AREAS POR EMPRESA</h1>
         <div class="w-100 d-flex flex-row justify-content-between align-items-center mt-5">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrear" @click="accionModal='Agregar'">Agregar &#193;rea</button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrear" @click="showCrearArea">Agregar &#193;rea</button>
             <div class="col-4">
                 <select class="form-select" v-model="selected" @change="getAreasByEmpresa">
                     <option :value="0">
@@ -33,7 +33,7 @@
                         <td>
                             <div class="d-flex flex-row justify-content-around">
                                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalCrear" @click="showModificarArea(item.id)"><i class="fa-solid fa-pen-to-square text-white"></i></button>
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminar"><i class="fa-solid fa-trash text-white"></i></button>
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminar" @click="showDeleteModal(item.id)"><i class="fa-solid fa-trash text-white"></i></button>
                             </div>
                         </td>
                     </tr>
@@ -58,8 +58,8 @@
                     <div class="col-5">
                         <label for="boss">Seleccione Jefatura</label>
                         <select class="form-select" id="boss" v-model="area.jefe_area">
-                            <option>
-
+                            <option v-for="jefe in jefaturas" :key="jefe.id" :value="jefe.id">
+                                {{ jefe.nombre_jefe }}
                             </option>
                         </select>
                     </div>
@@ -68,7 +68,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary">Guardar</button>
+            <button type="button" class="btn btn-primary" @click="accionModal == 'Agregar' ? crearArea() : modificarArea()">Guardar</button>
           </div>
         </div>
       </div>
@@ -86,7 +86,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger text-white">Eliminar</button>
+                    <button type="button" class="btn btn-danger text-white" @click="deleteArea()">Eliminar</button>
                 </div>
             </div>
         </div>
@@ -104,11 +104,14 @@ export default {
             selected: 0,
             accionModal: '',
             area: {
+                id: null,
                 nombre_area: '', // parametro para traer nombre de area
                 nombre: '', // parametro solo para crear y modificar area 
                 empresa_id: 0,
                 jefe_area: 0
-            }
+            },
+            jefaturas: [],
+            selectedEliminar: 0
         }
     },
     mounted() {
@@ -126,21 +129,83 @@ export default {
                 this.areas = resp.data;
             });
         },
-        showModificarArea(idArea) {
-            this.accionModal = 'Modificar'; //Accion para modificar titulo y rellenar campos
-            this.rellenarCampos(idArea);
+        showCrearArea() {
+            this.getJefaturas();
+            this.accionModal = 'Agregar';
+            Vue.set(this.area, 'nombre_area', '');
+            Vue.set(this.area, 'jefe_area', 0);
+            this.area = { ...this.area, empresa_id: this.selected };
+        },
+        crearArea() {
+            Vue.set(this.area, 'nombre', this.area.nombre_area);
+            axios.post('areas/create', this.area, { headers: { 'Content-type': 'application/json' } }).then(resp => {
+                if (resp.status == 201) {
+                    this.$toast.success('Área creada', {
+                        position: "top-right",
+                        timeout: 3000,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        closeButton: "button",
+                        icon: true
+                    });
+                    this.getAreasByEmpresa();  
+                }
+            })
         },
         getAreasAll() {
             axios.get('/areas', { headers: { 'Content-type': 'application/json' } }).then(resp => {
                 this.areas = resp.data;
             });
         },
+        getJefaturas() {
+            axios.get('areas/jefes', { headers: { 'Content-type': 'application/json' } }).then(response => {
+                this.jefaturas = response.data;
+            });
+        },
         rellenarCampos(idArea) {
             let registroSeleccionado = this.areas.find(element => element.id === idArea);
             this.area.nombre_area = registroSeleccionado.nombre_area;
+            this.area.jefe_area = registroSeleccionado.id_jefe;
+            this.area.id = registroSeleccionado.id;
+            this.area.empresa_id = this.selected;
         },
-        deleteArea(idArea) {
-            axios.delete('')
+        showModificarArea(idArea) {
+            this.accionModal = 'Modificar'; //Accion para modificar titulo y rellenar campos
+            this.rellenarCampos(idArea);
+        },
+        modificarArea() {
+            Vue.set(this.area, 'nombre', this.area.nombre_area);
+            axios.put(`areas/update?id=${this.area.id}`, this.area, { headers: { 'Content-type': 'application/json' } }).then(resp => {
+                if (resp.status == 200) {
+                    this.$toast.success('Área modificada', {
+                        position: "top-right",
+                        timeout: 3000,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        closeButton: "button",
+                        icon: true
+                    });
+                    this.getAreasByEmpresa();
+                }
+            });
+        },
+        showDeleteModal(idArea) {
+            this.selectedEliminar = idArea;
+        },
+        deleteArea() {
+            axios.delete(`areas/delete?id=${this.selectedEliminar}`, { headers: { 'Content-type': 'application/json' } }).then(resp => {
+                if (resp.status == 200) {
+                    this.$toast.success('Área eliminada', {
+                        position: "top-right",
+                        timeout: 3000,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        closeButton: "button",
+                        icon: true
+                    });
+                    this.getAreasByEmpresa();
+                }
+            })
         }
     },
     filters: {
