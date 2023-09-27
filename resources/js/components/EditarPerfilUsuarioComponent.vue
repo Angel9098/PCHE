@@ -57,7 +57,7 @@
               class="form-control"
               id="changeNombre"
               placeholder="Contacto de emergencia"
-              v-model="perfil.nombre_persona"
+              v-model="perfil.avisar_contacto"
               readonly
             />
           </div>
@@ -65,7 +65,7 @@
           <div class="form-group">
             <label for="changePuesto" class="text-uppercase">Número de emergencia</label>
             <input
-              type="number"
+              type="text"
               class="form-control"
               id="changePuesto"
               placeholder="(503) 7854 6985"
@@ -163,23 +163,36 @@ export default {
         email: "",
         imagen: "",
         numero_emergencia: "",
-        nombre_persona: "",
-      },
+        avisar_contacto: "",
+      }
     };
+  },
+  mounted()  {
+    this.leerData();
   },
   components: {
     ModalChangePassword,
   },
   methods: {
+    leerData() {
+            if (JSON.parse(localStorage.getItem("user")) !== null) {
+                const empleadoId = JSON.parse(localStorage.getItem("user"));
+                axios
+                    .get(`empleadobyid?idEmpleado=${empleadoId.empleado_id}`)
+                    .then((result) => {
+                        console.log(result.data[0].nombres);
+                        this.perfil = result.data[0];
+                    })
+                    .catch((error) => {});
+            }
+        },
     changesDefauld(event) {
       this.defaultBooleand = false;
       this.file = event.target.files[0];
-      
       const files = event.target.files[0];
       this.perfil.imagen = URL.createObjectURL(files);
     },
     sendInfromation() {
-      console.log(this.file)
         const sendFiles = new FormData();
         sendFiles.append('imagen', this.file,this.file.name);
 
