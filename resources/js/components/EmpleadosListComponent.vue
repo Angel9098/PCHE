@@ -156,7 +156,7 @@ export default {
                 if (this.filtros.selectedOption === 1) {
                     this.filtros.selectedOption = null;
                 }
-                debugger;
+
                 if ((filtros.nombre === "") && (filtros.apellido === "") && (filtros.dui === "") && (filtros.cargo === "") && (filtros.email === "") && (filtros.selectedOption === "")) {
                     this.fetchEmpleados();
                 } else {
