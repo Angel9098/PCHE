@@ -305,7 +305,13 @@ export default {
 
         }, 300),
         debounceSearchEmpleado: _.debounce(function () {
+            if (this.filtros.selectArea === "no") {
+                this.filtros.selectArea = "";
+                this.duiJefe = "";
+                this.email = "";
+                this.nombreJefe = "";
 
+            }
             const areaId = this.filtros.selectArea;
             this.searchAreaById(areaId);
             this.buscarRegistrosByEmpresa(this.filtros);
