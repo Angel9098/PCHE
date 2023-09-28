@@ -149,6 +149,7 @@ export default {
                 imagen: File,
                 nombre: "",
                 direccion: "",
+                id: "",
                 rubro: "",
                 fecha: "",
             },
@@ -173,48 +174,48 @@ export default {
             this.perfil.imagen = URL.createObjectURL(files);
         },
         async dataGuardarEmpresa() {
+            try {
 
+                const formData = new FormData();
+                formData.append('imagen', this.file, this.file.name);
+                formData.append('nombre', this.data.nombre);
+                formData.append('direccion', this.data.direccion);
+                formData.append('rubro', this.data.rubro);
 
-            const formData = new FormData();
-            formData.append('imagen', this.file, this.file.name);
-            formData.append('nombre', this.data.nombre);
-            formData.append('direccion', this.data.direccion);
-            formData.append('rubro', this.data.rubro);
+                const response = await axios.post("/empresa", formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
 
-            const response = await axios.post("/empresa", formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
+                if (response.status === 200) {
+                    this.$toast.success('Empresa creada con exito');
+                    this.cerrarModalAgregarEmpresa();
+
+                    this.fetchEmpresas();
                 }
-            });
+                this.data.nombre = "";
+                this.data.direccion = "";
+                this.data.rubro = "";
+                this.file = null;
+                this.file.name = null;
 
-            if (response.status === 200) {
-                this.$toast.success('Empresa creada con exito');
-                this.cerrarModalAgregarEmpresa();
-                this.fetchEmpresas();
+            } catch (error) {
+                this.$toast.error('No se ha podido crear la empresa');
+
             }
-            this.data.nombre = "";
-            this.data.direccion = "";
-            this.data.rubro = "";
-            this.file = null;
-            this.file.name = null;
-
-
         },
 
-        editarEmpresa(empresaId) {
-            $.ajax({
-                url: '/empresabyid?id=' + empresaId,
-                method: 'GET',
-                success: (data) => {
-                    this.data.nombre = data.nombre;
-                    this.data.direccion = data.direccion;
-                    this.data.rubro = data.rubro;
-                    $("#modalAgregarEmpresa").modal("show");
-                },
-                error: (error) => {
-                    console.error('Error al obtener los datos de la empresa:', error);
-                }
-            });
+        async editarEmpresa(empresaId) {
+            const response = await axios.post("/empresabyid?id=", empresaId);
+            this.empleados = response.data;
+            if (response.data != null) {
+                this.data.nombre = response.data.nombre;
+                this.data.direccion = response.data.direccion;
+                this.data.rubro = response.data.rubro;
+                this.data.id = response.data.id
+                $("#modalAgregarEmpresa").modal("show");
+            }
         },
         eliminarEmpresa(id) {
 
@@ -237,7 +238,42 @@ export default {
             $("#modalAgregarEmpresa").modal("hide");
         },
         guardarEmpresa() {
+            if (this.data.id != "") {
+                this.actualizarEmpresa();
+            }
             this.dataGuardarEmpresa();
+        },
+        async actualizarEmpresa() {
+            try {
+
+                const formData = new FormData();
+                formData.append('imagen', this.file, this.file.name);
+                formData.append('nombre', this.data.nombre);
+                formData.append('direccion', this.data.direccion);
+                formData.append('rubro', this.data.rubro);
+
+                const response = await axios.post("/actualizar/empresa", formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+
+                if (response.status === 200) {
+                    this.$toast.success('Empresa Actualizada con exito');
+                    this.cerrarModalAgregarEmpresa();
+
+                    this.fetchEmpresas();
+                }
+                this.data.nombre = "";
+                this.data.direccion = "";
+                this.data.rubro = "";
+                this.file = null;
+                this.file.name = null;
+
+            } catch (error) {
+                this.$toast.error('No se ha podido crear la empresa');
+
+            }
         },
         formatFecha(date) {
             return moment(date).format("DD/MM/YYYY");
