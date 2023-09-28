@@ -104,9 +104,14 @@ export default {
             selected: 0,
             accionModal: '',
             area: {
-                id: null,
+                id: 0,
                 nombre_area: '', // parametro para traer nombre de area
                 nombre: '', // parametro solo para crear y modificar area 
+                empresa_id: 0,
+                jefe_area: 0
+            },
+            areaCrear: { // parametro solo para crear area
+                nombre: '',  
                 empresa_id: 0,
                 jefe_area: 0
             },
@@ -125,7 +130,7 @@ export default {
             });
         },
         getAreasByEmpresa() {
-            axios.get(`/empresa/areas?id=${this.selected}`, { headers: { 'Content-type': 'application/json' } }).then(resp => {
+            axios.get(`/areas?id_empresa=${this.selected}`, { headers: { 'Content-type': 'application/json' } }).then(resp => {
                 this.areas = resp.data;
             });
         },
@@ -134,11 +139,12 @@ export default {
             this.accionModal = 'Agregar';
             Vue.set(this.area, 'nombre_area', '');
             Vue.set(this.area, 'jefe_area', 0);
-            this.area = { ...this.area, empresa_id: this.selected };
         },
         crearArea() {
-            Vue.set(this.area, 'nombre', this.area.nombre_area);
-            axios.post('areas/create', this.area, { headers: { 'Content-type': 'application/json' } }).then(resp => {
+            Vue.set(this.areaCrear, 'nombre', this.area.nombre_area);
+            Vue.set(this.areaCrear, 'empresa_id', this.selected);
+            Vue.set(this.areaCrear, 'jefe_area', this.area.jefe_area);
+            axios.post('areas/create', this.areaCrear, { headers: { 'Content-type': 'application/json' } }).then(resp => {
                 if (resp.status == 201) {
                     this.$toast.success('Área creada', {
                         position: "top-right",
@@ -148,7 +154,9 @@ export default {
                         closeButton: "button",
                         icon: true
                     });
-                    this.getAreasByEmpresa();  
+                    this.getAreasByEmpresa();
+                    const myModal = new bootstrap.Modal(document.querySelector('.modal'));
+                    myModal.hide();  
                 }
             })
         },
@@ -170,6 +178,7 @@ export default {
             this.area.empresa_id = this.selected;
         },
         showModificarArea(idArea) {
+            this.getJefaturas();
             this.accionModal = 'Modificar'; //Accion para modificar titulo y rellenar campos
             this.rellenarCampos(idArea);
         },
@@ -186,6 +195,8 @@ export default {
                         icon: true
                     });
                     this.getAreasByEmpresa();
+                    const myModal = new bootstrap.Modal(document.querySelector('.modal'));
+                    myModal.hide();
                 }
             });
         },
@@ -204,6 +215,8 @@ export default {
                         icon: true
                     });
                     this.getAreasByEmpresa();
+                    const myModal = new bootstrap.Modal(document.querySelector('.modal'));
+                    myModal.hide();
                 }
             })
         }

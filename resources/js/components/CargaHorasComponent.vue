@@ -42,7 +42,7 @@
                             <th scope="col">Nocturnas Asueto</th>
                         </thead>
                         <tbody>
-                            <tr v-for="registro in items" :key="registro.id">
+                            <tr v-for="registro in items" :key="registro.id" :class="registro.validFecha == false ? 'table-danger':'table-light'">
                                 <td scope="row" class="text-center">{{ registro.id }}</td>
                                 <td class="text-center">{{ registro.idEmpleado }}</td>
                                 <td>{{ registro.nombre }}</td>
@@ -58,7 +58,7 @@
                     </table>
                 </div>
                 <div class="col-12 d-flex flex-row justify-content-start gap-5">
-                    <button type="button" class="btn btn-primary" @click="save"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+                    <button type="button" class="btn btn-primary" @click="save" :hidden="!fechasArchivoValid"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
                     <button type="button" class="btn btn-secondary" @click="remove"><i class="fa-solid fa-xmark"></i> Cancelar</button>
                 </div>
             </div>
@@ -75,19 +75,18 @@ export default {
             loaded: false,
             items: [],
             fileExcel: File,
-            isDragging: false   
+            isDragging: false,
+            fechaVigente: '',
+            fechasArchivoValid: true  
         }
     },
     mounted() {
-
+        this.getCorteVigente();
     },
     methods: {
         importarExcel() {
-            this.fileExcel = this.$refs.file.files[0];
-            let extension = this.fileExcel.name.slice(this.fileExcel.name.lastIndexOf('.'), this.fileExcel.name.length);
-            this.items = [];
-            if (this.$refs.file.files.length > 1) {
-                this.$toast.error("Seleccione únicamente un archivo", {
+            if (moment().isAfter(this.fechaVigente)) {
+                this.$toast.error(`Tiempo de entrega expirado. Fecha máxima: ${moment(this.fechaVigente).format('DD/MM/YYYY')}`, {
                     position: "top-right",
                     timeout: 3000,
                     closeOnClick: true,
@@ -95,10 +94,13 @@ export default {
                     closeButton: "button",
                     icon: true
                 });
-            } else {
-                if (extension != '.xlsm') {
-                    this.loaded = false;
-                    this.$toast.error("Archivo Excel requerido", {
+            }
+            else {
+                this.fileExcel = this.$refs.file.files[0];
+                let extension = this.fileExcel.name.slice(this.fileExcel.name.lastIndexOf('.'), this.fileExcel.name.length);
+                this.items = [];
+                if (this.$refs.file.files.length > 1) {
+                    this.$toast.error("Seleccione únicamente un archivo", {
                         position: "top-right",
                         timeout: 3000,
                         closeOnClick: true,
@@ -106,29 +108,55 @@ export default {
                         closeButton: "button",
                         icon: true
                     });
-                }
-                else {
-                    this.loaded = true;
-                    readXlsxFile(this.fileExcel, { sheet: 2 }).then((rows) => {
-                        rows.forEach((element, index) => {
-                            if (index > 4) {
-                                let registroHora = {
-                                    id: index - 4,
-                                    idEmpleado: element[0],
-                                    nombre: element[1],
-                                    fecha: element[2] == null ? element[2] : moment(element[2]).format('DD/MM/YYYY'),
-                                    sueldo: element[3],
-                                    diurnas: element[4] == null ? 0 : element[4],
-                                    nocturnas: element[5] == null ? 0 : element[5],
-                                    diurnasDescanso: element[6] == null ? 0 : element[6],
-                                    nocturnasDescanso: element[7] == null ? 0 : element[7],
-                                    diurnasAsueto: element[8] == null ? 0 : element[8],
-                                    nocturnasAsueto: element[9] == null ? 0 : element[9]
+                } else {
+                    if (extension != '.xlsm') {
+                        this.loaded = false;
+                        this.$toast.error("Archivo Excel requerido", {
+                            position: "top-right",
+                            timeout: 3000,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            closeButton: "button",
+                            icon: true
+                        });
+                    }
+                    else {
+                        this.loaded = true;
+                        readXlsxFile(this.fileExcel, { sheet: 2 }).then((rows) => {
+                            rows.forEach((element, index) => {
+                                if (index > 1) {
+                                    let registroHora = {
+                                        id: index - 1,
+                                        idEmpleado: element[0],
+                                        nombre: element[1],
+                                        fecha: element[2] == null ? element[2] : moment(element[2]).locale('es-mx').add(1,'days').format('DD/MM/YYYY'),
+                                        diurnas: element[3] == null ? 0 : element[3],
+                                        nocturnas: element[4] == null ? 0 : element[4],
+                                        diurnasDescanso: element[5] == null ? 0 : element[5],
+                                        nocturnasDescanso: element[6] == null ? 0 : element[6],
+                                        diurnasAsueto: element[7] == null ? 0 : element[7],
+                                        nocturnasAsueto: element[8] == null ? 0 : element[8],
+                                        validFecha: this.validarFecha(element[2])
+                                    }
+                                    this.items.push(registroHora);
                                 }
-                                this.items.push(registroHora);
+                            });
+                            if (this.items.findIndex(element => element.validFecha == false) == -1) {
+                                this.fechasArchivoValid = true;
+                            }
+                            else {
+                                this.fechasArchivoValid = false;
+                                this.$toast.error('Registros con fecha inválida', {
+                                    position: "top-right",
+                                    timeout: 3000,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    closeButton: "button",
+                                    icon: true
+                                });
                             }
                         });
-                    });
+                    }
                 }
             }
         },
@@ -175,6 +203,18 @@ export default {
                     icon: true
                 });
             });            
+        },
+        getCorteVigente() {
+            axios.get('corte/vigente', { headers: { 'Content-type': 'application/json' } }).then(resp => {
+                this.fechaVigente = resp.data.fecha_corte;
+            });
+        },
+        validarFecha(fechaRegistro) {
+            let year = moment(this.fechaVigente).locale('es-mx').year();
+            let month = moment(this.fechaVigente).locale('es-mx').month();
+            console.log(moment(fechaRegistro).locale('es-mx').year(), moment(fechaRegistro).locale('es-mx').month())
+            if (moment(fechaRegistro).locale('es-mx').year() == year && moment(fechaRegistro).locale('es-mx').month() == month-1) return true;
+            else return false;
         }
     },
     filters: {
