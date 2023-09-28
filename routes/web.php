@@ -31,7 +31,7 @@ Route::get('empresas', 'EmpresaController@allempresas')->name('empresas');
 Route::delete('empresas', 'EmpresaController@deleteEmpresa');
 Route::get('empresabyid', 'EmpresaController@empresaById');
 Route::post('empleados/filtro/busqueda', 'EmpleadoController@bEmpleadoF')->name('empleadosBusquedafiltro');
-Route::post('empresa/update', 'EmpresaController@update')->name('updateEmpresa');
+Route::post('/actualizar/empresa', 'EmpresaController@update')->name('updateEmpresa');
 
 //Rutas para area
 Route::get('areas', 'AreaController@listaDetalleAreas')->name('areasdetalle');
