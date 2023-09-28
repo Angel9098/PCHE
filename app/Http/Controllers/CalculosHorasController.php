@@ -16,8 +16,6 @@ class CalculosHorasController extends Controller
 
         try {
             $registros = json_decode($request->getContent(), true);
-
-
             foreach ($registros as $registro) {
                 $id_empleado = $registro['empleado_id'];
                 $empleado = Empleado::where('id', $id_empleado)->first();
@@ -42,7 +40,9 @@ class CalculosHorasController extends Controller
                     $salarioDiario = $salarioMensual / 30;
                     $salarioGanado = (($diurnas * $salarioDiario) * 2) + (($nocturnas * $salarioDiario) * 2.5) + (($diurnas_descanso * $salarioDiario) * 3) + (($nocturnas_descanso * $salarioDiario) * 3.75) + (($diurnas_asueto * $salarioDiario) * 4) + (($nocturnas_asueto * $salarioDiario) * 5);
 
+
                     $sumatoria = $diurnas + $nocturnas + $diurnas_descanso + $nocturnas_descanso + $diurnas_asueto + $nocturnas_asueto;
+                    dd($sumatoria, $salarioGanado, $salarioDiario);
 
                     $salarioTotal = $salarioGanado + $salarioMensual;
 
