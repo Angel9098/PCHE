@@ -262,7 +262,6 @@ export default {
     },
     userEmail() {
       if (this.$store.state.user !== null) {
-         console.log(this.$store.state.user.email)
          return this.nombre = this.$store.state.user.email;
         } 
     },

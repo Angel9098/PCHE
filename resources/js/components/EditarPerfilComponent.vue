@@ -1,6 +1,6 @@
 <template>
     <main class="container m-auto">
-        <h1 class="text-center my-4">Actualización de pérfil</h1>
+        <h1 class="text-center my-4">Preferencia de cuenta</h1>
         <article class="card">
             <div class="floatCenter">
                 <h2 class="text-center my-3">Vista previa</h2>
@@ -12,88 +12,149 @@
                         type="image"
                     />
                     <img
-                        :src="defaultBooleand ? defaultImagen : perfilIMG.imagen"
+                        :src="
+                            defaultBooleand ? defaultImagen : perfilIMG.imagen
+                        "
                         class="img-fluid img-thumbnail cicle"
                         alt="..."
                     />
                 </picture>
 
                 <p class="font-weight-bold">NOMBRE DE PÉRFIL :</p>
-                <p>{{ perfil.nombres }}</p>
+                <p>{{ nombres }}</p>
                 <p class="font-weight-bold">CARGO O PUESTO :</p>
                 <p>{{ perfil.cargo }}</p>
-                <p class="font-weight-bold">DESCRIPCIÓN DEL PUESTO :</p>
-                <p>{{ perfil.description }}</p>
+                <p class="font-weight-bold">DUI :</p>
+                <p>{{ perfil.dui }}</p>
             </div>
             <div>
                 <form class="formContent">
-                    <!-- CAMBIAR LA IMAGEN -->
                     <div class="form-group">
-                        <label for="changeIMG">CAMBIAR LA IMAGEN</label>
-                        <input
-                            type="file"
-                            class="form-control"
-                            id="changeIMG"
-                            placeholder="CAMBIAR LA IMAGEN"
-                            @change="changesDefauld"
-                        />
-                    </div>
-                    <!-- CAMBIAR EL NOMBRE -->
-                    <div class="form-group">
-                        <label for="changeNombre">CAMBIAR EL NOMBRE {{ perfil.nombres  }}</label>
-                        <input
-                            type="fiTEXTe"
-                            class="form-control"
-                            id="changeNombre"
-                            placeholder="CAMBIAR EL NOMBRE"
-                            v-model="perfil.nombres"
-                        />
-                    </div>
-                    <!-- CAMBIAR PUESTO O CARGO -->
-                    <div class="form-group">
-                        <label for="changePuesto">CAMBIAR PUESTO O CARGO</label>
-                        <input
-                            type="fiTEXTe"
-                            class="form-control"
-                            id="changePuesto"
-                            placeholder="CAMBIAR PUESTO O CARGO"
-                            v-model="perfil.cargo"
-                        />
-                    </div>
-                    <!-- DESCRIPCION DEL PUESTO -->
-                    <div class="mb-3">
-                        <label for="validationTextarea"
-                            >DESCRIPCIÓN DEL PUESTO</label
-                        >
-                        <textarea
-                            class="form-control is-invalid"
-                            id="validationTextarea"
-                            placeholder="Required example textarea"
-                            required
-                            v-model="perfil.description"
-                        ></textarea>
-                        <div class="invalid-feedback">
-                            Please enter a message in the textarea.
+                                <label for="changeIMG">CAMBIAR LA IMAGEN</label>
+                                <input
+                                    type="file"
+                                    class="form-control"
+                                    id="changeIMG"
+                                    placeholder="CAMBIAR LA IMAGEN"
+                                    @change="changesDefauld"
+                                />
+                            </div>
+                    <div class="row my-3">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="changeNombre">NOMBRE</label>
+                                <input
+                                    type="fiTEXTe"
+                                    class="form-control"
+                                    id="changeNombre"
+                                    placeholder="CAMBIAR EL NOMBRE"
+                                    v-model="nombres"
+                                />
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="changeNombre">EMAIL</label>
+                                <input
+                                    type="fiTEXTe"
+                                    class="form-control"
+                                    id="changeNombre"
+                                    placeholder="CAMBIAR EL NOMBRE"
+                                    v-model="perfil.email"
+                                />
+                            </div>
                         </div>
                     </div>
-                    <div class="floatCenter">
-                        <button
-                            @click="sendInfromation()"
-                            type="button"
-                            class="btn btn-dark"
-                        >
-                            GUARDAR CAMBIOS
-                            <i class="fa-solid fa-circle-plus"></i>
-                        </button>
-                        <button
-                            type="button"
-                            class="btn btn-primary my-3"
-                            data-bs-toggle="modal"
-                            data-bs-target="#exampleModal"
-                        >
-                            Cambiar contraseña
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </button>
+
+                    <!-- CAMBIAR LA IMAGEN -->
+
+                    <!-- CAMBIAR EL NOMBRE -->
+                    <div class="row my-3">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="changePuesto">PUESTO O CARGO</label>
+                                <input
+                                    type="fiTEXTe"
+                                    class="form-control"
+                                    id="changePuesto"
+                                    placeholder="CAMBIAR PUESTO O CARGO"
+                                    v-model="perfil.cargo"
+                                />
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="changeNombre" class="text-uppercase"
+                                    >contacto de emergencia</label
+                                >
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="changeNombre"
+                                    placeholder="Contacto de emergencia"
+                                    v-model="perfil.avisar_contacto"
+                                    readonly
+                                />
+                            </div>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label
+                                        for="changePuesto"
+                                        class="text-uppercase"
+                                        >Número de emergencia</label
+                                    >
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="changePuesto"
+                                        placeholder="(503) 7854 6985"
+                                        v-model="perfil.numero_emergencia"
+                                        readonly
+                                    />
+                                </div>
+                            </div>
+                            <div class="col">
+                                <label for="changePuesto" class="text-uppercase"
+                                    >Dui</label
+                                >
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Last name"
+                                    v-model="perfil.dui"
+                                    readonly
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <!-- CAMBIAR PUESTO O CARGO -->
+
+                    <!-- DESCRIPCION DEL PUESTO -->
+
+                    <div class="row">
+                        <div class="col">
+                            <button
+                                @click="sendInfromation()"
+                                type="button"
+                                class="btn btn-dark"
+                            >
+                                GUARDAR CAMBIOS
+                                <i class="fa-solid fa-circle-plus"></i>
+                            </button>
+                        </div>
+                        <div class="col">
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#exampleModal"
+                            >
+                                Cambiar contraseña
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -127,8 +188,6 @@
             </div>
         </div>
         <!-- ******* -->
-
-        
     </main>
 </template>
 
@@ -165,6 +224,7 @@ export default {
                 "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
             defaultBooleand: true,
             file: File,
+            nombres: "",
             perfil: {
                 nombres: "",
                 apellidos: "",
@@ -176,8 +236,8 @@ export default {
                 salario: "",
             },
             perfilIMG: {
-              imagen: ""
-            }
+                imagen: "",
+            },
         };
     },
     mounted() {
@@ -190,11 +250,11 @@ export default {
         leerData() {
             if (JSON.parse(localStorage.getItem("user")) !== null) {
                 const empleadoId = JSON.parse(localStorage.getItem("user"));
-                this.perfilIMG.imagen = empleadoId.imagen
+                this.perfilIMG.imagen = empleadoId.imagen;
                 axios
                     .get(`empleadobyid?idEmpleado=${empleadoId.empleado_id}`)
                     .then((result) => {
-                        console.log(result.data[0].nombres);
+                        this.nombres = ` ${result.data[0].nombres} ${result.data[0].apellidos}`;
                         this.perfil = result.data[0];
                     })
                     .catch((error) => {});
@@ -205,10 +265,9 @@ export default {
             this.file = event.target.files[0];
 
             const files = event.target.files[0];
-          this.perfilIMG.imagen = URL.createObjectURL(files);
+            this.perfilIMG.imagen = URL.createObjectURL(files);
         },
         sendInfromation() {
-            console.log(this.file);
             const sendFiles = new FormData();
             sendFiles.append("imagen", this.file, this.file.name);
             axios

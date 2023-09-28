@@ -2,7 +2,7 @@
     <div id="app">
         <nav
             class="navbar navbar-primary bg-primary position-static"
-            :hidden="currentPath == '/' || currentPath == '/business'"
+            :hidden="currentPath == '/' || currentPath == '/business' || currentPath == '/access-denied'"
         >
             <div class="container-fluid">
                 <button
@@ -63,7 +63,7 @@
                             >
                                 <router-link
                                     class="nav-link text-white text-uppercase"
-                                    to="/registro"
+                                    to="/registro/0"
                                     ><i class="fa-solid fa-circle-plus"></i>
                                     Registrar empleados</router-link
                                 >
@@ -217,7 +217,7 @@
                                 >
                                     <router-link
                                         class="my-4 text-uppercase"
-                                        to="/registro"
+                                        to="/registro/0"
                                         ><i
                                             class="fa-solid fa-circle-plus text-black"
                                         ></i>
@@ -235,7 +235,7 @@
                                         ><i
                                             class="fa-solid fa-user text-black"
                                         ></i>
-                                        Perfil
+                                        Perfil usuario
                                     </router-link>
                                 </button>
                                 <button
@@ -245,11 +245,11 @@
                                 >
                                     <router-link
                                         class="my-4 text-uppercase"
-                                        to="/editarperfil"
+                                        :to="'/registro/'+ id"
                                         ><i
                                             class="fa-solid fa-user text-black"
                                         ></i>
-                                        Perfil
+                                        Perfil administrador
                                     </router-link>
                                 </button>
                                 <button
@@ -371,6 +371,7 @@ import axios from "axios";
 export default {
     data() {
         return {
+            id: "0",
             nombre: "",
         };
     },
@@ -397,6 +398,7 @@ export default {
                 axios
                     .get(`empleadobyid?idEmpleado=${empleadoId.empleado_id}`)
                     .then((result) => {
+                        this.id = result.data[0].id;
                         this.nombre = result.data[0].nombres;
                     })
                     .catch((error) => {});
