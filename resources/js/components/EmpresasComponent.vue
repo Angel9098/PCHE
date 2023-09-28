@@ -13,7 +13,7 @@
                 <thead class="table-primary bg-primary">
                     <tr class="text-center">
                         <th scope="col">Nombre</th>
-                        <th scope="col">Direccion</th>
+                        <th scope="col">Direcci&#243;n</th>
                         <th scope="col">Rubro</th>
                         <th scope="col">Fecha Registro</th>
                         <th scope="col" class="actions-header">Acciones</th>

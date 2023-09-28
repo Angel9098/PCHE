@@ -13,7 +13,7 @@
                     <h2 class="accordion-header" id="filters-headingOne">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
                             data-bs-target="#filters-collapseOne" aria-expanded="true" aria-controls="filters-collapseOne">
-                            FILTROS DE BUSQUEDA
+                            FILTROS DE B&#218;SQUEDA
                         </button>
                     </h2>
                     <!-- Cuerpo del acordeón (filtros) -->
@@ -22,12 +22,12 @@
                             <div class="row">
                                 <div class="col-2">
                                     <input v-model="filtros.nombre" @input="debounceSearchEmpleado" type="text"
-                                        placeholder="Nombre" class="form-control mb-2" />
+                                        placeholder="Nombres" class="form-control mb-2" />
 
                                 </div>
                                 <div class="col-2">
                                     <input v-model="filtros.apellido" @input="debounceSearchEmpleado" type="text"
-                                        placeholder="Apellido" class="form-control mb-2" />
+                                        placeholder="Apellidos" class="form-control mb-2" />
 
                                 </div>
                                 <div class="col-2">
@@ -71,7 +71,7 @@
                         <th scope="col">Apellidos</th>
                         <th scope="col">Cargo</th>
                         <th scope="col">Email</th>
-                        <th scope="col">Area</th>
+                        <th scope="col">&#193;rea</th>
                         <th scope="col">Empresa</th>
                         <th scope="col" class="actions-header">Acciones</th>
                     </tr>

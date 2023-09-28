@@ -89,7 +89,7 @@
         </div>
 
         <div class="container mt-4">
-            <h2 class="h1 text-center mt-5" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">CALCULOS PROCESADOS</h2>
+            <h2 class="h1 text-center mt-5" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">C&#193;LCULOS PROCESADOS</h2>
             <div class="col-12 d-flex flex-column">
                 <div class="table-responsive mt-5">
                     <table class="table table-hover table-bordered table-sm mt-4 align-middle">
@@ -99,10 +99,10 @@
                             <th scope="col" class="col-1">Fecha</th>
                             <th scope="col" class="col-2">Sueldo</th>
                             <th scope="col" class="col-1">Empresa</th>
-                            <th scope="col" class="col-1">Area</th>
-                            <th scope="col" class="col-1">total_horas</th>
-                            <th scope="col" class="col-1">salario_ganado</th>
-                            <th scope="col" class="col-1">salario_total</th>
+                            <th scope="col" class="col-1">&#193;rea</th>
+                            <th scope="col" class="col-1">Total Horas</th>
+                            <th scope="col" class="col-1">Salario Ganado</th>
+                            <th scope="col" class="col-1">Salario Total</th>
                         </thead>
                         <tbody class="text-center" v-if="calculosHoras.length > 0">
                             <tr v-for="registro in calculosHoras" :key="registro.id">

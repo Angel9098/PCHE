@@ -143,7 +143,7 @@ class AreaController extends Controller
             ->join('empresas as e', 'a.empresa_id', '=', 'e.id')
             ->join('empleados as em', 'a.jefe_area', '=', 'em.id')
             ->select('a.id', 'a.nombre as nombre_area', 'e.nombre as nombre_empresa',
-                    DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe_area'), 'a.jefe_area as id_jefe');
+                    DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe_area'), 'a.jefe_area as id_jefe', 'e.id as id_empresa');
 
             if (!empty($idEmpresa)) {
                 $query->where('e.id', $idEmpresa);

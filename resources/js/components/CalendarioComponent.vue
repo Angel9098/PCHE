@@ -7,11 +7,13 @@
             <v-date-picker
                 is-expanded
                 v-model="selectedDate"
-                class="vdp-datepicker"
-            ></v-date-picker>
-            <textarea placeholder=" " class="textbox" rows="10" disabled>
-    Fecha próxima de corte: {{ descripcionVigente }}</textarea
-            >
+                class="vdp-datepicker">
+            </v-date-picker>
+            <div class="border border-2 rounded-3 d-flex flex-row justify-content-center align-items-center" style="height: 280px; min-width: 180px;">
+                <p class="text-center text-black">
+                    Próxima fecha de corte: {{ descripcionVigente }}
+                </p>
+            </div>
         </div>
 
         <h2 class="h1 text-center mt-5">HISTORIAL DE FECHAS DE CORTE</h2>
@@ -172,34 +174,21 @@ export default {
         },
         async getCortes() {
             try {
-                const response = await axios.get(
-                    "/cortes?page=" + this.currentPage
-                );
+                const response = await axios.get("/cortes?page=" + this.currentPage);
                 this.cortes = response.data.data;
                 this.lastPage = response.data.last_page;
             } catch (error) {
-                console.error(
-                    "Error al obtener los cortes:",
-                    error.response ? error.response.data : error.message
-                );
+                console.error("Error al obtener los cortes:", error.response ? error.response.data : error.message);
             }
         },
         async getDescripcionVigente() {
             try {
-                const response = await axios.get("/cortes");
-                if (response.data && response.data.data) {
-                    const registroVigente = response.data.data.find(
-                        (item) => item.vigente === 1
-                    );
-                    if (registroVigente) {
-                        this.descripcionVigente = registroVigente.fecha_corte;
-                    }
+                const response = await axios.get("/corte/vigente", { headers: { 'Content-type': 'application/json' } });
+                if (response.data) {
+                    this.descripcionVigente = response.data.fecha_corte;
                 }
             } catch (error) {
-                console.error(
-                    "Error al obtener la descripción vigente:",
-                    error.response ? error.response.data : error.message
-                );
+                console.error("Error al obtener la descripción vigente:", error.response ? error.response.data : error.message);
             }
         },
         changePage(page) {
@@ -215,9 +204,7 @@ export default {
             }
 
             try {
-                const formattedDate = moment(this.selectedDate).format(
-                    "YYYY/MM/DD"
-                );
+                const formattedDate = moment(this.selectedDate).format("YYYY/MM/DD");
                 const response = await axios.post("/cortes/crear", {
                     descripcion: this.descripcionCorte,
                     fecha_corte: formattedDate,
@@ -226,9 +213,9 @@ export default {
                 this.errorSubmit = null;
                 $("#corteModal").modal("hide");
                 this.getCortes();
+                this.getDescripcionVigente();
             } catch (error) {
-                this.errorSubmit =
-                    "Error: no se pudo guardar la fecha de corte.";
+                this.errorSubmit = "Error: no se pudo guardar la fecha de corte.";
                 setTimeout(() => {
                     $("#corteModal").modal("hide");
                     this.selectedDate = null;

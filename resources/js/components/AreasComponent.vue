@@ -1,8 +1,8 @@
 <template>
     <div class="container d-flex flex-column justify-content-center align-items-center mt-4">
-        <h1>AREAS POR EMPRESA</h1>
+        <h1>&#193;REAS POR EMPRESA</h1>
         <div class="w-100 d-flex flex-row justify-content-between align-items-center mt-5">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrear" @click="showCrearArea">Agregar &#193;rea</button>
+            <button type="button" class="btn btn-primary" @click="showCrearArea">Agregar &#193;rea</button>
             <div class="col-4">
                 <select class="form-select" v-model="selected" @change="getAreasByEmpresa">
                     <option :value="0">
@@ -16,11 +16,13 @@
         </div>
         <div class="w-100 d-flex flex-column table-responsive mt-5">
             <table class="table table-bordered table-hover table-sm">
-                <thead class="text-center table-primary align-middle">
-                    <th>Nombre</th>
-                    <th>Empresa</th>
-                    <th>Jefatura</th>
-                    <th>Acciones</th>
+                <thead class="table-primary bg-primary">
+                    <tr class="text-center align-middle">
+                        <th>&#193;rea</th>
+                        <th>Empresa</th>
+                        <th>Jefatura</th>
+                        <th>Acciones</th>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr v-if="areas.length == 0">
@@ -32,7 +34,7 @@
                         <td>{{ item.nombre_jefe_area }}</td>
                         <td>
                             <div class="d-flex flex-row justify-content-around">
-                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalCrear" @click="showModificarArea(item.id)"><i class="fa-solid fa-pen-to-square text-white"></i></button>
+                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalCrear" @click="showModificarArea(item.id, item.id_empresa)"><i class="fa-solid fa-pen-to-square text-white"></i></button>
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminar" @click="showDeleteModal(item.id)"><i class="fa-solid fa-trash text-white"></i></button>
                             </div>
                         </td>
@@ -135,17 +137,29 @@ export default {
             });
         },
         showCrearArea() {
-            this.getJefaturas();
-            this.accionModal = 'Agregar';
-            Vue.set(this.area, 'nombre_area', '');
-            Vue.set(this.area, 'jefe_area', 0);
+            if (this.selected == 0) {
+                this.$toast.info('Seleccione empresa', {
+                    position: "top-right",
+                    timeout: 3000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    closeButton: "button",
+                    icon: true
+                });
+            } else {
+                $('#modalCrear').modal('show');
+                this.getJefaturas();
+                this.accionModal = 'Agregar';
+                Vue.set(this.area, 'nombre_area', '');
+                Vue.set(this.area, 'jefe_area', 0);
+            }
         },
         crearArea() {
             Vue.set(this.areaCrear, 'nombre', this.area.nombre_area);
             Vue.set(this.areaCrear, 'empresa_id', this.selected);
             Vue.set(this.areaCrear, 'jefe_area', this.area.jefe_area);
             axios.post('areas/create', this.areaCrear, { headers: { 'Content-type': 'application/json' } }).then(resp => {
-                if (resp.status == 201) {
+                if (resp.status == 200) {
                     this.$toast.success('Área creada', {
                         position: "top-right",
                         timeout: 3000,
@@ -155,8 +169,7 @@ export default {
                         icon: true
                     });
                     this.getAreasByEmpresa();
-                    const myModal = new bootstrap.Modal(document.querySelector('.modal'));
-                    myModal.hide();  
+                    $('#modalCrear').modal('hide');
                 }
             })
         },
@@ -170,17 +183,19 @@ export default {
                 this.jefaturas = response.data;
             });
         },
-        rellenarCampos(idArea) {
+        rellenarCampos(idArea, idEmpresa) {
             let registroSeleccionado = this.areas.find(element => element.id === idArea);
             this.area.nombre_area = registroSeleccionado.nombre_area;
             this.area.jefe_area = registroSeleccionado.id_jefe;
             this.area.id = registroSeleccionado.id;
-            this.area.empresa_id = this.selected;
+            this.area.empresa_id = idEmpresa;
         },
-        showModificarArea(idArea) {
+        showModificarArea(idArea, idEmpresa) {
+            const modalBackground = document.querySelector('.show');
+            modalBackground.classList.add('modal-backdrop');
             this.getJefaturas();
             this.accionModal = 'Modificar'; //Accion para modificar titulo y rellenar campos
-            this.rellenarCampos(idArea);
+            this.rellenarCampos(idArea, idEmpresa);
         },
         modificarArea() {
             Vue.set(this.area, 'nombre', this.area.nombre_area);
@@ -195,8 +210,11 @@ export default {
                         icon: true
                     });
                     this.getAreasByEmpresa();
-                    const myModal = new bootstrap.Modal(document.querySelector('.modal'));
-                    myModal.hide();
+                    const myModal = document.getElementById('modalCrear');
+                    myModal.classList.remove('show');
+                    myModal.style.display = 'none';
+                    const modalBackground = document.querySelector('.modal-backdrop');
+                    modalBackground.className = '';
                 }
             });
         },
@@ -215,8 +233,7 @@ export default {
                         icon: true
                     });
                     this.getAreasByEmpresa();
-                    const myModal = new bootstrap.Modal(document.querySelector('.modal'));
-                    myModal.hide();
+                    $('#modalEliminar').modal('hide');
                 }
             })
         }
