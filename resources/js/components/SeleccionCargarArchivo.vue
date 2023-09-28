@@ -330,9 +330,9 @@ export default {
 
         },
         async searchAreaById(areaId) {
-            const response = await axios.post("areabyid?id=" + areaId);
+            const response = await axios.get("areabyid?id=" + areaId);
             if (response.data != null) {
-                const response2 = await axios.post("findempleadobyid?id=" + response.data.jefe_area);
+                const response2 = await axios.get("findempleadobyid?id=" + response.data.jefe_area);
                 this.duiJefe = response2.data.dui;
                 this.nombreJefe = response2.data.nombres;
                 this.email = response2.data.email;
