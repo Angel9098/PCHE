@@ -5,12 +5,15 @@ import Toast from 'vue-toastification';
 import VCalendar from 'v-calendar';
 import VueMask from 'v-mask';
 import "vue-toastification/dist/index.css"
+import moment from 'moment-timezone';
 import store from './store'; // Agregando estados 
 import MenuFlotanteComponent from './components/MenuFlotanteComponent.vue';
 Vue.component('login-component', require('./components/LoginComponent.vue').default);
 Vue.use(VueRouter);
 Vue.use(VCalendar);
 Vue.use(VueMask);
+
+moment.tz.setDefault('America/El_Salvador');
 
 const options = {
     transition: "Vue-Toastification_fade"

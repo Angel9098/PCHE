@@ -330,27 +330,13 @@ export default {
 
         },
         async searchAreaById(areaId) {
-            $.ajax({
-                url: '/areabyid?id=' + areaId,
-                method: 'GET',
-                success: (data) => {
-                    $.ajax({
-                        url: '/findempleadobyid?id=' + data.jefe_area,
-                        method: 'GET',
-                        success: (data2) => {
-                            this.duiJefe = data2.dui;
-                            this.nombreJefe = data2.nombres;
-                            this.email = data2.email;
-                        },
-                        error: (error) => {
-
-                        }
-                    });
-                },
-                error: (error) => {
-                    console.error('Error al obtener los datos de la empresa:', error);
-                }
-            });
+            const response = await axios.post("areabyid?id=" + areaId);
+            if (response.data != null) {
+                const response2 = await axios.post("findempleadobyid?id=" + response.data.jefe_area);
+                this.duiJefe = response2.data.dui;
+                this.nombreJefe = response2.data.nombres;
+                this.email = response2.data.email;
+            }
         },
 
         fetchEmpresas() {

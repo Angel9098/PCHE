@@ -50,4 +50,20 @@ class CorteController extends Controller
 
         return response()->json(["message" => 'Corte actualizado con exito'], 201);
     }
+
+    public function getCorteVigente()
+    {
+
+        $vigente = Corte::where('vigente', 1)->first();
+        //$vigente = DB::table('cortes')
+                        //->select('fecha_corte')
+                        //->where('vigente', '=', 1)
+                        //->get();
+        if($vigente != null){
+            return response()->json($vigente);
+        }
+        else{
+            return response()->json(["message" => 'Corte vigente no encontrado'], 404);
+        }
+    }
 }
