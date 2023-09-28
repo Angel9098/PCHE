@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\CalculosExtra;
+use App\Corte;
 use App\Empleado;
 use App\HoraExtra;
 use Illuminate\Http\Request;
@@ -42,15 +43,18 @@ class CalculosHorasController extends Controller
 
 
                     $sumatoria = $diurnas + $nocturnas + $diurnas_descanso + $nocturnas_descanso + $diurnas_asueto + $nocturnas_asueto;
-                   //dd($sumatoria, $salarioGanado, $salarioDiario);
+                    //dd($sumatoria, $salarioGanado, $salarioDiario);
 
                     $salarioTotal = $salarioGanado + $salarioMensual;
 
-                    $idCorte = 1;
+
+                    $idCorte = Corte::where('vigente', 1)
+                        ->first();
+
                     $CalculoHora = new CalculosExtra([
                         'empleado_id' => $empleado->id,
                         'jefe_area' => $jefeArea,
-                        'id_corte' => $idCorte,
+                        'id_corte' => $idCorte->id,
                         'fecha_calculo' => $fechaFormateada,
                         'salario_mensual' => $salarioMensual,
                         'total_horas' => $sumatoria,
