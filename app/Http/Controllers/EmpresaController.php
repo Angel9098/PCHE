@@ -88,7 +88,6 @@ class EmpresaController extends Controller
             $empresa = Empresa::findOrFail($empresaId);
 
             if ($request->hasFile('imagen')) {
-                // Procesa la nueva imagen y actualiza la ruta de la imagen
                 $imagen = $request->file('imagen');
                 $nombreImagen = uniqid() . '.' . $imagen->getClientOriginalExtension();
                 $rutaImagen = $imagen->storeAs('public/imagenes', $nombreImagen);
@@ -102,14 +101,15 @@ class EmpresaController extends Controller
             $empresa->save();
 
             return response()->json(["message" => 'Empresa actualizada exitosament'], 200);
-        }  catch (ModelNotFoundException $ex) {
+        } catch (ModelNotFoundException $ex) {
             return response()->json(["message" => 'Empresa no encontrada'], 404);
         } catch (QueryException $ex) {
             return response()->json(["message" => 'Error al actualizar empresa: ' . $ex->getMessage()], 500);
         }
     }
 
-    public function getAreasEmpresa(Request $request){
+    public function getAreasEmpresa(Request $request)
+    {
 
         $id = $request->input('id');
 
@@ -126,7 +126,5 @@ class EmpresaController extends Controller
         $areas = $empresas->areas;
 
         return response()->json($areas);
-
-
     }
 }

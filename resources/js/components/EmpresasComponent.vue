@@ -205,14 +205,13 @@ export default {
 
         async editarEmpresa(empresaId) {
             const response = await axios.get(`/empresabyid?id=${empresaId}`);
-            this.empleados = response.data;
-            if (response.data != null) {
-                this.data.nombre = response.data.nombre;
-                this.data.direccion = response.data.direccion;
-                this.data.rubro = response.data.rubro;
-                this.data.id = response.data.id
-                $("#modalAgregarEmpresa").modal("show");
-            }
+
+            this.data.nombre = response.data.nombre;
+            this.data.direccion = response.data.direccion;
+            this.data.rubro = response.data.rubro;
+            this.data.id = response.data.id
+            $("#modalAgregarEmpresa").modal("show");
+
         },
         eliminarEmpresa(id) {
 
