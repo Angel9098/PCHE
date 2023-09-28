@@ -211,15 +211,15 @@ export default {
         }, 300),
         debounceSearchFechas: _.debounce(function () {
             if (this.filtros.selectEmpresa === "no") {
-                this.filtros.selectEmpresa = "NA";
+                this.filtros.selectEmpresa = "";
                 this.areas = [];
-                this.filtros.selectArea = "NA";
+                this.filtros.selectArea = "";
             }
             this.buscarRegistrosByEmpresa(this.filtros);
         }, 300),
         debounceSearchEmpleado: _.debounce(function () {
             if (this.filtros.selectArea === "no") {
-                this.filtros.selectArea = "NA";
+                this.filtros.selectArea = "";
                 this.duiJefe = "";
                 this.email = "";
                 this.nombreJefe = "";

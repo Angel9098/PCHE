@@ -161,6 +161,7 @@ class AreaController extends Controller
         ->join('empleados as em', 'u.empleado_id', '=', 'em.id')
         ->join('areas as a', 'a.jefe_area', '=', 'u.id')
         ->select('u.id', DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe'))
+        ->groupBy('u.id')
         ->get();
 
         return response()->json($usuarioJefe);
