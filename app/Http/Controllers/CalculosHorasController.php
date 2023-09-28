@@ -42,7 +42,7 @@ class CalculosHorasController extends Controller
 
 
                     $sumatoria = $diurnas + $nocturnas + $diurnas_descanso + $nocturnas_descanso + $diurnas_asueto + $nocturnas_asueto;
-                    dd($sumatoria, $salarioGanado, $salarioDiario);
+                   //dd($sumatoria, $salarioGanado, $salarioDiario);
 
                     $salarioTotal = $salarioGanado + $salarioMensual;
 
