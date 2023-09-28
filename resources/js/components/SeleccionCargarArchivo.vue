@@ -33,11 +33,11 @@
                     </div>
                 </div>
                 <div class="col-2">
-                    <input v-model="dui" type="text" @input="debouncefiltros" placeholder="Dui"
+                    <input v-model="duiJefe" type="text" @input="debouncefiltros" placeholder="Dui jefe"
                         class="form-control mb-2" disabled />
                 </div>
                 <div class="col-3">
-                    <input v-model="nombre" type="text" @input="debouncefiltros" placeholder="Nombre"
+                    <input v-model="nombreJefe" type="text" @input="debouncefiltros" placeholder="Nombre jefe"
                         class="form-control mb-2" disabled />
                 </div>
                 <div class="col-2">
@@ -273,9 +273,6 @@ export default {
             filtros: {
                 selectEmpresa: "",
                 selectArea: "",
-                dui: "",
-                nombre: "",
-                email: "",
                 fechaDesde: "",
                 fechaHasta: "",
             },
@@ -294,9 +291,9 @@ export default {
     methods: {
         debounceSearchArea: _.debounce(function () {
             if (this.filtros.selectEmpresa === "no") {
-                this.filtros.selectEmpresa = "NA";
+                this.filtros.selectEmpresa = "";
                 this.areas = [];
-                this.filtros.selectArea = "NA";
+                this.filtros.selectArea = "";
             }
             this.buscarArea();
             this.buscarRegistrosByEmpresa(this.filtros);
@@ -566,4 +563,5 @@ td {
     text-align: right;
     margin-top: 20px;
     font-size: 0.9em;
-}</style>
+}
+</style>
