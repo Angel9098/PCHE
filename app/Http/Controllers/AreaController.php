@@ -70,7 +70,7 @@ class AreaController extends Controller
             $validatedData = $request->validate([
                 'nombre' => 'required|string',
                 'empresa_id' => 'required|integer',
-                'jefe_area' => 'required|string',
+                'jefe_area' => 'required|integer',
             ]);
 
             $area = new Area();
@@ -102,7 +102,7 @@ class AreaController extends Controller
             $validatedData = $request->validate([
                 'nombre' => 'required|string',
                 'empresa_id' => 'required|integer',
-                'jefe_area' => 'required|string',
+                'jefe_area' => 'required|integer',
             ]);
 
             $area->nombre = $request->input('nombre');
