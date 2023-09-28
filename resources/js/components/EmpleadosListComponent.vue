@@ -86,8 +86,8 @@
                         <td>{{ empleado.area.nombre }}</td>
                         <td>{{ empleado.area.empresa.nombre }}</td>
                         <td class="actions-cell">
-                            <button @click="seleccionar" class="btn btn-primary" type="button">
-                                Editar perfil
+                            <button @click="seleccionar(empleado.id)" class="btn btn-primary" type="button">
+                                Editar <i class="fa-solid fa-pen-to-square"></i>
                             </button>
                         </td>
                     </tr>
@@ -190,8 +190,8 @@ export default {
                     console.error("Error al cargar empresas:", error);
                 });
         },
-        seleccionar() {
-            this.$router.push('/editarperfil');
+        seleccionar(id) {
+            this.$router.push(`/registro/${id}`);
         },
 
         changePage(page) {

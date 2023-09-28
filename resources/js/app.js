@@ -24,14 +24,7 @@ localStorage.setItem('userAdmin' , 'jefe');
 
 if (JSON.parse(localStorage.getItem("user")) !== null) {
     const empleadoId = JSON.parse(localStorage.getItem("user"));
-    console.log(empleadoId)
-    localStorage.setItem('userAdmin' , `${empleadoId.rol}`)
-    axios
-      .get(`empleadobyid?idEmpleado=${empleadoId.empleado_id}`)
-      .then((result) => {
-         console.log(result.data[0])
-      })
-      .catch((error) => {});
+    localStorage.setItem('userAdmin' , `${empleadoId.rol}`);
   }
 //
 const routes = [
@@ -52,9 +45,10 @@ const routes = [
         meta: { requiresAuth: true }
     },
     {
-        path: '/registro',
+        path: '/registro/:id',
         component: require('./components/RegistroUsuarioComponent.vue').default,
         meta: { requiresAuth: true },
+        props: true,
         beforeEnter: (to, from, next) => {
             if (localStorage.getItem('userAdmin') === 'administrador') {
               
@@ -96,7 +90,7 @@ const routes = [
         component: require('./components/EditarPerfilUsuarioComponent.vue').default,
         meta: { requiresAuth: true },
         beforeEnter: (to, from, next) => {
-            if (localStorage.getItem('userAdmin') === 'jefe') {
+            if (localStorage.getItem('userAdmin') === 'jefe' || localStorage.getItem('userAdmin') === 'administrador') {
               next(); // Permite el acceso si el usuario es administrador
             } else {
               

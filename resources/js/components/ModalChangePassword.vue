@@ -45,7 +45,6 @@ export default {
   methods: {
     sendPassword() {
     const {id} = JSON.parse(localStorage.getItem("user"));
-    console.log(id);
     this.changesPassowrd.idUsuario = id;
       axios.post('/actualizarcontra',this.changesPassowrd).then((response)=>{
         console.log(response)
