@@ -72,7 +72,7 @@ const routes = [
             }
           }
     },
-    {
+   /* {
         path: '/editarperfil',
         component: require('./components/EditarPerfilComponent.vue').default,
         meta: { requiresAuth: true },
@@ -84,7 +84,7 @@ const routes = [
               next('/access-denied'); // Redirige a una página de acceso denegado si no es administrador
             }
           }
-    },
+    },*/
     {
         path: '/editarperfilusuario',
         component: require('./components/EditarPerfilUsuarioComponent.vue').default,

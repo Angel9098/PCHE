@@ -80,7 +80,7 @@
                                 <router-link
                                     class="nav-link text-white text-uppercase"
                                     to="/editarperfilusuario"
-                                    ><i class="fa-solid fa-user"></i> Perfil
+                                    ><i class="fa-solid fa-user"></i> Perfil usuario
                                 </router-link>
                             </li>
                             <li
@@ -175,7 +175,7 @@
             </div>
         </nav>
 
-        <div class="d-flex flex-row">
+        <div class="d-flex flex-row h-full">
             <nav
                 class="flexMenu bg-primary"
                 :hidden="currentPath == '/' || currentPath == '/business'"
@@ -238,20 +238,7 @@
                                         Perfil usuario
                                     </router-link>
                                 </button>
-                                <button
-                                    v-if="userRoles === 'administrador'"
-                                    class="dropdown-item"
-                                    type="button"
-                                >
-                                    <router-link
-                                        class="my-4 text-uppercase"
-                                        :to="'/registro/'+ id"
-                                        ><i
-                                            class="fa-solid fa-user text-black"
-                                        ></i>
-                                        Perfil administrador
-                                    </router-link>
-                                </button>
+                                
                                 <button
                                     v-if="userRoles === 'administrador'"
                                     class="dropdown-item"
@@ -361,7 +348,9 @@ ol,
 ul {
     padding-left: 0rem;
 }
-
+.h-full {
+    height: 100vh !important;
+}
 a:hover {
     cursor: pointer;
 }
