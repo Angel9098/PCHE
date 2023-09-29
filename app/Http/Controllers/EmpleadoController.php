@@ -142,7 +142,7 @@ class EmpleadoController extends Controller
         try {
 
             $idEmpleado = $request->input('idEmpleado');
-            $empleado = Empleado::where('id', $idEmpleado)->with('empleado.area.empresa')->get();
+            $empleado = Empleado::where('id', $idEmpleado)->with('area.empresa')->get();
 
             return response()->json($empleado);
         } catch (\Exception $e) {
@@ -228,6 +228,7 @@ class EmpleadoController extends Controller
 
 
 
+
             $empleados = Empleado::with('area.empresa')
                 ->where(function ($query) use ($nombres) {
                     if (!empty($nombres)) {
@@ -242,13 +243,13 @@ class EmpleadoController extends Controller
                 ->where(function ($query) use ($dui) {
                     if (!empty($dui)) {
                         $query->where('dui', 'LIKE', "%$dui%");
-i%");
                     }
                 })
                 ->where(function ($query) use ($email) {
                     if (!empty($email)) {
-                        $query->where('                        $query->where('dui', '=', $dui);
-  })
+                        $query->where('email', 'LIKE', "%$email%");
+                    }
+                })
                 ->where(function ($query) use ($cargo) {
                     if (!empty($cargo)) {
                         $query->where('cargo', 'LIKE', "%$cargo%");
@@ -284,12 +285,6 @@ i%");
                 $query->where('id', $areaId);
             });
         }
-
-        /*         $empleadosAreaHorasExtra = HoraExtra::with('empleado.area.empresa')
-        ->whereHas('empleado', function($query) use ($empleadoId){
-            $query->where('id',$empleadoId);
-        }) ->get(); */
-
         $empleadosConHorasExtra = $query->get();
 
         return response()->json($empleadosConHorasExtra);
