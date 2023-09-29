@@ -58,6 +58,7 @@ class EmpleadoController extends Controller
 
 
 
+            // Retornar una respuesta JSON con los datos actualizados
             return response()->json(['message' => 'Empleado actualizado con éxito', 'empleado' => $empleado, 200]);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Error al actualizar el registro', $e], 500);
@@ -141,7 +142,7 @@ class EmpleadoController extends Controller
         try {
 
             $idEmpleado = $request->input('idEmpleado');
-            $empleado = Empleado::where('id', $idEmpleado)->with('area.empresa')->get();
+            $empleado = Empleado::where('id', $idEmpleado)->with('empleado.area.empresa')->get();
 
             return response()->json($empleado);
         } catch (\Exception $e) {
@@ -241,13 +242,13 @@ class EmpleadoController extends Controller
                 ->where(function ($query) use ($dui) {
                     if (!empty($dui)) {
                         $query->where('dui', 'LIKE', "%$dui%");
+i%");
                     }
                 })
                 ->where(function ($query) use ($email) {
                     if (!empty($email)) {
-                        $query->where('email', 'LIKE', "%$email%");
-                    }
-                })
+                        $query->where('                        $query->where('dui', '=', $dui);
+  })
                 ->where(function ($query) use ($cargo) {
                     if (!empty($cargo)) {
                         $query->where('cargo', 'LIKE', "%$cargo%");

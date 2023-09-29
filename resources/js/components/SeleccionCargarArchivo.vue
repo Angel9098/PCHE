@@ -79,16 +79,16 @@
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered table-sm mt-4 align-middle">
                         <thead class="text-center bg-primary text-white">
-                            <th scope="col" class="col-2">ID Empleado</th>
-                            <th scope="col" class="col-3">Nombre</th>
-                            <th scope="col" class="col-1">Fecha</th>
+                            <th scope="col" class="col-1">ID Empleado</th>
+                            <th scope="col" class="col-4">Nombre</th>
+                            <th scope="col">Fecha</th>
                             <th scope="col" class="col-2">Sueldo</th>
-                            <th scope="col" class="col-1">Diurnas</th>
-                            <th scope="col" class="col-1">Nocturnas</th>
-                            <th scope="col" class="col-1">Diurnas Descanso</th>
-                            <th scope="col" class="col-1">Nocturnas Descanso</th>
-                            <th scope="col" class="col-1">Diurnas Asueto</th>
-                            <th scope="col" class="col-1">Nocturnas Asueto</th>
+                            <th scope="col" class="fixed-width">Diurnas</th>
+                            <th scope="col" class="fixed-width">Nocturnas</th>
+                            <th scope="col" class="fixed-width">Diurnas Descanso</th>
+                            <th scope="col" class="fixed-width">Nocturnas Descanso</th>
+                            <th scope="col" class="fixed-width">Diurnas Asueto</th>
+                            <th scope="col" class="fixed-width">Nocturnas Asueto</th>
                         </thead>
 
 
@@ -98,24 +98,24 @@
                                 <td>{{ registro.empleado.nombres + " " + registro.empleado.apellidos }}</td>
                                 <td>{{ formatFecha(registro.fecha_registro) }}</td>
                                 <td>{{ registro.empleado.salario | toCurrency }}</td>
-                                <td>{{ registro.diurnas !== 0 ? registro.diurnas : '-' }}</td>
-                                <td>{{ registro.nocturnas !== 0 ? registro.nocturnas : '-' }}</td>
-                                <td>{{ registro.diurnas_descanso !== 0 ? registro.diurnas_descanso : '-' }}</td>
-                                <td>{{ registro.nocturnas_descanso !== 0 ? registro.nocturnas_descanso : '-' }}</td>
-                                <td>{{ registro.diurnas_asueto !== 0 ? registro.diurnas_asueto : '-' }}</td>
-                                <td>{{ registro.nocturnas_asueto !== 0 ? registro.nocturnas_asueto : '-' }}</td>
+                                <td class="centered">{{ registro.diurnas !== 0 ? registro.diurnas : '-' }}</td>
+                                <td class="centered">{{ registro.nocturnas !== 0 ? registro.nocturnas : '-' }}</td>
+                                <td class="centered">{{ registro.diurnas_descanso !== 0 ? registro.diurnas_descanso : '-' }}</td>
+                                <td class="centered">{{ registro.nocturnas_descanso !== 0 ? registro.nocturnas_descanso : '-' }}</td>
+                                <td class="centered">{{ registro.diurnas_asueto !== 0 ? registro.diurnas_asueto : '-' }}</td>
+                                <td class="centered">{{ registro.nocturnas_asueto !== 0 ? registro.nocturnas_asueto : '-' }}</td>
                             </tr>
                             <tr>
                                 <td></td>
                                 <td></td>
                                 <td>Total</td>
                                 <td>{{ totalsueldo | toCurrency }}</td>
-                                <td>{{ totalDiurnas !== 0 ? totalDiurnas : '-' }}</td>
-                                <td>{{ totalNocturnas !== 0 ? totalNocturnas : '-' }}</td>
-                                <td>{{ totalDiurnasDescanso !== 0 ? totalDiurnasDescanso : '-' }}</td>
-                                <td>{{ totalNocturnasDescanso !== 0 ? totalNocturnasDescanso : '-' }}</td>
-                                <td>{{ totalDiurnasAsueto !== 0 ? totalDiurnasAsueto : '-' }}</td>
-                                <td>{{ totalNocturnasAsueto !== 0 ? totalNocturnasAsueto : '-' }}</td>
+                                <td class="centered">{{ totalDiurnas !== 0 ? totalDiurnas : '-' }}</td>
+                                <td class="centered">{{ totalNocturnas !== 0 ? totalNocturnas : '-' }}</td>
+                                <td class="centered">{{ totalDiurnasDescanso !== 0 ? totalDiurnasDescanso : '-' }}</td>
+                                <td class="centered">{{ totalNocturnasDescanso !== 0 ? totalNocturnasDescanso : '-' }}</td>
+                                <td class="centered">{{ totalDiurnasAsueto !== 0 ? totalDiurnasAsueto : '-' }}</td>
+                                <td class="centered">{{ totalNocturnasAsueto !== 0 ? totalNocturnasAsueto : '-' }}</td>
                             </tr>
                         </tbody>
                         <tbody v-else>
@@ -170,16 +170,13 @@
                     </div>
                     <div class="title-container">
                         <h2 class="title">PCHE</h2>
-                        <h4>Reporte de Horas de Empleado</h4>
-                        <p v-if="empresas.length === 1">Empresa: {{ empresas[0].nombre }}</p>
+                        <h4>Reporte de Horas de Empleados</h4>
+                        <p v-if="EmpresaSelect != undefined">Empresa: {{ EmpresaSelect.nombre }}</p>
                         <p v-else>Empresas: Todas</p>
                     </div>
                     <div class="area-date-container">
-                        <p v-if="areas && areas.length > 0">
-                            <span v-for="area in areas" :key="area.id" :value="area.id" class="area"> Area: {{ area.id }} -
-                                {{ area.nombre }}</span>
-                        </p>
-                        <p v-else>Areas: Todas</p>
+                        <p v-if="AreaSelect != undefined"> Área: {{ AreaSelect.nombre }}</p>
+                        <p v-else>Áreas: Todas</p>
                         <p class="date">Fecha de Emisión: {{ currentDate }}</p>
                     </div>
                 </div>
@@ -190,9 +187,9 @@
                         <div class="table-responsive">
                             <table class="table table-hover table-bordered table-sm mt-4 align-middle">
                                 <thead class="text-center bg-primary text-white">
-                                    <th scope="col" class="col-2">ID Empleado</th>
+                                    <th scope="col" class="col-1">ID Empleado</th>
                                     <th scope="col" class="col-3">Nombre</th>
-                                    <th scope="col" class="col-1">Fecha</th>
+                                    <th scope="col">Fecha</th>
                                     <th scope="col" class="col-2">Sueldo</th>
                                     <th scope="col" class="col-1">Diurnas</th>
                                     <th scope="col" class="col-1">Nocturnas</th>
@@ -208,24 +205,24 @@
                                         <td>{{ registro.empleado.nombres + " " + registro.empleado.apellidos }}</td>
                                         <td>{{ formatFecha(registro.fecha_registro) }}</td>
                                         <td>{{ registro.empleado.salario | toCurrency }}</td>
-                                        <td>{{ registro.diurnas !== 0 ? registro.diurnas : '-' }}</td>
-                                        <td>{{ registro.nocturnas !== 0 ? registro.nocturnas : '-' }}</td>
-                                        <td>{{ registro.diurnas_descanso !== 0 ? registro.diurnas_descanso : '-' }}</td>
-                                        <td>{{ registro.nocturnas_descanso !== 0 ? registro.nocturnas_descanso : '-' }}</td>
-                                        <td>{{ registro.diurnas_asueto !== 0 ? registro.diurnas_asueto : '-' }}</td>
-                                        <td>{{ registro.nocturnas_asueto !== 0 ? registro.nocturnas_asueto : '-' }}</td>
+                                        <td class="centered">{{ registro.diurnas !== 0 ? registro.diurnas : '-' }}</td>
+                                        <td class="centered">{{ registro.nocturnas !== 0 ? registro.nocturnas : '-' }}</td>
+                                        <td class="centered">{{ registro.diurnas_descanso !== 0 ? registro.diurnas_descanso : '-' }}</td>
+                                        <td class="centered">{{ registro.nocturnas_descanso !== 0 ? registro.nocturnas_descanso : '-' }}</td>
+                                        <td class="centered">{{ registro.diurnas_asueto !== 0 ? registro.diurnas_asueto : '-' }}</td>
+                                        <td class="centered">{{ registro.nocturnas_asueto !== 0 ? registro.nocturnas_asueto : '-' }}</td>
                                     </tr>
                                     <tr>
                                         <td></td>
                                         <td></td>
                                         <td>Total</td>
                                         <td>{{ totalsueldo | toCurrency }}</td>
-                                        <td>{{ totalDiurnas !== 0 ? totalDiurnas : '-' }}</td>
-                                        <td>{{ totalNocturnas !== 0 ? totalNocturnas : '-' }}</td>
-                                        <td>{{ totalDiurnasDescanso !== 0 ? totalDiurnasDescanso : '-' }}</td>
-                                        <td>{{ totalNocturnasDescanso !== 0 ? totalNocturnasDescanso : '-' }}</td>
-                                        <td>{{ totalDiurnasAsueto !== 0 ? totalDiurnasAsueto : '-' }}</td>
-                                        <td>{{ totalNocturnasAsueto !== 0 ? totalNocturnasAsueto : '-' }}</td>
+                                        <td class="centered">{{ totalDiurnas !== 0 ? totalDiurnas : '-' }}</td>
+                                        <td class="centered">{{ totalNocturnas !== 0 ? totalNocturnas : '-' }}</td>
+                                        <td class="centered">{{ totalDiurnasDescanso !== 0 ? totalDiurnasDescanso : '-' }}</td>
+                                        <td class="centered">{{ totalNocturnasDescanso !== 0 ? totalNocturnasDescanso : '-' }}</td>
+                                        <td class="centered">{{ totalDiurnasAsueto !== 0 ? totalDiurnasAsueto : '-' }}</td>
+                                        <td class="centered">{{ totalNocturnasAsueto !== 0 ? totalNocturnasAsueto : '-' }}</td>
                                     </tr>
                                 </tbody>
                                 <tbody v-else>
@@ -247,7 +244,7 @@
 
                     <!-- Paginación como pie de página -->
                     <div class="pagination">
-                        pg {{ currentPage }} de {{ totalPages }}
+                        Página {{ currentPage }} de {{ totalPages }}
                     </div>
                 </div>
             </div>
@@ -282,6 +279,8 @@ export default {
             showPdfTemplate: false,
             currentDate: new Date().toLocaleDateString(),
             totalPages: 1,
+            EmpresaSelect: {},
+            AreaSelect: {},
         };
     },
     created() {
@@ -294,7 +293,10 @@ export default {
                 this.filtros.selectEmpresa = "";
                 this.areas = [];
                 this.filtros.selectArea = "";
+                this.EmpresaSelect = {};
+                this.AreaSelect = {};
             }
+            this.EmpresaSelect = this.empresas.find(empresa => empresa.id == this.filtros.selectEmpresa);
             this.buscarArea();
             this.buscarRegistrosByEmpresa(this.filtros);
 
@@ -310,12 +312,13 @@ export default {
                 this.duiJefe = "";
                 this.email = "";
                 this.nombreJefe = "";
+                this.AreaSelect = {};
 
             }
             const areaId = this.filtros.selectArea;
             this.searchAreaById(areaId);
             this.buscarRegistrosByEmpresa(this.filtros);
-
+            this.AreaSelect = this.areas.find(area => area.id == this.filtros.selectArea);
         }, 300),
         async buscarArea() {
 
@@ -488,7 +491,7 @@ export default {
 }
 
 .logo {
-    width: 150px;
+    width: 180px;
     height: 100px;
 }
 
@@ -548,12 +551,26 @@ td {
 .spacer {
     height: 50px;
 }
-
+thead.text-center > th:nth-child(3) {
+width: 10%;
+}
+th.col-1:nth-child(1) {
+width: 10%;
+}
+thead th:nth-child(3), tr td:nth-child(3) {
+width: 10%;
+}
 .pagination {
     bottom: 0;
     right: 0;
     text-align: right;
     margin-top: 20px;
     font-size: 0.9em;
+}
+.centered {
+  text-align: center;
+}
+.fixed-width {
+  width: 5%;
 }
 </style>
