@@ -29,11 +29,11 @@
                             <div class="btn-group" role="group">
                                 <button style="margin-right: 2%" @click="editarEmpresa(empresa.id)"
                                     class="btn btn-primary custom-btn" type="button">
-                                    <i class="fas fa-edit"></i> Actualizar
+                                    <i class="fas fa-edit"></i>
                                 </button>
                                 <button @click="eliminarEmpresa(empresa.id)" class="btn btn-danger custom-btn"
                                     type="button">
-                                    <i class="fas fa-trash-alt"></i> Eliminar
+                                    <i class="fas fa-trash-alt"></i>
                                 </button>
                             </div>
                         </td>
