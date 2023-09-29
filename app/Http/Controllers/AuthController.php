@@ -79,15 +79,12 @@ class AuthController extends Controller
         $nombreImagen = uniqid() . '.' . $imagen->getClientOriginalExtension();
         $rutaImagen = $imagen->storeAs('public/imagenes', $nombreImagen);
         $urlImagen = asset('storage/' . $rutaImagen);
-
         $idEmpleado =  $request->input('id');
         $usuario = Usuario::findOrFail($idEmpleado);
-
         if (!$usuario) {
             return response()->json(['message' => 'Usuario no encontrado'], 404);
         }
         $usuario->imagen = $nombreImagen;
-
         return response()->json(['message' =>  $usuario], 200);
    }
 }

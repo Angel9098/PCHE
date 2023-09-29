@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ImagenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,3 +84,6 @@ Route::get('corte/vigente', 'CorteController@getCorteVigente')->name('corteVigen
 Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', 'DashboardController@index')->name('dashboard');
 });
+
+
+Route::get('imagenes/{nombre}', [ImagenController::class, 'mostrar'])->name('imagen.mostrar');
