@@ -162,6 +162,7 @@ export default {
                 cargo: "",
                 empresa: "",
                 dui: "",
+                id: "",
                 horario_id: 0,
                 avisar_contacto: "",
                 numero_emergencia: "",
@@ -181,18 +182,23 @@ export default {
     },
     methods: {
         registrar() {
-            axios
-                .post("empleados/crear", this.usuario, {
-                    headers: { "Content-type": "application/json" },
-                })
-                .then((response) => {
-                    this.cancelar();
-                    this.$toast.success(response.data.message, {
-                        timeout: 3000,
-                        position: "top-right",
-                        icon: true,
+            if (this.usuario.id != "") {
+                actualizar();
+            } else {
+                axios
+                    .post("empleados/crear", this.usuario, {
+                        headers: { "Content-type": "application/json" },
+                    })
+                    .then((response) => {
+                        this.cancelar();
+                        this.$toast.success(response.data.message, {
+                            timeout: 3000,
+                            position: "top-right",
+                            icon: true,
+                        });
                     });
-                });
+            }
+
         },
         async actualizar() {
             const response = await axios.post("empleados/actualizar", this.usuario);
@@ -235,7 +241,20 @@ export default {
                     console.log(result.data);
 
                     if (result.data && result.data.length > 0) {
-                        this.usuario = result.data[0];
+                        this.usuario.nombres = result.data[0].nombres;
+                        this.usuario.empresa = result.data[0].area.empresa.id;
+                        this.usuario.area_id = result.data[0].area.id;
+                        this.usuario.apellidos = result.data[0].apellidos;
+                        this.usuario.email = result.data[0].email;
+                        this.usuario.cargo = result.data[0].cargo;
+                        this.usuario.dui = result.data[0].dui;
+                        this.usuario.horario_id = result.data[0].horario_id;
+                        this.usuario.avisar_contacto = result.data[0].avisar_contacto;
+                        this.usuario.numero_emergencia = result.data[0].numero_emergencia;
+                        this.usuario.salario = result.data[0].salario;
+                        this.usuario.id = result.data[0].id;
+
+
                     } else {
                         console.error('No se encontraron datos para el empleado con ID:', id);
                     }
