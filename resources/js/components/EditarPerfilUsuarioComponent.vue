@@ -46,6 +46,7 @@
                                     id="changeNombre"
                                     placeholder="CAMBIAR EL NOMBRE"
                                     v-model="this.perfil.nombres"
+                                    readonly
                                 />
                               </div>
                         </div>
@@ -78,6 +79,7 @@
                                     id="changePuesto"
                                     placeholder="CAMBIAR PUESTO O CARGO"
                                     v-model="perfil.cargo"
+                                    readonly
                                 />
                             </div>
                         </div>
