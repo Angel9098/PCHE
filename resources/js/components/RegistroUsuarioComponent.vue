@@ -120,9 +120,7 @@
                                                         selectHorario(
                                                             horario.id
                                                         )
-                                                        " :checked="horario.id ===
-        usuario.horario_id
-        " />
+                                                        " :checked="horario.id === usuario.horario_id" />
                                             </div>
                                         </th>
                                         <td>{{ horario.descripcion }}</td>
@@ -183,7 +181,19 @@ export default {
     methods: {
         registrar() {
             if (this.usuario.id != "") {
-                actualizar();
+
+                axios
+                    .post("empleados/actualizar", this.usuario, {
+                        headers: { "Content-type": "application/json" },
+                    })
+                    .then((response) => {
+                        this.cancelar();
+                        this.$toast.success("Empleado actualizado con exito", {
+                            timeout: 3000,
+                            position: "top-right",
+                            icon: true,
+                        });
+                    });
             } else {
                 axios
                     .post("empleados/crear", this.usuario, {
@@ -200,12 +210,7 @@ export default {
             }
 
         },
-        async actualizar() {
-            const response = await axios.post("empleados/actualizar", this.usuario);
-            if (response.status === 200) {
-                this.$toast.success('Empleado actualizado con exito');
-            }
-        },
+
         getEmpresas() {
             axios
                 .get("empresas", {
