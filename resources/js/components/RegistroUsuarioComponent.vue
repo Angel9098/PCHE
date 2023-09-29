@@ -232,10 +232,16 @@ export default {
             axios
                 .get(`empleadobyid?idEmpleado=${id}`)
                 .then((result) => {
-                    //this.empresas = result.data[0].
-                    this.usuario = result.data[0];
+                    if (result.data && result.data.length > 0) {
+                        this.usuario = result.data[0];
+                    } else {
+                        // Aquí puedes manejar el caso en el que no se encuentren datos
+                        console.error('No se encontraron datos para el empleado con ID:', id);
+                    }
                 })
-                .catch((error) => { });
+                .catch((error) => {
+                    console.error('Error al obtener datos del empleado:', error);
+                });
         },
         filterHorario() {
             if (this.turno == "all") {

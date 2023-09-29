@@ -141,7 +141,7 @@ class EmpleadoController extends Controller
         try {
 
             $idEmpleado = $request->input('idEmpleado');
-            $empleado = Empleado::where('id', $idEmpleado)->with('area.empresa')->first();
+            $empleado = Empleado::where('id', $idEmpleado)->with('area.empresa')->get();
 
             return response()->json($empleado);
         } catch (\Exception $e) {
