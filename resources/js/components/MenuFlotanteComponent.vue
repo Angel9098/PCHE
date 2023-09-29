@@ -2,7 +2,11 @@
     <div id="app">
         <nav
             class="navbar navbar-primary bg-primary position-static"
-            :hidden="currentPath == '/' || currentPath == '/business' || currentPath == '/access-denied'"
+            :hidden="
+                currentPath == '/' ||
+                currentPath == '/business' ||
+                currentPath == '/access-denied'
+            "
         >
             <div class="container-fluid">
                 <button
@@ -80,7 +84,8 @@
                                 <router-link
                                     class="nav-link text-white text-uppercase"
                                     to="/editarperfilusuario"
-                                    ><i class="fa-solid fa-user"></i> Perfil usuario
+                                    ><i class="fa-solid fa-user"></i> Perfil
+                                    usuario
                                 </router-link>
                             </li>
                             <li
@@ -183,18 +188,30 @@
                 <ul class="ul">
                     <!-- v-if="userRoles === 'administrador'" -->
                     <li class="li my-4">
-                        <router-link class="my-4 text-uppercase" to="/dashboard"
-                            ><i class="fa-solid fa-house text-white"></i>
-                        </router-link>
+                        <button
+                            class="btn btn-primary text-center"
+                            type="button"
+                        >
+                            <router-link
+                                class="my-4 text-uppercase"
+                                to="/dashboard"
+                                ><i class="fa-solid fa-house text-white"></i>
+                            </router-link>
+                        </button>
                     </li>
                     <li v-if="userRoles === 'jefe'" class="li my-4">
-                        <router-link
-                            class="my-4 text-uppercase"
-                            to="/importacionhoras"
-                            ><i
-                                class="fa-solid fa-file-arrow-up text-white"
-                            ></i>
-                        </router-link>
+                        <button
+                            class="btn btn-primary  text-center"
+                            type="button"
+                        >
+                            <router-link
+                                class="my-4 text-uppercase"
+                                to="/importacionhoras"
+                                ><i
+                                    class="fa-solid fa-file-arrow-up text-white"
+                                ></i>
+                            </router-link>
+                        </button>
                     </li>
                     <li class="li my-4">
                         <div class="dropdown">
@@ -205,7 +222,9 @@
                                 data-toggle="dropdown"
                                 aria-haspopup="true"
                                 aria-expanded="false"
-                            ></button>
+                            >
+                                <i class="fa-solid fa-bars"></i>
+                            </button>
                             <div
                                 class="dropdown-menu"
                                 aria-labelledby="dropdownMenu2"
@@ -216,7 +235,7 @@
                                     type="button"
                                 >
                                     <router-link
-                                        class="my-4 text-uppercase"
+                                        class="my-4 text-uppercase link-underline-light"
                                         to="/registro/0"
                                         ><i
                                             class="fa-solid fa-circle-plus text-black"
@@ -225,12 +244,15 @@
                                     </router-link>
                                 </button>
                                 <button
-                                    v-if="userRoles === 'jefe' || userRoles === 'administrador'"
+                                    v-if="
+                                        userRoles === 'jefe' ||
+                                        userRoles === 'administrador'
+                                    "
                                     class="dropdown-item"
                                     type="button"
                                 >
                                     <router-link
-                                        class="my-4 text-uppercase"
+                                        class="my-4 text-uppercase link-underline-light"
                                         to="/editarperfilusuario"
                                         ><i
                                             class="fa-solid fa-user text-black"
@@ -238,14 +260,14 @@
                                         Perfil usuario
                                     </router-link>
                                 </button>
-                                
+
                                 <button
                                     v-if="userRoles === 'administrador'"
                                     class="dropdown-item"
                                     type="button"
                                 >
                                     <router-link
-                                        class="my-4 text-uppercase"
+                                        class="my-4 text-uppercase link-underline-light"
                                         to="/activacionusuario"
                                         ><i
                                             class="fa-solid fa-user-check text-black"
@@ -259,7 +281,7 @@
                                     type="button"
                                 >
                                     <router-link
-                                        class="my-4 text-uppercase"
+                                        class="my-4 text-uppercase link-underline-light"
                                         to="/empleados"
                                         ><i
                                             class="fa-solid fa-users text-black"
@@ -272,47 +294,83 @@
                     </li>
 
                     <li v-if="userRoles === 'administrador'" class="li my-4">
-                        <router-link class="my-4 text-uppercase" to="/empresas"
-                            ><i class="fa-solid fa-building text-white"></i
-                        ></router-link>
+                        <button
+                            class="btn btn-primary text-center"
+                            type="button"
+                        >
+                            <router-link
+                                class="my-4 text-uppercase"
+                                to="/empresas"
+                                ><i class="fa-solid fa-building text-white"></i
+                            ></router-link>
+                        </button>
                     </li>
                     <li v-if="userRoles === 'administrador'" class="li my-4">
-                        <router-link class="my-4 text-uppercase" to="/areas"
-                            ><i class="fa-solid fa-network-wired text-white"></i
-                        ></router-link>
+                        <button
+                            class="btn btn-primary text-center"
+                            type="button"
+                        >
+                            <router-link class="my-4 text-uppercase" to="/areas"
+                                ><i
+                                    class="fa-solid fa-network-wired text-white"
+                                ></i
+                            ></router-link>
+                        </button>
                     </li>
 
                     <li v-if="userRoles === 'administrador'" class="li my-4">
-                        <router-link
-                            class="my-4 text-uppercase"
-                            to="/calendarios"
-                            ><i class="fa-solid fa-calendar text-white"></i>
-                        </router-link>
+                        <button
+                            class="btn btn-primary text-center"
+                            type="button"
+                        >
+                            <router-link
+                                class="my-4 text-uppercase"
+                                to="/calendarios"
+                                ><i class="fa-solid fa-calendar text-white"></i>
+                            </router-link>
+                        </button>
                     </li>
                     <li v-if="userRoles === 'administrador'" class="li my-4">
-                        <router-link
-                            class="my-4 text-uppercase"
-                            to="/historialhoras"
-                            ><i class="fa-brands fa-searchengin text-white"></i>
-                        </router-link>
+                        <button
+                            class="btn btn-primary text-center"
+                            type="button"
+                        >
+                            <router-link
+                                class="my-4 text-uppercase"
+                                to="/historialhoras"
+                                ><i
+                                    class="fa-brands fa-searchengin text-white"
+                                ></i>
+                            </router-link>
+                        </button>
                     </li>
                     <li v-if="userRoles === 'administrador'" class="li my-4">
-                        <router-link
-                            class="my-4 text-uppercase"
-                            to="/seleccionararchivo"
-                            ><i
-                                class="fa-solid fa-file-circle-check text-white"
-                            ></i>
-                        </router-link>
+                        <button
+                            class="btn btn-primary text-center"
+                            type="button"
+                        >
+                            <router-link
+                                class="my-4 text-uppercase"
+                                to="/seleccionararchivo"
+                                ><i
+                                    class="fa-solid fa-file-circle-check text-white"
+                                ></i>
+                            </router-link>
+                        </button>
                     </li>
 
                     <li class="li my-4">
-                        <a class="my-4 text-uppercase" href=""
-                            ><i
-                                class="fa-solid fa-right-from-bracket text-white"
-                                @click="cerrarSesion"
-                            ></i>
-                        </a>
+                        <button
+                            class="btn btn-primary text-center"
+                            type="button"
+                        >
+                            <a class="my-4 text-uppercase" href=""
+                                ><i
+                                    class="fa-solid fa-right-from-bracket text-white"
+                                    @click="cerrarSesion"
+                                ></i>
+                            </a>
+                        </button>
                     </li>
                 </ul>
             </nav>
@@ -325,7 +383,7 @@
 <style>
 .flexMenu {
     margin: 0%;
-    width: 40px;
+    width: 55px;
     height: 100vh;
     display: grid;
     justify-content: center;
@@ -353,6 +411,10 @@ ul {
 }
 a:hover {
     cursor: pointer;
+}
+.dropdown-item:hover {
+    background-color: #c3c6c89a;
+    text-decoration: none !important;
 }
 </style>
 <script>
