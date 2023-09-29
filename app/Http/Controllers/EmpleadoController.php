@@ -48,11 +48,12 @@ class EmpleadoController extends Controller
             $empleado->apellidos = $request->input('apellidos');
             $empleado->cargo = $request->input('cargo');
             $empleado->email = $request->input('email');
+            $empleado->salario = $request->input('salario');
             $empleado->area_id = $request->input('area_id');
             $empleado->dui = $request->input('dui');
             $empleado->horario_id = $request->input('horario_id');
             $empleado->numero_emergencia = $request->input('numero_emergencia');
-            $empleado->nombre_persona = $request->input('nombre_persona');
+            $empleado->avisar_contacto = $request->input('avisar_contacto');
 
             $empleado->save();
 
