@@ -15,7 +15,8 @@
                         <label for="duiEmpleado" style="font-weight: bold">DUI DE EMPLEADO</label>
                     </div>
                     <div class="col-6 mx-1">
-                        <input v-model="duiEmpleado" type="text" id="duiEmpleado" class="form-control" placeholder="Ingrese DUI de empleado" v-mask="'########-#'">
+                        <input v-model="duiEmpleado" type="text" id="duiEmpleado" class="form-control"
+                            placeholder="Ingrese DUI de empleado" v-mask="'########-#'">
                         <input v-model="idEmpleado" type="text" id="idEmpleado" class="form-control" hidden>
                     </div>
                     <div class="col-2 d-flex flex-row justify-content-start">
@@ -197,10 +198,8 @@ export default {
                         rol: this.rol,
                     };
 
-                    // Realiza una solicitud POST al endpoint "registrarse"
                     axios.post('/registrarse', datosRegistro)
                         .then((response) => {
-                            // Manejar la respuesta del servidor, si es necesario
                             if (response.data.message === 'Usuario creado con éxito') {
                                 this.$toast.success(response.data.message);
                                 this.nombres = null;
@@ -228,7 +227,17 @@ export default {
         },
 
         cancelar() {
-            // Lógica para cancelar
+            this.nombres = null;
+            this.duiEmpleado = null;
+            this.contrasenia = null;
+            this.idEmpleado = null;
+            this.apellidosEmpleado = null;
+            this.empresa = null;
+            this.cargo = null;
+            this.correo = null;
+            this.idEmpleado = null
+            this.activarUsuario = false;
+            this.rol = null;
         },
     },
 };
