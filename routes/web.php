@@ -53,7 +53,7 @@ Route::get('empleados', 'EmpleadoController@allempleados')->name('empleados');
 Route::post('empleados/save', 'EmpleadoController@store')->name('empleados_save');
 Route::delete('empleados/eliminar', 'EmpleadoController@eliminarEmpleados')->name('empleadosEliminar');
 Route::post('empleados/busqueda', 'EmpleadoController@empleadosBusquedaNombre')->name('empleadosBusqueda');
-Route::put('empleados/actualizar', 'EmpleadoController@actualizarEmpleados')->name('empleadosActualizar');
+Route::post('empleados/actualizar', 'EmpleadoController@actualizarEmpleados')->name('empleadosActualizar');
 Route::post('empleados/crear', 'EmpleadoController@crearEmpleado')->name('empleadoCrear');
 Route::get('empleados/busqueda/{nombre}', 'EmpleadoController@empleadosBusquedaNombre')->name('empleadosBusqueda');
 Route::get('empleado_dui', 'EmpleadoController@empleadoByDui')->name('bucarEmpleado');
