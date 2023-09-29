@@ -2,13 +2,13 @@
   <div>
     
     <p class="zoom-area"><b>{{ nombre }}</b> </p>
-    <h2>
+    <h2 class="text-center">
         Acceso Denegado:
     </h2>
     <p class="zoom-area">
         Lo sentimos, parece que no tienes permiso para acceder a esta página en este momento. Por favor, verifica tus credenciales o contacta con el administrador del sitio para obtener asistencia.
     </p>
-    <h2>
+    <h2 class="text-center">
         Página No Encontrada:
     </h2>
     <p class="zoom-area">
