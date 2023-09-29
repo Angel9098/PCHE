@@ -5,7 +5,7 @@
         </div>
 
         <div class="container">
-            <h2 class="h1 text-center mt-5">LISTADO DE EMPRESAS</h2>
+            <h2 class="h1 text-center mt-5" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">LISTADO DE EMPRESAS</h2>
             <button @click="abrirModalAgregarEmpresa" class="btn btn-primary mt-3">
                 Agregar Empresa
             </button>
@@ -29,11 +29,11 @@
                             <div class="btn-group" role="group">
                                 <button style="margin-right: 2%" @click="editarEmpresa(empresa.id)"
                                     class="btn btn-primary custom-btn" type="button">
-                                    Actualizar
+                                    <i class="fas fa-edit"></i> Actualizar
                                 </button>
                                 <button @click="eliminarEmpresa(empresa.id)" class="btn btn-danger custom-btn"
                                     type="button">
-                                    Eliminar
+                                    <i class="fas fa-trash-alt"></i> Eliminar
                                 </button>
                             </div>
                         </td>
