@@ -212,7 +212,6 @@ export default {
         validarFecha(fechaRegistro) {
             let year = moment(this.fechaVigente).locale('es-mx').year();
             let month = moment(this.fechaVigente).locale('es-mx').month();
-            console.log(moment(fechaRegistro).locale('es-mx').year(), moment(fechaRegistro).locale('es-mx').month())
             if (moment(fechaRegistro).locale('es-mx').year() == year && moment(fechaRegistro).locale('es-mx').month() == month-1) return true;
             else return false;
         }

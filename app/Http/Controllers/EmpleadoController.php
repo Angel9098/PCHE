@@ -58,7 +58,6 @@ class EmpleadoController extends Controller
 
 
 
-            // Retornar una respuesta JSON con los datos actualizados
             return response()->json(['message' => 'Empleado actualizado con éxito', 'empleado' => $empleado, 200]);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Error al actualizar el registro', $e], 500);
@@ -142,7 +141,7 @@ class EmpleadoController extends Controller
         try {
 
             $idEmpleado = $request->input('idEmpleado');
-            $empleado = Empleado::where('id', $idEmpleado)->get();
+            $empleado = Empleado::where('id', $idEmpleado)->with('area.empresa')->first();
 
             return response()->json($empleado);
         } catch (\Exception $e) {

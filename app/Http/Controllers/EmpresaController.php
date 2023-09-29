@@ -48,11 +48,11 @@ class EmpresaController extends Controller
         try {
             $id = $request->input('id');
 
-            $empresa = Empresa::where('id', $id)->get();
+            $empresa = Empresa::where('id', $id)->first();
 
             return response()->json([$empresa], 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'La empresa no ha podido actualizarce'], 500);
+            return response()->json(['error' => 'error al obtener la empresa'], 500);
         }
     }
 
