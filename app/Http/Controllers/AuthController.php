@@ -85,6 +85,7 @@ class AuthController extends Controller
             return response()->json(['message' => 'Usuario no encontrado'], 404);
         }
         $usuario->imagen = $nombreImagen;
+        $usuario->save();
         return response()->json(['message' =>  $usuario], 200);
    }
 }

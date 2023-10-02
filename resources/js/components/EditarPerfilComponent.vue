@@ -254,7 +254,6 @@ export default {
                 axios
                     .get(`empleadobyid?idEmpleado=${empleadoId.empleado_id}`)
                     .then((result) => {
-                        console.log(result.data)
                         this.nombres = ` ${result.data[0].nombres} ${result.data[0].apellidos}`;
                         this.perfil = result.data[0];
                     })

@@ -39,7 +39,17 @@
                             class="offcanvas-title text-white"
                             id="offcanvasDarkNavbarLabel"
                         >
-                            {{ nombre }}
+                            <router-link class="navbar-brand" to="/dashboard">
+                                <img
+                                    :src="imagen"
+                                    alt="Logo"
+                                    width="30"
+                                    height="30"
+                                    class="mx-1 cicle"
+                                />
+                                {{ changeIMG(this.$store.state.changeIMG) }}
+                                <strong class="text-white">{{ nombre }}</strong>
+                            </router-link>
                         </h5>
                         <button
                             type="button"
@@ -57,7 +67,7 @@
                                     class="nav-link active text-white"
                                     aria-current="page"
                                     to="/dashboard"
-                                    ><i class="fa-solid fa-house mr-3"></i>
+                                    ><i class="fa-solid fa-house mx-2"></i>
                                     Inicio</router-link
                                 >
                             </li>
@@ -68,7 +78,9 @@
                                 <router-link
                                     class="nav-link text-white text-uppercase"
                                     to="/registro/0"
-                                    ><i class="fa-solid fa-circle-plus"></i>
+                                    ><i
+                                        class="fa-solid fa-circle-plus mx-2"
+                                    ></i>
                                     Registrar empleados</router-link
                                 >
                             </li>
@@ -76,7 +88,9 @@
                                 <router-link
                                     class="nav-link text-white text-uppercase"
                                     to="/importacionhoras"
-                                    ><i class="fa-solid fa-file-arrow-up"></i>
+                                    ><i
+                                        class="fa-solid fa-file-arrow-up mx-2"
+                                    ></i>
                                     Agregar horas extras
                                 </router-link>
                             </li>
@@ -84,8 +98,8 @@
                                 <router-link
                                     class="nav-link text-white text-uppercase"
                                     to="/editarperfilusuario"
-                                    ><i class="fa-solid fa-user"></i> Perfil
-                                    usuario
+                                    ><i class="fa-solid fa-user mx-2"></i>
+                                    Perfil usuario
                                 </router-link>
                             </li>
                             <li
@@ -95,7 +109,7 @@
                                 <router-link
                                     class="nav-link text-white text-uppercase"
                                     to="/empleados"
-                                    ><i class="fa-solid fa-users"></i>
+                                    ><i class="fa-solid fa-users mx-2"></i>
                                     Empleados</router-link
                                 >
                             </li>
@@ -106,7 +120,7 @@
                                 <router-link
                                     class="nav-link text-white text-uppercase"
                                     to="/empresas"
-                                    ><i class="fa-solid fa-building"></i>
+                                    ><i class="fa-solid fa-building mx-2"></i>
                                     Empresas</router-link
                                 >
                             </li>
@@ -117,7 +131,9 @@
                                 <router-link
                                     class="nav-link text-white text-uppercase"
                                     to="/areas"
-                                    ><i class="fa-solid fa-network-wired"></i>
+                                    ><i
+                                        class="fa-solid fa-network-wired mx-2"
+                                    ></i>
                                     &#193;reas</router-link
                                 >
                             </li>
@@ -128,7 +144,7 @@
                                 <router-link
                                     class="nav-link text-white text-uppercase"
                                     to="/activacionusuario"
-                                    ><i class="fa-solid fa-user-check"></i>
+                                    ><i class="fa-solid fa-user-check mx-2"></i>
                                     Activar Usuario</router-link
                                 >
                             </li>
@@ -139,7 +155,7 @@
                                 <router-link
                                     class="nav-link text-white text-uppercase"
                                     to="/calendarios"
-                                    ><i class="fa-solid fa-calendar"></i>
+                                    ><i class="fa-solid fa-calendar mx-2"></i>
                                     Calendario</router-link
                                 >
                             </li>
@@ -150,7 +166,9 @@
                                 <router-link
                                     class="nav-link text-white text-uppercase"
                                     to="/historialhoras"
-                                    ><i class="fa-brands fa-searchengin"></i>
+                                    ><i
+                                        class="fa-brands fa-searchengin mx-2"
+                                    ></i>
                                     Historial horas extras</router-link
                                 >
                             </li>
@@ -161,16 +179,14 @@
                                 <router-link
                                     class="nav-link text-white text-uppercase"
                                     to="/seleccionararchivo"
-                                    ><i
-                                        class="fa-brands fa-file-circle-check"
-                                    ></i>
+                                    ><i class="fa-solid fa-file mx-2"></i>
                                     Selecci&#243;n archivo</router-link
                                 >
                             </li>
                         </ul>
                         <button
                             @click="cerrarSesion"
-                            class="btn bg-black btn-primary text-uppercase btnGray"
+                            class="btn bg-black btn-primary text-uppercase btnGray my-4"
                             type="button"
                         >
                             Cerrar sesion
@@ -201,7 +217,7 @@
                     </li>
                     <li v-if="userRoles === 'jefe'" class="li my-4">
                         <button
-                            class="btn btn-primary  text-center"
+                            class="btn btn-primary text-center"
                             type="button"
                         >
                             <router-link
@@ -238,7 +254,7 @@
                                         class="my-4 text-uppercase link-underline-light"
                                         to="/registro/0"
                                         ><i
-                                            class="fa-solid fa-circle-plus text-black"
+                                            class="fa-solid fa-circle-plus text-black mx-2"
                                         ></i>
                                         Registrar empleados
                                     </router-link>
@@ -255,7 +271,7 @@
                                         class="my-4 text-uppercase link-underline-light"
                                         to="/editarperfilusuario"
                                         ><i
-                                            class="fa-solid fa-user text-black"
+                                            class="fa-solid fa-user text-black mx-2"
                                         ></i>
                                         Perfil usuario
                                     </router-link>
@@ -270,7 +286,7 @@
                                         class="my-4 text-uppercase link-underline-light"
                                         to="/activacionusuario"
                                         ><i
-                                            class="fa-solid fa-user-check text-black"
+                                            class="fa-solid fa-user-check text-black mx-2"
                                         ></i>
                                         Activar Usuario
                                     </router-link>
@@ -284,9 +300,9 @@
                                         class="my-4 text-uppercase link-underline-light"
                                         to="/empleados"
                                         ><i
-                                            class="fa-solid fa-users text-black"
-                                        ></i
-                                        >Empleados</router-link
+                                            class="fa-solid fa-users text-black mx-2"
+                                        ></i>
+                                        Empleados</router-link
                                     >
                                 </button>
                             </div>
@@ -381,6 +397,9 @@
     </div>
 </template>
 <style>
+.cicle {
+    border-radius: 50%;
+}
 .flexMenu {
     margin: 0%;
     width: 55px;
@@ -388,7 +407,7 @@
     display: grid;
     justify-content: center;
     align-items: center;
-    z-index: 1200;
+    z-index: 1026;
 }
 
 .ul .li {
@@ -412,6 +431,14 @@ ul {
 a:hover {
     cursor: pointer;
 }
+.nav-link:hover {
+    background-color: #c3c6c89a;
+    border-radius: 5px;
+}
+.navbar-brand:hover {
+    background-color: #c3c6c869;
+    border-radius: 5px;
+}
 .dropdown-item:hover {
     background-color: #c3c6c89a;
     text-decoration: none !important;
@@ -424,6 +451,7 @@ export default {
         return {
             id: "0",
             nombre: "",
+            imagen: "storage/imagenes/blank-profile-picture-973460_1280.webp",
         };
     },
     mounted() {
@@ -434,6 +462,7 @@ export default {
             return this.$route.path;
         },
         userRoles() {
+            this.leerData();
             if (this.$store.state.userRol !== null) {
                 return this.$store.state.userRol;
             } else {
@@ -445,15 +474,22 @@ export default {
         //empleadobyid
         leerData() {
             if (JSON.parse(localStorage.getItem("user")) !== null) {
-                const empleadoId = JSON.parse(localStorage.getItem("user"));
+                const { empleado_id, imagen } = JSON.parse(
+                    localStorage.getItem("user")
+                );
+                if (imagen !== null) {
+                    this.defaultBooleand = false;
+                    this.imagen = `storage/imagenes/${imagen}`;
+                }
                 axios
-                    .get(`empleadobyid?idEmpleado=${empleadoId.empleado_id}`)
+                    .get(`empleadobyid?idEmpleado=${empleado_id}`)
                     .then((result) => {
                         this.id = result.data[0].id;
-                        this.nombre = result.data[0].nombres;
+                        this.nombre = `${result.data[0].nombres} ${result.data[0].apellidos}`;
                     })
                     .catch((error) => {});
-            }
+            } else if (localStorage.getItem("user") === null)
+                return this.cerrarSesion();
         },
         cerrarSesion() {
             localStorage.removeItem("user");
@@ -462,6 +498,10 @@ export default {
             localStorage.setItem("session", false);
             localStorage.clear();
             this.$router.push("/");
+        },
+
+        changeIMG(img) {
+            if (img === true) return this.leerData();
         },
     },
 };

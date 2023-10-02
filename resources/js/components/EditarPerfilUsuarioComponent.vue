@@ -2,7 +2,7 @@
     <main class="container m-auto">
         <h1 class="text-center my-4 text-uppercase">Preferencia de cuenta</h1>
         <article class="card">
-            <div class="floatCenter">
+            <div class="floatCenter my-4">
                 <picture class="mb-3">
                     <source
                         :srcset="
@@ -55,8 +55,8 @@
                         </div>
                         <div class="col-12 col-sm-12 col-lg-6">
                             <label for="changePuesto" class="form-label"
-                                >Número de Emergencia</label
-                            >
+                                >Número de Emergencia
+                            </label>
                             <input
                                 type="tel"
                                 class="form-control"
@@ -85,7 +85,7 @@
                     <div class="row">
                         <div class="col my-2">
                             <button
-                                @click="sendInformation()"
+                                @click="sendInfromation()"
                                 type="button"
                                 class="btn btn-dark"
                             >
@@ -162,6 +162,17 @@
 }
 </style>
 <script>
+import { createToastInterface } from "vue-toastification";
+
+const pluginOptions = {
+    timeout: 4000,
+};
+
+// Create the interface
+const toast = createToastInterface(pluginOptions);
+
+// Use it
+
 import axios from "axios";
 
 import ModalChangePassword from "./ModalChangePassword.vue";
@@ -169,7 +180,7 @@ export default {
     data() {
         return {
             defaultImagen:
-                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                "storage/imagenes/blank-profile-picture-973460_1280.webp",
             defaultBooleand: true,
             file: File,
             perfil: {
@@ -181,6 +192,7 @@ export default {
                 numero_emergencia: "",
                 avisar_contacto: "",
                 salario: "",
+                imagen: "",
             },
         };
     },
@@ -193,36 +205,63 @@ export default {
     methods: {
         leerData() {
             if (JSON.parse(localStorage.getItem("user")) !== null) {
-                const empleadoId = JSON.parse(localStorage.getItem("user"));
+                const { empleado_id, imagen } = JSON.parse(
+                    localStorage.getItem("user")
+                );
                 axios
-                    .get(`empleadobyid?idEmpleado=${empleadoId.empleado_id}`)
+                    .get(`empleadobyid?idEmpleado=${empleado_id}`)
                     .then((result) => {
+                        if (imagen !== null) {
+                            this.defaultBooleand = false;
+                            this.perfil.imagen = `storage/imagenes/${imagen}`;
+                        }
+
                         this.perfil.nombres = `${result.data[0].nombres} ${result.data[0].apellidos}`;
-                        this.perfil = result[0].data;
+                        this.perfil = result[0].data[0];
                     })
                     .catch((error) => {});
             }
         },
         changesDefauld(event) {
+            this.perfil.imagen = "";
             this.defaultBooleand = false;
             this.file = event.target.files[0];
             const files = event.target.files[0];
             this.perfil.imagen = URL.createObjectURL(files);
         },
         sendInfromation() {
+            const { empleado_id } = JSON.parse(localStorage.getItem("user"));
+
             const sendFiles = new FormData();
             sendFiles.append("imagen", this.file, this.file.name);
-
+            sendFiles.append("id", empleado_id);
             axios
                 .post("/editarusuario", sendFiles)
                 .then((response) => {
-                    console.log(response);
+                    this.$store.dispatch("changeIMG");
+                    localStorage.setItem(
+                        "user",
+                        String(JSON.stringify(response.data.message))
+                    );
+
+                    this.showToast("Actualizado");
                 })
                 .catch((error) => {
-                    console.log(error);
+                    this.$toast.error("Algo salio mal", {
+                        timeout: 3000,
+                        position: "bottom-center",
+                        icon: true,
+                    });
                 });
 
             // return new  Promise.all();
+        },
+        showToast(message) {
+            this.$toast.success(message, {
+                timeout: 3000,
+                position: "bottom-center",
+                icon: true,
+            });
         },
     },
 };
