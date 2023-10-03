@@ -49,13 +49,13 @@
                                     </div>
                                 </div>
                                 <div class="col-2">
-                                    <input v-model="filtros.dui" @input="debounceSearchEmpleado" type="text" placeholder="DUI" class="form-control mb-2" />
+                                    <input v-model="filtros.dui" @input="debounceSearchEmpleadoByinput" type="text" placeholder="DUI" class="form-control mb-2" />
                                 </div>
                                 <div class="col-2">
-                                    <input v-model="filtros.nombre" @input="debounceSearchEmpleado" type="text" placeholder="Nombre" class="form-control mb-2" />
+                                    <input v-model="filtros.nombre" @input="debounceSearchEmpleadoByinput" type="text" placeholder="Nombre" class="form-control mb-2" />
                                 </div>
                                 <div class="col-2">
-                                    <input v-model="filtros.email"  @input="debounceSearchEmpleado" type="text" placeholder="Email" class="form-control mb-2" />
+                                    <input v-model="filtros.email"  @input="debounceSearchEmpleadoByinput" type="text" placeholder="Email" class="form-control mb-2" />
                                 </div>
                             </div>
                             <div class="row">
@@ -311,6 +311,11 @@ export default {
             }
             const areaId = this.filtros.selectArea;
             this.searchAreaById(areaId);
+            this.buscarRegistrosByEmpresa(this.filtros);
+
+        }, 300),
+        debounceSearchEmpleadoByinput: _.debounce(function () {
+
             this.buscarRegistrosByEmpresa(this.filtros);
 
         }, 300),
