@@ -1,10 +1,9 @@
 <template>
     <div class="bg-white d-flex flex-column justify-content-center align-items-center col-12 col-xs-12">
-
-        <div class="center-image d-flex flex-column justify-content-center align-items-center" style="margin-bottom: 1%">
-            <img src="assets/img/latinMobile.png" alt="logo" class="w-75" />
-        </div>
-
+        <br><br><br><br><br>
+        <br><br><br><br><br>
+        <br><br><br><br><br>
+    
         <div class="container mt-4">
             <div class="accordion" id="accordionFilters">
                 <div class="accordion-item">

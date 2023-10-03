@@ -243,7 +243,6 @@ export default {
             axios
                 .get(`empleadobyid?idEmpleado=${id}`)
                 .then((result) => {
-                    console.log(result.data);
 
                     if (result.data && result.data.length > 0) {
                         this.usuario.nombres = result.data[0].nombres;

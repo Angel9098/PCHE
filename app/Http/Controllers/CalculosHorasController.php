@@ -39,7 +39,9 @@ class CalculosHorasController extends Controller
                 if ($empleadoRegistrado == null) {
                     $salarioMensual = $empleado->salario;
                     $salarioDiario = $salarioMensual / 30;
-                    $salarioGanado = (($diurnas * $salarioDiario) * 2) + (($nocturnas * $salarioDiario) * 2.5) + (($diurnas_descanso * $salarioDiario) * 3) + (($nocturnas_descanso * $salarioDiario) * 3.75) + (($diurnas_asueto * $salarioDiario) * 4) + (($nocturnas_asueto * $salarioDiario) * 5);
+                    $salarioPorHora = $salarioDiario / 8;
+
+                    $salarioGanado = (($diurnas * $salarioPorHora) * 2) + (($nocturnas * $salarioPorHora) * 2.5) + (($diurnas_descanso * $salarioPorHora) * 3) + (($nocturnas_descanso * $salarioPorHora) * 3.75) + (($diurnas_asueto * $salarioPorHora) * 4) + (($nocturnas_asueto * $salarioPorHora) * 5);
 
 
                     $sumatoria = $diurnas + $nocturnas + $diurnas_descanso + $nocturnas_descanso + $diurnas_asueto + $nocturnas_asueto;

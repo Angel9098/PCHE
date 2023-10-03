@@ -40,7 +40,7 @@
                                 />
                             </div>
                     <div class="row my-3">
-                        <div class="col">
+                        <div class="col-12 col-sm-6">
                             <div class="form-group">
                                 <label for="changeNombre">NOMBRE</label>
                                 <input
@@ -52,7 +52,7 @@
                                 />
                             </div>
                         </div>
-                        <div class="col">
+                        <div class="col-12 col-sm-6">
                             <div class="form-group">
                                 <label for="changeNombre">EMAIL</label>
                                 <input
