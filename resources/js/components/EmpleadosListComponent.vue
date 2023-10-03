@@ -63,7 +63,7 @@
         </div>
 
         <div class="container">
-            <h2 class="h1 text-center mt-5">LISTADO DE EMPLEADOS</h2>
+            <h2 class="h1 text-center mt-5"  style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">LISTADO DE EMPLEADOS</h2>
             <table class="table table-hover table-bordered mt-4">
                 <thead class="table-primary bg-primary">
                     <tr class="text-center">
