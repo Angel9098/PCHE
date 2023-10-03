@@ -34,7 +34,7 @@
                         <td>{{ item.nombre_jefe_area }}</td>
                         <td>
                             <div class="d-flex flex-row justify-content-around">
-                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalCrear" @click="showModificarArea(item.id, item.id_empresa)"><i class="fa-solid fa-pen-to-square text-white"></i></button>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrear" @click="showModificarArea(item.id, item.id_empresa)"><i class="fa-solid fa-pen-to-square text-white"></i></button>
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminar" @click="showDeleteModal(item.id)"><i class="fa-solid fa-trash text-white"></i></button>
                             </div>
                         </td>
@@ -87,7 +87,7 @@
                     <p>¿Está seguro de eliminar el &#225;rea seleccionada?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-danger text-white" @click="deleteArea()">Eliminar</button>
                 </div>
             </div>

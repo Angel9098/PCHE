@@ -33,7 +33,7 @@
                                 </button>
                                 <button @click="eliminarEmpresa(empresa.id)" class="btn btn-danger custom-btn"
                                     type="button">
-                                    <i class="fas fa-trash-alt"></i>
+                                    <i class="fas fa-trash-alt text-white"></i>
                                 </button>
                             </div>
                         </td>
