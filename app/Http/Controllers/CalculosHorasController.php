@@ -83,6 +83,9 @@ class CalculosHorasController extends Controller
         $idEmpresa = $request->input('selectEmpresa');
         $fechaDesde = $request->input('fechaDesde');
         $fechaHasta = $request->input('fechaHasta');
+        $dui = $request->input('dui');
+        $nombre = $request->input('nombre');
+        $email = $request->input('email');
 
         $horasExtrasQuery = CalculosExtra::query()->with('empleado.area.empresa');
 
@@ -94,6 +97,27 @@ class CalculosHorasController extends Controller
 
         if ($fechaDesde !== null) {
             $horasExtrasQuery->where('fecha_calculo', '>=', $fechaDesde);
+        }
+        if ($dui !== null) {
+            $horasExtrasQuery->whereHas('empleado', function ($query) use ($idArea) {
+                if (!empty($dui)) {
+                    $query->where('dui', 'LIKE', "%$dui%");
+                }
+            });
+        }
+        if ($nombre !== null) {
+            $horasExtrasQuery->whereHas('empleado', function ($query) use ($idArea) {
+                if (!empty($nombre)) {
+                    $query->where('nombres', 'LIKE', "%$nombre%");
+                }
+            });
+        }
+        if ($email !== null) {
+            $horasExtrasQuery->whereHas('empleado', function ($query) use ($idArea) {
+                if (!empty($email)) {
+                    $query->where('email', 'LIKE', "%$email%");
+                }
+            });
         }
 
         if ($fechaHasta !== null) {
