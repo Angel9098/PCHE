@@ -215,9 +215,8 @@ export default {
                             this.defaultBooleand = false;
                             this.perfil.imagen = `storage/imagenes/${imagen}`;
                         }
-
                         this.perfil.nombres = `${result.data[0].nombres} ${result.data[0].apellidos}`;
-                        this.perfil = result[0].data[0];
+                        this.perfil = result.data[0];
                     })
                     .catch((error) => {});
             }

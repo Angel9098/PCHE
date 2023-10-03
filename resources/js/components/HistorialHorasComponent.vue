@@ -1,9 +1,12 @@
 <template>
     <div class="bg-white d-flex flex-column justify-content-center align-items-center col-12 col-xs-12">
-        <br><br><br><br><br>
-        <br><br><br><br><br>
-        <br><br><br><br><br>
-    
+
+        <div class="center-image d-flex flex-column justify-content-center align-items-center" style="margin-bottom: 1%">
+            <img src="assets/img/latinMobile.png" alt="logo" class="w-75" />
+            <h2 class="h1 text-center mt-5" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">C&#193;LCULOS PROCESADOS</h2>
+
+        </div>
+
         <div class="container mt-4">
             <div class="accordion" id="accordionFilters">
                 <div class="accordion-item">
@@ -46,13 +49,13 @@
                                     </div>
                                 </div>
                                 <div class="col-2">
-                                    <input v-model="filtros.dui" @input="debounceSearchEmpleado" type="text" placeholder="DUI" class="form-control mb-2" />
+                                    <input v-model="filtros.dui" @input="debounceSearchEmpleadoByinput" type="text" placeholder="DUI" class="form-control mb-2" />
                                 </div>
                                 <div class="col-2">
-                                    <input v-model="filtros.nombre" @input="debounceSearchEmpleado" type="text" placeholder="Nombre" class="form-control mb-2" />
+                                    <input v-model="filtros.nombre" @input="debounceSearchEmpleadoByinput" type="text" placeholder="Nombre" class="form-control mb-2" />
                                 </div>
                                 <div class="col-2">
-                                    <input v-model="filtros.email"  @input="debounceSearchEmpleado" type="text" placeholder="Email" class="form-control mb-2" />
+                                    <input v-model="filtros.email"  @input="debounceSearchEmpleadoByinput" type="text" placeholder="Email" class="form-control mb-2" />
                                 </div>
                             </div>
                             <div class="row">
@@ -88,15 +91,14 @@
         </div>
 
         <div class="container mt-4">
-            <h2 class="h1 text-center mt-5" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">C&#193;LCULOS PROCESADOS</h2>
             <div class="col-12 d-flex flex-column">
                 <div class="table-responsive mt-5">
                     <table class="table table-hover table-bordered table-sm mt-4 align-middle">
                         <thead class="text-center bg-primary text-white">
-                            <th scope="col" class="col-2">ID Empleado</th>
+                            <th scope="col" class="col-1">ID Empleado</th>
                             <th scope="col" class="col-3">Nombre</th>
                             <th scope="col" class="col-1">Fecha</th>
-                            <th scope="col" class="col-2">Sueldo</th>
+                            <th scope="col" class="col-1">Sueldo</th>
                             <th scope="col" class="col-1">Empresa</th>
                             <th scope="col" class="col-1">&#193;rea</th>
                             <th scope="col" class="col-1">Total Horas</th>
@@ -107,18 +109,18 @@
                             <tr v-for="registro in calculosHoras" :key="registro.id">
                                 <td scope="row">{{ registro.empleado.dui }}</td>
                                 <td>{{ registro.empleado.nombres }}</td>
-                                <td>{{ registro.fecha_calculo }}</td>
-                                <td>{{ registro.empleado.salario | toCurrency }}</td>
-                                <td>{{ registro.empleado.area.nombre }}</td>
+                                <td>{{ formatFecha(registro.fecha_calculo)}}</td>
+                                <td>{{ registro.empleado.salario | toCurrency}}</td>
                                 <td>{{ registro.empleado.area.empresa.nombre }}</td>
+                                <td>{{ registro.empleado.area.nombre }}</td>
                                 <td>{{ registro.total_horas }}</td>
-                                <td>{{ registro.salario_neto }}</td>
-                                <td>{{ registro.salario_total }}</td>
+                                <td>{{ registro.salario_neto | toCurrency }}</td>
+                                <td>{{ registro.salario_total | toCurrency}}</td>
                             </tr>
                         </tbody>
                         <tbody v-else>
                             <tr>
-                                <td colspan="8" class="text-center">
+                                <td colspan="9" class="text-center">
                                     No hay registros para mostrar
                                 </td>
                             </tr>
@@ -194,10 +196,10 @@
                         <div class="table-responsive">
                             <table class="table table-hover table-bordered table-sm mt-4 align-middle">
                         <thead class="text-center bg-primary text-white">
-                            <th scope="col" class="col-2">ID Empleado</th>
+                            <th scope="col" class="col-1">ID Empleado</th>
                             <th scope="col" class="col-3">Nombre</th>
-                            <th scope="col" class="col-1">Fecha</th>
-                            <th scope="col" class="col-2">Sueldo</th>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Sueldo</th>
                             <th scope="col" class="col-1">Empresa</th>
                             <th scope="col" class="col-1">Area</th>
                             <th scope="col" class="col-1">Total horas</th>
@@ -208,10 +210,10 @@
                             <tr v-for="registro in calculosHoras" :key="registro.id">
                                 <td scope="row">{{ registro.empleado.dui }}</td>
                                 <td>{{ registro.empleado.nombres }}</td>
-                                <td>{{ registro.fecha_calculo }}</td>
+                                <td>{{formatFecha(registro.fecha_calculo) }}</td>
                                 <td>{{ registro.empleado.salario | toCurrency }}</td>
-                                <td>{{ registro.empleado.area.nombre }}</td>
                                 <td>{{ registro.empleado.area.empresa.nombre }}</td>
+                                <td>{{ registro.empleado.area.nombre }}</td>
                                 <td>{{ registro.total_horas }}</td>
                                 <td>{{ registro.salario_neto }}</td>
                                 <td>{{ registro.salario_total }}</td>
@@ -219,7 +221,7 @@
                         </tbody>
                         <tbody v-else>
                             <tr>
-                                <td colspan="8" class="text-center">
+                                <td colspan="9" class="text-center">
                                     No hay registros para mostrar
                                 </td>
                             </tr>
@@ -248,6 +250,8 @@
 <script>
 import axios from "axios";
 import html2pdf from "html2pdf.js";
+import moment from "moment";
+
 
 export default {
     data() {
@@ -268,6 +272,7 @@ export default {
                 fechaDesde: "",
                 fechaHasta: "",
             },
+            currentDate: new Date().toLocaleDateString(),
             showPdfTemplate: false,
             currentPage: 1,
             lastPage: 1,
@@ -306,6 +311,11 @@ export default {
             }
             const areaId = this.filtros.selectArea;
             this.searchAreaById(areaId);
+            this.buscarRegistrosByEmpresa(this.filtros);
+
+        }, 300),
+        debounceSearchEmpleadoByinput: _.debounce(function () {
+
             this.buscarRegistrosByEmpresa(this.filtros);
 
         }, 300),
@@ -398,7 +408,10 @@ export default {
                 // Ocultar la sección de contenido después de generar el PDF
                 this.showPdfTemplate = false;
             });
-        }
+        },
+        formatFecha(date) {
+            return moment(date).format("DD/MM/YYYY");
+        },
     },
 };
 </script>
@@ -512,4 +525,30 @@ export default {
     flex: 1;
     text-align: center;
 }
+
+
+th,
+td {
+    border: 1px solid black;
+}
+
+th,
+td {
+    padding: 8px;
+    text-align: left;
+}
+
+.spacer {
+    height: 50px;
+}
+thead.text-center > th:nth-child(3) {
+width: 10%;
+}
+th.col-1:nth-child(1) {
+width: 10%;
+}
+thead th:nth-child(3), tr td:nth-child(3) {
+width: 10%;
+}
+
 </style>
