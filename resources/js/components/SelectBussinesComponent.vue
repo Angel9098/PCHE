@@ -63,6 +63,20 @@ export default {
         }).catch((error) => {
           console.error("Error al cargar empresas:", error);
         });
+        if (JSON.parse(localStorage.getItem("user")) !== null) {
+                const { empleado_id, imagen } = JSON.parse(
+                    localStorage.getItem("user")
+                );
+               
+                axios
+                    .get(`empleadobyid?idEmpleado=${empleado_id}`)
+                    .then((result) => {
+                        this.id = result.data[0].id;
+                       localStorage.setItem('userInfo' , JSON.stringify(result.data[0]))
+                    })
+                    .catch((error) => {});
+            } else if (localStorage.getItem("user") === null)
+                return this.cerrarSesion();
     },
     seleccionar() {
       // Manejar la acción de selección aquí

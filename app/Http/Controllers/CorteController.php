@@ -12,7 +12,7 @@ class CorteController extends Controller
 
     public function index()
     {
-        $cortes = Corte::orderBy('created_at', 'asc')->paginate(5);
+        $cortes = Corte::orderBy('created_at', 'desc')->paginate(5);
         return response()->json($cortes);
     }
 

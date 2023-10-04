@@ -211,7 +211,10 @@
                             <router-link
                                 class="my-4 text-uppercase"
                                 to="/dashboard"
-                                ><i class="fa-solid fa-house text-white"></i>
+                                data-bs-toggle="tooltip" data-bs-title="The last tip!"
+                                >
+                             
+                                <i class="fa-solid fa-house text-white"></i>
                             </router-link>
                         </button>
                     </li>
@@ -492,6 +495,7 @@ export default {
                 return this.cerrarSesion();
         },
         cerrarSesion() {
+            console.log('Hola?')
             localStorage.removeItem("user");
             localStorage.removeItem("empresaID");
             this.$store.dispatch("logout");
