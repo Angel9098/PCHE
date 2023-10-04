@@ -200,20 +200,20 @@ export default {
 
                     axios.post('/registrarse', datosRegistro)
                         .then((response) => {
-                            if (response.data.message === 'Usuario creado con éxito') {
-                                this.$toast.success(response.data.message);
-                                this.nombres = null;
-                                this.duiEmpleado = null;
-                                this.contrasenia = null;
-                                this.idEmpleado = null;
-                                this.apellidosEmpleado = null;
-                                this.empresa = null;
-                                this.cargo = null;
-                                this.correo = null;
-                                this.idEmpleado = null
-                                this.activarUsuario = false;
-                                this.rol = null;
-                            }
+
+                            this.$toast.success("Usuario creado con exito");
+                            this.nombres = null;
+                            this.duiEmpleado = null;
+                            this.contrasenia = null;
+                            this.idEmpleado = null;
+                            this.apellidosEmpleado = null;
+                            this.empresa = null;
+                            this.cargo = null;
+                            this.correo = null;
+                            this.idEmpleado = null
+                            this.activarUsuario = false;
+                            this.rol = null;
+
                         })
                         .catch((error) => {
                             console.error("Error al registrar empleado:", error);
