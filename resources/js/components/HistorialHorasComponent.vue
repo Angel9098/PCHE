@@ -2,7 +2,6 @@
     <div class="bg-white d-flex flex-column justify-content-center align-items-center col-12 col-xs-12">
 
         <div class="center-image d-flex flex-column justify-content-center align-items-center" style="margin-bottom: 1%">
-            <img src="assets/img/latinMobile.png" alt="logo" class="w-75" style="margin-bottom: 2px;"/>
             <h2 class="h1 text-center mt-5" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">C&#193;LCULOS PROCESADOS</h2>
 
         </div>
@@ -51,11 +50,8 @@
                                 <div class="col-2">
                                     <input v-model="filtros.dui" @input="debounceSearchEmpleadoByinput" type="text" placeholder="DUI" class="form-control mb-2" />
                                 </div>
-                                <div class="col-2">
+                                <div class="col-4">
                                     <input v-model="filtros.nombre" @input="debounceSearchEmpleadoByinput" type="text" placeholder="Nombre" class="form-control mb-2" />
-                                </div>
-                                <div class="col-2">
-                                    <input v-model="filtros.email"  @input="debounceSearchEmpleadoByinput" type="text" placeholder="Email" class="form-control mb-2" />
                                 </div>
                             </div>
                             <div class="row">
@@ -81,6 +77,9 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-6">
+                                    <input v-model="filtros.email"  @input="debounceSearchEmpleadoByinput" type="text" placeholder="Email" class="form-control mb-2" />
+                                </div>
                             </div>
 
                         </div>
@@ -96,7 +95,7 @@
                     <table class="table table-hover table-bordered table-sm mt-4 align-middle">
                         <thead class="text-center bg-primary text-white">
                             <th scope="col" class="col-1">ID Empleado</th>
-                            <th scope="col" class="col-3">Nombre</th>
+                            <th scope="col" >Nombre</th>
                             <th scope="col" class="col-1">Fecha</th>
                             <th scope="col" class="col-1">Sueldo</th>
                             <th scope="col" class="col-1">Empresa</th>
@@ -108,12 +107,12 @@
                         <tbody class="text-center" v-if="calculosHoras.length > 0">
                             <tr v-for="registro in calculosHoras" :key="registro.id">
                                 <td scope="row">{{ registro.empleado.dui }}</td>
-                                <td>{{ registro.empleado.nombres }}</td>
+                                <td>{{ registro.empleado.nombres + " " + registro.empleado.apellidos }}</td>
                                 <td>{{ formatFecha(registro.fecha_calculo)}}</td>
                                 <td>{{ registro.empleado.salario | toCurrency}}</td>
                                 <td>{{ registro.empleado.area.empresa.nombre }}</td>
                                 <td>{{ registro.empleado.area.nombre }}</td>
-                                <td>{{ registro.total_horas }}</td>
+                                <td class="centered">{{ registro.total_horas }}</td>
                                 <td>{{ registro.salario_neto | toCurrency }}</td>
                                 <td>{{ registro.salario_total | toCurrency}}</td>
                             </tr>
@@ -177,15 +176,12 @@
                     </div>
                     <div class="title-container">
                         <h2 class="title">PCHE</h2>
-                        <h4>Reporte de Horas de Empleado</h4>
-                        <p v-if="empresas.length === 1">Empresa: {{ empresas[0].nombre }}</p>
+                        <h4>Reporte de Horas Extras</h4>
+                        <p v-if="EmpresaSelect != undefined">Empresa: {{ EmpresaSelect.nombre }}</p>
                         <p v-else>Empresas: Todas</p>
                     </div>
                     <div class="area-date-container">
-                        <p v-if="areas && areas.length > 0">
-                            <span v-for="area in areas" :key="area.id" :value="area.id" class="area"> Area: {{ area.id }} -
-                                {{ area.nombre }}</span>
-                        </p>
+                        <p v-if="AreaSelect != undefined"> Área: {{ AreaSelect.nombre }}</p>
                         <p v-else>Areas: Todas</p>
                         <p class="date">Fecha de Emisión: {{ currentDate }}</p>
                     </div>
@@ -197,7 +193,7 @@
                             <table class="table table-hover table-bordered table-sm mt-4 align-middle">
                         <thead class="text-center bg-primary text-white">
                             <th scope="col" class="col-1">ID Empleado</th>
-                            <th scope="col" class="col-3">Nombre</th>
+                            <th scope="col" >Nombre</th>
                             <th scope="col">Fecha</th>
                             <th scope="col">Sueldo</th>
                             <th scope="col" class="col-1">Empresa</th>
@@ -209,7 +205,7 @@
                         <tbody class="text-center" v-if="calculosHoras.length > 0">
                             <tr v-for="registro in calculosHoras" :key="registro.id">
                                 <td scope="row">{{ registro.empleado.dui }}</td>
-                                <td>{{ registro.empleado.nombres }}</td>
+                                <td>{{ registro.empleado.nombres + " " + registro.empleado.apellidos }}</td>
                                 <td>{{formatFecha(registro.fecha_calculo) }}</td>
                                 <td>{{ registro.empleado.salario | toCurrency }}</td>
                                 <td>{{ registro.empleado.area.empresa.nombre }}</td>
@@ -276,6 +272,9 @@ export default {
             showPdfTemplate: false,
             currentPage: 1,
             lastPage: 1,
+            totalPages: 1,
+            EmpresaSelect: {},
+            AreaSelect: {},
         };
     },
     created() {
@@ -288,9 +287,13 @@ export default {
                 this.filtros.selectEmpresa = "NA";
                 this.areas = [];
                 this.filtros.selectArea = "NA";
+                this.EmpresaSelect = {};
             }
             this.buscarArea();
             this.buscarRegistrosByEmpresa(this.filtros);
+            this.EmpresaSelect = this.empresas.find(
+                (empresa) => empresa.id === this.filtros.selectEmpresa
+            );
 
         }, 300),
         debounceSearchFechas: _.debounce(function () {
@@ -307,17 +310,19 @@ export default {
                 this.duiJefe = "";
                 this.email = "";
                 this.nombreJefe = "";
+                this.selectArea = {};
 
             }
             const areaId = this.filtros.selectArea;
             this.searchAreaById(areaId);
             this.buscarRegistrosByEmpresa(this.filtros);
-
+            this.AreaSelect = this.areas.find(
+                (area) => area.id === this.filtros.selectArea
+            );
         }, 300),
         debounceSearchEmpleadoByinput: _.debounce(function () {
 
             this.buscarRegistrosByEmpresa(this.filtros);
-
         }, 300),
         imprimir() {
             // Agrega aquí la lógica para imprimir
@@ -512,9 +517,10 @@ export default {
 }
 
 .logo {
-    width: 150px;
+    width: 180px;
     height: 100px;
 }
+
 .header {
     display: flex;
     align-items: center;
@@ -549,6 +555,22 @@ width: 10%;
 }
 thead th:nth-child(3), tr td:nth-child(3) {
 width: 10%;
+}
+
+th.col-3 {
+width: 16%;
+}
+
+th.col-1:nth-child(6) {
+width: 10%;
+}
+
+th.col-1:nth-child(5) {
+width: 13%;
+}
+
+.centered {
+  text-align: center;
 }
 
 </style>
