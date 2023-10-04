@@ -239,7 +239,7 @@
                     <div class="spacer"></div>
 
                     <div>
-                        <p>Emitido por: Cristian Zayas </p>
+                        <p>Emitido por: {{ nombreJefe  }} </p>
                     </div>
 
                     <!-- Paginación como pie de página -->
@@ -349,6 +349,8 @@ export default {
         },
 
         fetchEmpresas() {
+            const {nombres, apellidos} = JSON.parse(localStorage.getItem('userInfo'));
+            this.nombreJefe = `${nombres} ${apellidos}`;
             axios
                 .get("/empresas")
                 .then((response) => {

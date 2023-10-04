@@ -1,10 +1,7 @@
 <template>
     <div class="bg-white d-flex flex-column justify-content-center align-items-center col-12 col-xs-12">
 
-        <div class="center-image d-flex flex-column justify-content-center align-items-center" style="margin-bottom: 1%">
-            <h2 class="h1 text-center mt-5" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">C&#193;LCULOS PROCESADOS</h2>
-
-        </div>
+       <br><br><br><br><br><br><br><br><br><br>
 
         <div class="container mt-4">
             <div class="accordion" id="accordionFilters">
@@ -229,7 +226,7 @@
                     <div class="spacer"></div>
 
                     <div>
-                        <p>Emitido por: Cristian Zayas </p>
+                        <p>Emitido por: {{ nombreJefe }} </p>
                     </div>
 
                     <!-- Paginación como pie de página -->
@@ -370,6 +367,8 @@ export default {
         },
 
         fetchEmpresas() {
+            const {nombres, apellidos} = JSON.parse(localStorage.getItem('userInfo'));
+            this.nombreJefe = `${nombres} ${apellidos}`;
             axios
                 .get("/empresas")
                 .then((response) => {
