@@ -239,7 +239,7 @@
                     <div class="spacer"></div>
 
                     <div>
-                        <p>Emitido por: {{ nombreJefe  }} </p>
+                        <p>Emitido por: {{ nombre  }} </p>
                     </div>
 
                     <!-- Paginación como pie de página -->
@@ -266,6 +266,7 @@ export default {
             areas: [],
             duiJefe: "",
             nombreJefe: "",
+            nombres: "",
             email: "",
             filtros: {
                 selectEmpresa: "",
@@ -350,7 +351,7 @@ export default {
 
         fetchEmpresas() {
             const {nombres, apellidos} = JSON.parse(localStorage.getItem('userInfo'));
-            this.nombreJefe = `${nombres} ${apellidos}`;
+            this.nombres = `${nombres} ${apellidos}`;
             axios
                 .get("/empresas")
                 .then((response) => {
