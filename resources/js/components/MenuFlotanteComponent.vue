@@ -189,7 +189,7 @@
                             class="btn bg-black btn-primary text-uppercase btnGray my-4"
                             type="button"
                         >
-                            Cerrar sesion
+                            Cerrar sesi&#243;n
                         </button>
                     </div>
                 </div>

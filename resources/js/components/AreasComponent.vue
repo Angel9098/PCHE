@@ -34,8 +34,8 @@
                         <td>{{ item.nombre_jefe_area }}</td>
                         <td>
                             <div class="d-flex flex-row justify-content-around">
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrear" @click="showModificarArea(item.id, item.id_empresa)"><i class="fa-solid fa-pen-to-square text-white"></i></button>
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminar" @click="showDeleteModal(item.id)"><i class="fa-solid fa-trash text-white"></i></button>
+                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalCrear" @click="showModificarArea(item.id, item.id_empresa)" title="Editar"><i class="fa-solid fa-pen-to-square text-white"></i></button>
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminar" @click="showDeleteModal(item.id)" title="Eliminar"><i class="fa-solid fa-trash text-white"></i></button>
                             </div>
                         </td>
                     </tr>
@@ -84,7 +84,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>¿Está seguro de eliminar el &#225;rea seleccionada?</p>
+                    <p>¿Está seguro de eliminar el &#225;rea seleccionada?</p>''
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
@@ -98,6 +98,7 @@
 </template>
 <script>
 import axios from 'axios';
+import 'bootstrap/dist/js/bootstrap.bundle';
 export default {
     data() {
         return {
@@ -124,6 +125,9 @@ export default {
     mounted() {
         this.getEmpresas();
         this.getAreasAll();
+
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
     },
     methods: {
         getEmpresas() {

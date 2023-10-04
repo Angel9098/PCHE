@@ -26,7 +26,7 @@
                 </tr>
             </thead>
             <tbody v-if="cortes.length > 0">
-                <tr class="text-center" v-for="corte in cortes" :key="corte.id">
+                <tr class="text-center" v-for="corte in cortes" :key="corte.id" :class="corte.vigente == 1?'table-success':'table-light'">
                     <td>{{ corte.descripcion }}</td>
                     <td>{{ formatFecha(corte.fecha_corte) }}</td>
                     <td>{{ formatFecha(corte.created_at) }}</td>
@@ -185,7 +185,7 @@ export default {
             try {
                 const response = await axios.get("/corte/vigente", { headers: { 'Content-type': 'application/json' } });
                 if (response.data) {
-                    this.descripcionVigente = response.data.fecha_corte;
+                    this.descripcionVigente = moment(response.data.fecha_corte).format('DD/MM/YYYY');
                 }
             } catch (error) {
                 console.error("Error al obtener la descripción vigente:", error.response ? error.response.data : error.message);

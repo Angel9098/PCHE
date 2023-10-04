@@ -1,20 +1,21 @@
-require("./bootstrap");
-window.Vue = require("vue");
-import VueRouter from "vue-router";
-import Toast from "vue-toastification";
-import VCalendar from "v-calendar";
-import VueMask from "v-mask";
-import "vue-toastification/dist/index.css";
-import moment from "moment-timezone";
-import store from "./store"; // Agregando estados
-import MenuFlotanteComponent from "./components/MenuFlotanteComponent.vue";
-Vue.component(
-    "login-component",
-    require("./components/LoginComponent.vue").default
-);
+require('./bootstrap');
+window.Vue = require('vue');
+import VueRouter from 'vue-router';
+import Toast from 'vue-toastification';
+import VCalendar from 'v-calendar';
+import VueMask from 'v-mask';
+import "vue-toastification/dist/index.css"
+import moment from 'moment-timezone';
+import VueApexCharts from 'vue-apexcharts';
+
+import store from './store'; // Agregando estados 
+import MenuFlotanteComponent from './components/MenuFlotanteComponent.vue';
+Vue.component('login-component', require('./components/LoginComponent.vue').default);
 Vue.use(VueRouter);
 Vue.use(VCalendar);
 Vue.use(VueMask);
+Vue.use(VueApexCharts);
+Vue.component('apexchart', VueApexCharts);
 
 moment.tz.setDefault("America/El_Salvador");
 
