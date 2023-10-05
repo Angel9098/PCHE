@@ -14,20 +14,19 @@ class DashboardController extends Controller
 
     public function obtenerHorasExtraPorEmpresa(Request $request)
     {
-        $idEmpresa = $request->input('empresa_id');
+        $idEmpresa = $request->input('idEmpresa'); // Asegúrate de que el valor de idEmpresa esté disponible en la solicitud.
 
-        $resultados = DB::table('empresas as em')
-            ->join('areas as a', 'em.id', '=', 'a.empresa_id')
-            ->leftJoin('empleados as e', 'a.id', '=', 'e.area_id')
-            ->leftJoin('horas_extra as he', 'he.empleado_id', '=', 'e.id')
-            ->where('em.id', $idEmpresa)
+        $result = DB::table('areas as a')
+            ->join('empresas as em', 'em.id', '=', 'a.empresa_id')
+            ->join('empleados as e', 'a.id', '=', 'e.area_id')
+            ->join('calculos_horas as ch', 'ch.empleado_id', '=', 'e.id')
+            ->select('a.nombre as nombre_area', DB::raw('SUM(ch.salario_neto) as total_horas'))
+            ->where('em.id', '=', $idEmpresa)
+            ->whereRaw("DATE_FORMAT(ch.created_at, '%Y-%m') = DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m')")
             ->groupBy('a.nombre')
-            ->select(
-                'a.nombre as nombre_area',
-                DB::raw('IFNULL(SUM(he.diurnas + he.nocturnas + he.diurnas_descanso + he.nocturnas_descanso + he.diurnas_asueto + he.nocturnas_asueto),0) as total_horas')
-            )
             ->get();
 
-        return response()->json($resultados);
+        return response()->json($result);
+
     }
 }
