@@ -81,6 +81,9 @@ Route::get('cortes', 'CorteController@index')->name('cortes');
 Route::post('cortes/crear', 'CorteController@create')->name('crearCorte');
 Route::get('corte/vigente', 'CorteController@getCorteVigente')->name('corteVigente');
 
+//Ruta Dashboard
+Route::get('dashboard/horasExtraEmpresa', 'DashboardController@obtenerHorasExtraPorEmpresa');
+
 Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', 'DashboardController@index')->name('dashboard');
 });

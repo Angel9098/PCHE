@@ -9,7 +9,7 @@
         </div>
         <div class="container mt-4">
             <div class="row" style="margin-bottom: 2%;">
-                <div class="col-2">
+                <div class="col-3">
                     <div class="form-group d-flex" style="width: 100%;">
                         <select v-model="filtros.selectEmpresa" @input="debounceSearchArea" class="form-select">
                             <option value="" disabled selected>Seleccionar Empresa</option>
@@ -32,7 +32,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-2">
+<div class="col-2">
                     <input v-model="duiJefe" type="text" @input="debouncefiltros" placeholder="Dui jefe"
                         class="form-control mb-2" disabled />
                 </div>
@@ -68,7 +68,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+                           </div>
         </div>
 
         <div class="col-12 d-flex flex-column justify-content-center align-items-center">
@@ -239,8 +239,8 @@
                     <div class="spacer"></div>
 
                     <div>
-                        <p>Emitido por: {{ nombreJefe  }} </p>
-                    </div>
+                        <p>Emitido por: {{ nombre  }} </p>
+                                        </div>
 
                     <!-- Paginación como pie de página -->
                     <div class="pagination">
@@ -266,6 +266,7 @@ export default {
             areas: [],
             duiJefe: "",
             nombreJefe: "",
+nombres: "",
             email: "",
             filtros: {
                 selectEmpresa: "",
@@ -278,14 +279,18 @@ export default {
             lastPage: 1,
             showPdfTemplate: false,
             currentDate: new Date().toLocaleDateString(),
-            totalPages: 1,
+            totalPages: 0,
             EmpresaSelect: {},
             AreaSelect: {},
+            nombre: "",
         };
     },
     created() {
         this.fetchEmpresas();
         this.buscarRegistrosByEmpresa()
+        if(localStorage.getItem("UsuarioNombre") != null){
+            this.nombre = JSON.parse(localStorage.getItem("UsuarioNombre"));
+        }
     },
     methods: {
         debounceSearchArea: _.debounce(function () {
@@ -348,21 +353,18 @@ export default {
             }
         },
 
-        fetchEmpresas() {
-            const {nombres, apellidos} = JSON.parse(localStorage.getItem('userInfo'));
-            this.nombreJefe = `${nombres} ${apellidos}`;
-            axios
-                .get("/empresas")
-                .then((response) => {
-                    this.empresas = response.data.map((empresa) => ({
-                        id: empresa.id,
-                        nombre: empresa.nombre,
-                    }));
-                })
-                .catch((error) => {
-                    console.error("Error al cargar empresas:", error);
-                });
-        },
+        async fetchEmpresas() {
+    try {
+        const response = await axios.get("/empresas");
+        this.empresas = response.data.map((empresa) => ({
+            id: empresa.id,
+            nombre: empresa.nombre,
+        }));
+    } catch (error) {
+        console.error("Error al cargar empresas:", error);
+    }
+},
+
         generatePDF() {
             // Mostrar la sección de contenido para generar el PDF
             this.showPdfTemplate = true;
@@ -378,11 +380,16 @@ export default {
                     jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
                 };
 
+                 
                 // Utilizar html2pdf dentro de this.$nextTick
                 html2pdf().from(content).set(pdfOptions).save();
+                
+
+
 
                 // Ocultar la sección de contenido después de generar el PDF
                 this.showPdfTemplate = false;
+
             });
         },
 
@@ -430,6 +437,7 @@ export default {
             return moment(date).format("DD/MM/YYYY");
         },
     },
+
 };
 </script>
 
@@ -565,7 +573,7 @@ width: 10%;
 .pagination {
     bottom: 0;
     right: 0;
-    text-align: right;
+    text-align: center;
     margin-top: 20px;
     font-size: 0.9em;
 }
