@@ -495,7 +495,6 @@ export default {
                 return this.cerrarSesion();
         },
         cerrarSesion() {
-            console.log('Hola?')
             localStorage.removeItem("user");
             localStorage.removeItem("empresaID");
             this.$store.dispatch("logout");

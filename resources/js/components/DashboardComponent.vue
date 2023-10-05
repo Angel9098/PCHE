@@ -1,31 +1,51 @@
 <template>
-    <div class="container">
+    <div class="col-11">
         <h1 class="text-center my-4">Bienvenido  {{ nombre }}</h1>
         <div class="w-100 d-flex flex-row justify-content-center align-items-center gap-4">       
-            <div class="col-6">
+            <div class="col-6 border border-1 rounded-3">
+                <h3 class="text-center mt-2">Recuento de horas extras</h3>
                 <apexchart width="100%" type="bar" :options="optionsBar" :series="series"></apexchart>
             </div>
-            <div id="radialBar1" class="col-6">
-
+            <div class="col-6 border border-1 rounded-3">
+                <h3 class="text-center mt-2" style="margin-bottom: 45px;">Horas extra recientes</h3>
+                <div id="radialBar1"></div>
             </div>
-<!--             <Doughnut
-                :chart-options="chartOptionsDonut"
-                :chart-data="chartDataDonut"
-                :chart-id="chartIdDonut"
-                :dataset-id-key="datasetIdKey"
-                :plugins="plugins"
-                :css-classes="cssClasses"
-                :styles="styles"
-                :width="width"
-                :height="height"
-            >
-            </Doughnut> -->
         </div>
+        <div class="mt-5 mb-5 w-10 d-flex flex-row justify-content-center align-items-center gap-4">
+            <div class="col-6 border border-1 rounded-3">
+                <h3 class="text-center mt-2">Horas extra por área</h3>
+                <div class="d-flex flex-row justify-content-start col-4">
+                    <select class="form-select ms-4">
+                        <option value="0">Seleccione Empresa</option>
+                        <option v-for="empresa in empresas" :key="empresa.id" :value="empresa.id">
+                            {{ empresa.nombre }}
+                        </option>
+                    </select>
+                </div>
+                <Doughnut
+                    :chart-options="chartOptionsDonut"
+                    :chart-data="chartDataDonut"
+                    :chart-id="chartId"
+                    :dataset-id-key="datasetIdKey"
+                    :plugins="plugins"
+                    :css-classes="cssClasses"
+                    :styles="styles"
+                    :width="width"
+                    :height="height"
+                    class="mb-2"
+                >
+                </Doughnut>
+            </div>
+            <div class="col-6 border border-1 rounded-3">
+                <h3 class="text-center mt-2">Comparativo horas extra</h3>
+                <div id="chartLines"></div>
+            </div>
+        </div>
+        
     </div>
 
 </template>
 <script>
-import { Bar } from 'vue-chartjs/legacy';
 import { Doughnut } from 'vue-chartjs/legacy';
 import { Chart, Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, LinearScale } from 'chart.js'
 
@@ -33,13 +53,12 @@ Chart.register(Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, Li
 
 export default {
     components: {
-        Bar,
         Doughnut
     },
     props: {
         chartId: {
             type: String,
-            default:'bar-chart'
+            default:'doughnut-chart'
         },
         datasetIdKey: {
             type: String,
@@ -64,32 +83,15 @@ export default {
         plugins: {
             type: Array,
             default: () => []
-        },
-        chartIdDonut: {
-            type: String,
-            default: 'doughnut-chart'
         }
     },
     data() {
         return {
             usuario: {},
+            empresas: [],
             nombre: '',
-            charData: {
-                labels: ['Enero', 'Febrero', 'Marzo'],
-                datasets: [
-                    {
-                        label: 'Horas extra canceladas',
-                        backgroundColor: ['#f87979'],
-                        data: [40, 20, 12]
-                    }
-                ]
-            },
-            chartOptions: {
-                responsive: true,
-                maintainAspectRatio: false
-            },
             chartDataDonut: {
-                labels: ['Optimissa', 'Lat Mobile', 'Monetae'],
+                labels: ['Área 1', 'Área 2', 'Área 3'],
                 datasets: [
                     {
                         backgroundColor: ['#41B883', '#E46651', '#00D8FF'],
@@ -128,10 +130,10 @@ export default {
                     show: true
                 },
                 title: {
-                    align: 'left'  
+                    align: 'left'
                 },
                 chart: {
-                    height: 350,
+                    height: 500,
                     type: 'radialBar'
                 },
                 plotOptions: {
@@ -154,13 +156,71 @@ export default {
                     }
                 },
                 labels: ['Optimissa', 'Lat Mobile', 'Monetae']
+            },
+            optionsLines: {
+                series: [
+                    {
+                        name: 'Lat Mobile',
+                        data: [22, 44, 10]
+                    },
+                    {
+                        name: 'Monetae',
+                        data: [9, 15, 60]
+                    },
+                    {
+                        name: 'Optimissa',
+                        data: [65, 56, 63]
+                    },
+                ],
+                chart: {
+                    type: 'bar',
+                    height: 420
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                        endingShape: 'rounded'
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                xaxis: {
+                    categories: ['Enero', 'Febrero', 'Marzo']
+                },
+                yaxis: {
+                    title: {
+                        text:'$ USD'
+                    }
+                },
+                fill: {
+                    opacity: 1
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return "$" + val
+                        }
+                    }
+                }
             }
         }
     },
     mounted() {
         var chartCircle = new ApexCharts(document.querySelector('#radialBar1'), this.optionsRadial);
         chartCircle.render();
+
+        var chartBar = new ApexCharts(document.querySelector("#chartLines"), this.optionsLines);
+        chartBar.render();
+
         this.leerData();
+        this.getEmpresas();
         if(localStorage.getItem('user') !== null){
             this.usuario = JSON.parse(localStorage.getItem('user'));
         }
@@ -175,6 +235,14 @@ export default {
             axios.get(`empleadobyid?idEmpleado=${empleado_id}`).then((result) => {
                 this.nombre =result.data[0].nombres + ' '+result.data[0].apellidos
             }).catch(error => {})
+        },
+        getEmpresas() {
+            axios.get("/empresas").then((response) => {
+                // Formatear las empresas como 'id-nombre' y almacenarlas en 'empresas'
+                this.empresas = response.data;
+            }).catch((error) => {
+                console.error("Error al cargar empresas:", error);
+            });
         }
     }
 }
