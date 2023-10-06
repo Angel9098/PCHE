@@ -211,9 +211,9 @@
                             <router-link
                                 class="my-4 text-uppercase"
                                 to="/dashboard"
-                                data-bs-toggle="tooltip" data-bs-title="The last tip!"
-                                >
-                             
+                                data-bs-toggle="tooltip"
+                                data-bs-title="The last tip!"
+                            >
                                 <i class="fa-solid fa-house text-white"></i>
                             </router-link>
                         </button>
@@ -489,6 +489,8 @@ export default {
                     .then((result) => {
                         this.id = result.data[0].id;
                         this.nombre = `${result.data[0].nombres} ${result.data[0].apellidos}`;
+                        //this.localStorage.setItem('nombreUser', JSON.stringify(this.nombre));
+                    
                     })
                     .catch((error) => {});
             } else if (localStorage.getItem("user") === null)
