@@ -1,8 +1,6 @@
 <template>
     <div class="bg-white d-flex flex-column justify-content-center align-items-center col-12 col-xs-12">
 
-       <br><br><br><br><br><br><br><br><br><br>
-
         <div class="container mt-4">
             <div class="accordion" id="accordionFilters">
                 <div class="accordion-item">
@@ -74,7 +72,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-3">
                                     <input v-model="filtros.email"  @input="debounceSearchEmpleadoByinput" type="text" placeholder="Email" class="form-control mb-2" />
                                 </div>
                             </div>
@@ -223,12 +221,17 @@
                         </div>
                     </div>
                     <!-- Espaciador para separar la tabla del pie de página -->
-                    <div class="spacer"></div>
-
-                    <div>
+                    <div class="row">
+                        <div class="col-4">
                         <p>Emitido por: {{ nombreJefe }} </p>
                     </div>
-
+                    <div class="col-4" style="text-align: center;">
+                        <p>Revisado por:_____________________ </p>
+                    </div>
+                    <div class="col-4" style="text-align: right;">
+                        <p>Aprobado por:_____________________</p>
+                    </div>
+                    </div>
                     <!-- Paginación como pie de página -->
                     <div class="pagination">
                         pg {{ currentPage }} de {{ totalPages }}
@@ -272,6 +275,7 @@ export default {
             totalPages: 1,
             EmpresaSelect: {},
             AreaSelect: {},
+            
         };
     },
     created() {
@@ -321,9 +325,7 @@ export default {
 
             this.buscarRegistrosByEmpresa(this.filtros);
         }, 300),
-        imprimir() {
-            // Agrega aquí la lógica para imprimir
-        },
+       
         exportar() {
             // Agrega aquí la lógica para exportar
         },

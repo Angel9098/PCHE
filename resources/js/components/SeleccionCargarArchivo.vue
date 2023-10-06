@@ -32,20 +32,6 @@
                         </select>
                     </div>
                 </div>
-<div class="col-2">
-                    <input v-model="duiJefe" type="text" @input="debouncefiltros" placeholder="Dui jefe"
-                        class="form-control mb-2" disabled />
-                </div>
-                <div class="col-3">
-                    <input v-model="nombreJefe" type="text" @input="debouncefiltros" placeholder="Nombre jefe"
-                        class="form-control mb-2" disabled />
-                </div>
-                <div class="col-2">
-                    <input v-model="email" type="text" @input="debouncefiltros" placeholder="Email"
-                        class="form-control mb-2" disabled />
-                </div>
-            </div>
-            <div class="row">
                 <div class="col-3">
                     <div class="row">
                         <div class="col-3">
@@ -67,6 +53,22 @@
                                 class="form-control mb-2">
                         </div>
                     </div>
+                </div>
+                
+            </div>
+            <div class="row">
+                
+                <div class="col-2">
+                    <input v-model="duiJefe" type="text" @input="debouncefiltros" placeholder="Dui jefe"
+                        class="form-control mb-2" disabled />
+                </div>
+                <div class="col-4">
+                    <input v-model="nombreJefe" type="text" @input="debouncefiltros" placeholder="Nombre jefe"
+                        class="form-control mb-2" disabled />
+                </div>
+                <div class="col-3">
+                    <input v-model="email" type="text" @input="debouncefiltros" placeholder="Email"
+                        class="form-control mb-2" disabled />
                 </div>
                            </div>
         </div>
@@ -160,9 +162,9 @@
             <div class="col-1">
             </div>
         </div>
-        <div v-if="showPdfTemplate" class="pdf-content">
+        <div  class="pdf-content">
             <!-- Contenido para el PDF -->
-            <div ref="pdfContent" class="pdf-wrapper">
+            <div v-if="showPdfTemplate" ref="pdfContent" class="pdf-wrapper">
                 <!-- Encabezado -->
                 <div class="header">
                     <div class="logo-container">
@@ -237,14 +239,22 @@
                     </div>
                     <!-- Espaciador para separar la tabla del pie de página -->
                     <div class="spacer"></div>
-
-                    <div>
+                    <div class="row">
+                        <div class="col-4">
                         <p>Emitido por: {{ nombre  }} </p>
-                                        </div>
+                    </div>
+                    <div class="col-4" style="text-align: center;">
+                        <p>Revisado por:_____________________ </p>
+                    </div>
+                    <div class="col-4" style="text-align: right;">
+                        <p>Aprobado por:_____________________</p>
+                    </div>
+                    </div>
+                    
 
                     <!-- Paginación como pie de página -->
-                    <div class="pagination">
-                        Página {{ currentPage }} de {{ totalPages }}
+                    <div class="col-12 ">
+                        <p>Página {{ currentPage }} de {{ totalPages }}</p>
                     </div>
                 </div>
             </div>
@@ -266,7 +276,7 @@ export default {
             areas: [],
             duiJefe: "",
             nombreJefe: "",
-nombres: "",
+            nombres: "",
             email: "",
             filtros: {
                 selectEmpresa: "",
@@ -274,12 +284,12 @@ nombres: "",
                 fechaDesde: "",
                 fechaHasta: "",
             },
-
+            user:{},
             currentPage: 1,
             lastPage: 1,
             showPdfTemplate: false,
             currentDate: new Date().toLocaleDateString(),
-            totalPages: 0,
+            totalPages: 1,
             EmpresaSelect: {},
             AreaSelect: {},
             nombre: "",
@@ -288,8 +298,10 @@ nombres: "",
     created() {
         this.fetchEmpresas();
         this.buscarRegistrosByEmpresa()
-        if(localStorage.getItem("UsuarioNombre") != null){
-            this.nombre = JSON.parse(localStorage.getItem("UsuarioNombre"));
+        if(localStorage.getItem("userInfo") != null){
+            this.user = JSON.parse(localStorage.getItem("userInfo"));
+            this.nombre = this.user.nombres + " " + this.user.apellidos;
+
         }
     },
     methods: {
@@ -348,7 +360,7 @@ nombres: "",
             if (response.data != null) {
                 const response2 = await axios.get("findempleadobyid?id=" + response.data.jefe_area);
                 this.duiJefe = response2.data.dui;
-                this.nombreJefe = response2.data.nombres;
+                this.nombreJefe = response2.data.nombres + " " + response2.data.apellidos;
                 this.email = response2.data.email;
             }
         },
@@ -573,7 +585,6 @@ width: 10%;
 .pagination {
     bottom: 0;
     right: 0;
-    text-align: center;
     margin-top: 20px;
     font-size: 0.9em;
 }
