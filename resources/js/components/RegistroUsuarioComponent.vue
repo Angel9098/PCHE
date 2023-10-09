@@ -305,7 +305,7 @@
                         <div
                             class="form-group col-12 d-flex flex-row justify-content-start"
                         >
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" :disabled="$v.$invalid" class="btn btn-primary">
                                 Guardar
                             </button>
                             <button
