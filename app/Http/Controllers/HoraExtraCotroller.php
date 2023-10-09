@@ -17,6 +17,8 @@ class HoraExtraCotroller extends Controller
             $registrosDepurados = [];
             $jefeArea = 1;
             $noCarga = 1;
+
+
             foreach ($registros as $registro) {
                 $id_empleado = $registro['idEmpleado'];
                 $fecha = $registro['fecha'];
@@ -31,12 +33,8 @@ class HoraExtraCotroller extends Controller
 
                 if ($registroExistente === null) {
                     $registrosDepurados[] = $registro;
-                } else {
-                    $registrosDepurados[$registroExistente]['diurnas'] += $registro['diurnas'];
-                    $registrosDepurados[$registroExistente]['nocturnas'] += $registro['nocturnas'];
                 }
             }
-            //dd($registrosDepurados);
 
             foreach ($registrosDepurados as $registroDepurado) {
 
@@ -44,7 +42,7 @@ class HoraExtraCotroller extends Controller
 
                 $empleado = Empleado::where('dui', $id_empleado)->first();
 
-                $fechaRegis = $registro['fecha'];
+                $fechaRegis = $registroDepurado['fecha'];
                 $fechaFormateada = date('Y-m-d', strtotime($fechaRegis));
                 $diurnas = $registroDepurado['diurnas'];
                 $nocturnas = $registroDepurado['nocturnas'];
@@ -57,6 +55,7 @@ class HoraExtraCotroller extends Controller
                 $empleadoRegistrado = HoraExtra::where('empleado_id', $empleado->id)
                     ->where('fecha_registro', $fechaFormateada)
                     ->first();
+
 
                 if ($empleadoRegistrado === null) {
                     $hora_extra = new HoraExtra([
@@ -90,6 +89,10 @@ class HoraExtraCotroller extends Controller
         $fechaHasta = $request->input('fechaHasta');
 
         $horasExtrasQuery = HoraExtra::query()->with('empleado');
+
+        $horasExtrasQuery = HoraExtra::query()
+            ->with('empleado')
+            ->where('jefe_area', '!=', 0);
 
         if ($idEmpresa !== "NA" && $idEmpresa !== null) {
             $horasExtrasQuery->whereHas('empleado.area', function ($query) use ($idEmpresa) {
