@@ -247,6 +247,7 @@
 import axios from "axios";
 import html2pdf from "html2pdf.js";
 import moment from "moment";
+import ExcelJS from "exceljs";
 
 
 export default {
@@ -327,7 +328,44 @@ export default {
         }, 300),
        
         exportar() {
-            // Agrega aquí la lógica para exportar
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet("Reporte de Horas Extras");
+            worksheet.columns = [
+                { header: "ID Empleado", key: "id_empleado", width: 10 },
+                { header: "Nombre", key: "nombre", width: 32 },
+                { header: "Fecha", key: "fecha", width: 15 },
+                { header: "Sueldo", key: "sueldo", width: 15 },
+                { header: "Empresa", key: "empresa", width: 15 },
+                { header: "Area", key: "area", width: 15 },
+                { header: "Total Horas", key: "total_horas", width: 15 },
+                { header: "Salario Ganado", key: "salario_ganado", width: 15 },
+                { header: "Salario Total", key: "salario_total", width: 15 },
+            ];
+            this.calculosHoras.forEach((registro) => {
+                worksheet.addRow({
+                    id_empleado: registro.empleado.dui,
+                    nombre: registro.empleado.nombres + " " + registro.empleado.apellidos,
+                    fecha: this.formatFecha(registro.fecha_calculo),
+                    sueldo: registro.empleado.salario,
+                    empresa: registro.empleado.area.empresa.nombre,
+                    area: registro.empleado.area.nombre,
+                    total_horas: registro.total_horas,
+                    salario_ganado: registro.salario_neto,
+                    salario_total: registro.salario_total,
+                });
+            });
+            workbook.xlsx.writeBuffer().then((data) => {
+                const blob = new Blob([data], {
+                    type:
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                });
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", "Reporte de Horas Extras.xlsx");
+                document.body.appendChild(link);
+                link.click();
+            });
         },
         async buscarArea() {
 
