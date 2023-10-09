@@ -160,7 +160,6 @@
 </template>
 
 <style scoped>
-
 .cicle {
     width: 200px;
     height: 200px;
@@ -198,6 +197,9 @@ export default {
             defaultImagen:
                 "storage/imagenes/blank-profile-picture-973460_1280.webp",
             defaultBooleand: true,
+            MSErrorImgen: `
+                Por favor, ten en cuenta que solo se permiten documentos en formato JPEG, PNG, GIF, WEBP, SVG. Asegúrate de cargar un archivo con la extensión correcta para continuar.
+                `,
             file: File,
             perfil: {
                 nombres: "",
@@ -235,18 +237,37 @@ export default {
 
                         this.perfil = result.data[0];
                         this.perfil.nombres = `${result.data[0].nombres} ${result.data[0].apellidos}`;
+                        document.title = `PCHE - Perfil usuario - ${this.perfil.nombres}`;
                     })
                     .catch((error) => {});
             }
         },
         changesDefauld(event) {
-            this.defaultBooleand = false;
-            this.file = event.target.files[0];
-            const files = event.target.files[0];
-            this.perfil.imagen = URL.createObjectURL(files);
-            if (this.perfil.imagen.length > 1) {
-                this.defaultBooleand = true;
-                this.defaultImagen = URL.createObjectURL(files);
+            if (
+                event.target.files[0].type === "image/jpeg" ||
+                event.target.files[0].type === "image/png" ||
+                event.target.files[0].type === "image/gif" ||
+                event.target.files[0].type === "image/bmp" ||
+                event.target.files[0].type === "image/tiff" ||
+                event.target.files[0].type === "image/webp" ||
+                event.target.files[0].type === "image/svg+xml" ||
+                event.target.files[0].type === "image/x-icon"
+            ) {
+                this.defaultBooleand = false;
+                this.file = event.target.files[0];
+                const files = event.target.files[0];
+                this.perfil.imagen = URL.createObjectURL(files);
+                if (this.perfil.imagen.length > 1) {
+                    this.defaultBooleand = true;
+                    this.defaultImagen = URL.createObjectURL(files);
+                }
+            } else {
+                this.leerData();
+                this.$toast.error(this.MSErrorImgen, {
+                    timeout: 3000,
+                    position: "bottom-center",
+                    icon: true,
+                });
             }
         },
         sendInfromation() {
