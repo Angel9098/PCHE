@@ -15,7 +15,7 @@
             <div class="col-6 border border-1 rounded-3">
                 <h3 class="text-center mt-2">Horas extra por área</h3>
                 <div class="d-flex flex-row justify-content-start col-4">
-                    <select class="form-select ms-4">
+                    <select class="form-select ms-4" v-model="empresaID" @change="getHorasExtraByArea()">
                         <option value="0">Seleccione Empresa</option>
                         <option v-for="empresa in empresas" :key="empresa.id" :value="empresa.id">
                             {{ empresa.nombre }}
@@ -46,6 +46,7 @@
 
 </template>
 <script>
+import axios from 'axios';
 import { Doughnut } from 'vue-chartjs/legacy';
 import { Chart, Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, LinearScale } from 'chart.js'
 
@@ -89,13 +90,16 @@ export default {
         return {
             usuario: {},
             empresas: [],
+            empresaID: 0,
+            serieDonut: [],
+            categorysDonut: [],
             nombre: '',
             chartDataDonut: {
-                labels: ['Área 1', 'Área 2', 'Área 3'],
+                labels: [],
                 datasets: [
                     {
                         backgroundColor: ['#41B883', '#E46651', '#00D8FF'],
-                        data: [45, 20, 63]
+                        data: []
                     }
                 ]
             },
@@ -243,6 +247,21 @@ export default {
             }).catch((error) => {
                 console.error("Error al cargar empresas:", error);
             });
+        },
+        getHorasExtraByArea() {
+            this.chartDataDonut.labels = [];
+            this.chartDataDonut.datasets[0].data = [];
+            this.categorysDonut = [];
+            this.serieDonut = [];
+            axios.get(`dashboard/horasExtraEmpresa?idEmpresa=${this.empresaID}`, { headers: { 'Content-type': 'application/json' } }).then(resp => {
+                console.log(resp.data);
+                resp.data.forEach(element => {
+                    this.categorysDonut.push(element.nombre_area);
+                    this.serieDonut.push(element.total_horas);
+                });
+                this.chartDataDonut.labels = this.categorysDonut;
+                this.chartDataDonut.datasets[0].data = this.serieDonut;
+            })
         }
     }
 }

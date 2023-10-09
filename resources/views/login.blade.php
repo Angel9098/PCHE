@@ -8,6 +8,7 @@
     <title>PCHE</title>
     <link rel="shortcut icon" href="{{ asset('storage\imagenes\iconfav.png') }}" type="image/x-icon">
     
+    
 </head>
 <body class="bg-white">
     <div id="app">

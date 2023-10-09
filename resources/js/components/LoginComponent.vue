@@ -1,5 +1,5 @@
 <template>
-  <div class="w-100 d-flex justify-content-center align-items-center" style="margin-top: 15%;">
+  <div class="w-100 d-flex justify-content-center align-items-center">
       <div class="bg-white d-flex flex-column justify-content-center align-items-center col-12 col-sm-12 col-md-7 col-lg-7">
           <img src="assets/img/latinMobile.png" alt="logo" class="w-25">
           <form class="w-50 d-flex flex-column gap-3">

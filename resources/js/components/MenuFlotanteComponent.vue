@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <nav
-            class="navbar navbar-primary bg-primary position-static"
+            class="w-100 navbar navbar-primary bg-primary positionNavBar"
             :hidden="
                 currentPath == '/' ||
                 currentPath == '/business' ||
@@ -27,6 +27,7 @@
                         src="assets/img/logopngblanco_Mesa de trabajo 1.png"
                         alt=""
                     />
+                    
                 </a>
                 <div
                     class="offcanvas offcanvas-start text-bg-primary"
@@ -195,205 +196,59 @@
                 </div>
             </div>
         </nav>
-
-        <div class="d-flex flex-row h-full">
-            <nav
-                class="flexMenu bg-primary"
-                :hidden="currentPath == '/' || currentPath == '/business'"
-            >
-                <ul class="ul">
-                    <!-- v-if="userRoles === 'administrador'" -->
-                    <li class="li my-4">
-                        <button
-                            class="btn btn-primary text-center"
-                            type="button"
-                        >
-                            <router-link
-                                class="my-4 text-uppercase"
-                                to="/dashboard"
-                                data-bs-toggle="tooltip"
-                                data-bs-title="The last tip!"
-                            >
-                                <i class="fa-solid fa-house text-white"></i>
-                            </router-link>
-                        </button>
-                    </li>
-                    <li v-if="userRoles === 'jefe'" class="li my-4">
-                        <button
-                            class="btn btn-primary text-center"
-                            type="button"
-                        >
-                            <router-link
-                                class="my-4 text-uppercase"
-                                to="/importacionhoras"
-                                ><i
-                                    class="fa-solid fa-file-arrow-up text-white"
-                                ></i>
-                            </router-link>
-                        </button>
-                    </li>
-                    <li class="li my-4">
-                        <div class="dropdown">
-                            <button
-                                class="btn btn-primary dropdown-toggle"
-                                type="button"
-                                id="dropdownMenu2"
-                                data-toggle="dropdown"
-                                aria-haspopup="true"
-                                aria-expanded="false"
-                            >
-                                <i class="fa-solid fa-bars"></i>
-                            </button>
-                            <div
-                                class="dropdown-menu"
-                                aria-labelledby="dropdownMenu2"
-                            >
-                                <button
-                                    v-if="userRoles === 'administrador'"
-                                    class="dropdown-item"
-                                    type="button"
-                                >
-                                    <router-link
-                                        class="my-4 text-uppercase link-underline-light"
-                                        to="/registro/0"
-                                        ><i
-                                            class="fa-solid fa-circle-plus text-black mx-2"
-                                        ></i>
-                                        Registrar empleados
+                <nav class="flexMenu bg-primary" :hidden="currentPath == '/' || currentPath == '/business'">
+                    <ul class="ul">
+                        <router-link class="my-1 text-uppercase item" to="/dashboard" v-tooltip="{theme:'info-tooltip', content:'Dashboard'}">
+                            <i class="fa-solid fa-house text-white iconItem"></i>
+                        </router-link>
+                        <router-link v-if="userRoles === 'jefe'" class="my-1 text-uppercase item" to="/importacionhoras" v-tooltip="{ theme: 'info-tooltip', content: 'Importar Horas' }">
+                            <i class="fa-solid fa-file-arrow-up text-white iconItem"></i>
+                        </router-link>
+                        <a class="my-1 item" role="button" id="dropdownMenu2" data-bs-toggle="collapse" href="#subMenu" aria-expanded="false" @click="toggleSubMenu" aria-controls="subMenu" v-tooltip="{ theme: 'info-tooltip', content: 'Empleados' }">
+                            <i class="fa-solid fa-users-gear text-white iconItem"></i><i class="fa-solid fa-caret-down text-white iconItem"></i>
+                        </a>
+                        <transition name="expand">
+                                <div class="submenu" id="subMenu" v-if="isSubMenuOpen">
+                                    <router-link v-if="userRoles === 'administrador'" class="my-1 text-uppercase item" to="/registro/0" v-tooltip="{ theme: 'info-tooltip-sub', content: 'Registrar Empleados' }">
+                                        <i class="fa-solid fa-circle-plus text-white iconItem"></i>
+                                        <!-- Registrar empleados -->
                                     </router-link>
-                                </button>
-                                <button
-                                    v-if="
-                                        userRoles === 'jefe' ||
-                                        userRoles === 'administrador'
-                                    "
-                                    class="dropdown-item"
-                                    type="button"
-                                >
-                                    <router-link
-                                        class="my-4 text-uppercase link-underline-light"
-                                        to="/editarperfilusuario"
-                                        ><i
-                                            class="fa-solid fa-user text-black mx-2"
-                                        ></i>
-                                        Perfil usuario
+                                    <router-link v-if="userRoles === 'jefe' || userRoles === 'administrador'" class="my-1 text-uppercase item" to="/editarperfilusuario" v-tooltip="{ theme: 'info-tooltip-sub', content: 'Perfil' }">
+                                        <i class="fa-solid fa-user text-white iconItem"></i>
+                                        <!-- Perfil usuario -->
                                     </router-link>
-                                </button>
-
-                                <button
-                                    v-if="userRoles === 'administrador'"
-                                    class="dropdown-item"
-                                    type="button"
-                                >
-                                    <router-link
-                                        class="my-4 text-uppercase link-underline-light"
-                                        to="/activacionusuario"
-                                        ><i
-                                            class="fa-solid fa-user-check text-black mx-2"
-                                        ></i>
-                                        Activar Usuario
+                                    <router-link v-if="userRoles === 'administrador'" class="my-1 text-uppercase item" to="/activacionusuario" v-tooltip="{ theme: 'info-tooltip-sub', content: 'Activar Usuario' }">
+                                        <i class="fa-solid fa-user-check text-white iconItem"></i>
+                                        <!-- Activar Usuario -->
                                     </router-link>
-                                </button>
-                                <button
-                                    v-if="userRoles === 'administrador'"
-                                    class="dropdown-item"
-                                    type="button"
-                                >
-                                    <router-link
-                                        class="my-4 text-uppercase link-underline-light"
-                                        to="/empleados"
-                                        ><i
-                                            class="fa-solid fa-users text-black mx-2"
-                                        ></i>
-                                        Empleados</router-link
-                                    >
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-
-                    <li v-if="userRoles === 'administrador'" class="li my-4">
-                        <button
-                            class="btn btn-primary text-center"
-                            type="button"
-                        >
-                            <router-link
-                                class="my-4 text-uppercase"
-                                to="/empresas"
-                                ><i class="fa-solid fa-building text-white"></i
-                            ></router-link>
-                        </button>
-                    </li>
-                    <li v-if="userRoles === 'administrador'" class="li my-4">
-                        <button
-                            class="btn btn-primary text-center"
-                            type="button"
-                        >
-                            <router-link class="my-4 text-uppercase" to="/areas"
-                                ><i
-                                    class="fa-solid fa-network-wired text-white"
-                                ></i
-                            ></router-link>
-                        </button>
-                    </li>
-
-                    <li v-if="userRoles === 'administrador'" class="li my-4">
-                        <button
-                            class="btn btn-primary text-center"
-                            type="button"
-                        >
-                            <router-link
-                                class="my-4 text-uppercase"
-                                to="/calendarios"
-                                ><i class="fa-solid fa-calendar text-white"></i>
-                            </router-link>
-                        </button>
-                    </li>
-                    <li v-if="userRoles === 'administrador'" class="li my-4">
-                        <button
-                            class="btn btn-primary text-center"
-                            type="button"
-                        >
-                            <router-link
-                                class="my-4 text-uppercase"
-                                to="/historialhoras"
-                                ><i
-                                    class="fa-brands fa-searchengin text-white"
-                                ></i>
-                            </router-link>
-                        </button>
-                    </li>
-                    <li v-if="userRoles === 'administrador'" class="li my-4">
-                        <button
-                            class="btn btn-primary text-center"
-                            type="button"
-                        >
-                            <router-link
-                                class="my-4 text-uppercase"
-                                to="/seleccionararchivo"
-                                ><i
-                                    class="fa-solid fa-file-circle-check text-white"
-                                ></i>
-                            </router-link>
-                        </button>
-                    </li>
-
-                    <li class="li my-4">
-                        <button
-                            class="btn btn-primary text-center"
-                            type="button"
-                        >
-                            <a class="my-4 text-uppercase" href=""
-                                ><i
-                                    class="fa-solid fa-right-from-bracket text-white"
-                                    @click="cerrarSesion"
-                                ></i>
-                            </a>
-                        </button>
-                    </li>
-                </ul>
-            </nav>
-            <main class="w-100 d-flex flex-row justify-content-center h-100">
+                                    <router-link v-if="userRoles === 'administrador'" class="my-1 text-uppercase item" to="/empleados" v-tooltip="{ theme: 'info-tooltip-sub', content: 'Listado Empleados' }">
+                                        <i class="fa-solid fa-users text-white iconItem"></i>
+                                        <!-- Empleados -->
+                                    </router-link>
+                                </div>
+                        </transition>
+                        <router-link v-if="userRoles === 'administrador'" class="my-1 text-uppercase item" to="/empresas" v-tooltip="{ theme: 'info-tooltip', content: 'Empresas' }">
+                            <i class="fa-solid fa-building text-white iconItem"></i>
+                        </router-link>
+                        <router-link v-if="userRoles === 'administrador'" class="my-1 text-uppercase item" to="/areas" v-tooltip="{ theme: 'info-tooltip', content: 'Áreas' }">
+                            <i class="fa-solid fa-network-wired text-white iconItem"></i>
+                        </router-link>
+                        <router-link v-if="userRoles === 'administrador'" class="my-1 text-uppercase item" to="/calendarios" v-tooltip="{ theme: 'info-tooltip', content: 'Calendario' }">
+                            <i class="fa-solid fa-calendar text-white iconItem"></i>
+                        </router-link>
+                        <router-link v-if="userRoles === 'administrador'" class="my-1 text-uppercase item" to="/historialhoras" v-tooltip="{ theme: 'info-tooltip', content: 'Procesar Horas' }">
+                            <i class="fa-brands fa-searchengin text-white iconItem"></i>
+                        </router-link>
+                        <router-link v-if="userRoles === 'administrador'" class="my-1 text-uppercase item" to="/seleccionararchivo" v-tooltip="{ theme: 'info-tooltip', content: 'Cálculo Horas' }">
+                            <i class="fa-solid fa-file-circle-check text-white iconItem"></i>
+                        </router-link>
+                        <a class="my-1 text-uppercase item" href="" v-tooltip="{ theme: 'info-tooltip', content: 'Cerrar Sesión' }">
+                            <i class="fa-solid fa-right-from-bracket text-white iconItem" @click="cerrarSesion"></i>
+                        </a>
+                    </ul>
+                </nav>
+        <div :class=" currentPath == '/' || currentPath == '/business' || currentPath == '/access-denied' ? 'd-flex flex-row h-full justify-content-center' : 'd-flex flex-row h-full justify-content-end'">
+            <main class="d-flex flex-row justify-content-center h-100" :style=" currentPath == '/' || currentPath == '/business' || currentPath == '/access-denied' ? 'width:100%' : 'width:97%' ">
                 <router-view></router-view>
             </main>
         </div>
@@ -411,10 +266,27 @@
     justify-content: center;
     align-items: center;
     z-index: 1026;
+    position: fixed;
 }
 
-.ul .li {
+.item{
+    display: list-item;
+    height: 40px;
+    text-align: center;
+    width: 55px;
     list-style: none;
+}
+
+.iconItem{
+    margin-top: 13px;
+}
+
+.item:hover{
+    background-color: #7DCADC;
+}
+
+.submenu{
+    background-color: #102E47;
 }
 
 ol,
@@ -446,6 +318,45 @@ a:hover {
     background-color: #c3c6c89a;
     text-decoration: none !important;
 }
+.positionNavBar{
+    position: sticky;
+    overflow: hidden;
+    top: 0px;
+    z-index: 1000;
+}
+
+.v-popper--theme-info-tooltip .v-popper__inner{
+    background-color: #1b4d76;
+    color:#ffffff;
+    padding: 10px;
+    border-radius: 9px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.41);
+}
+
+.v-popper--theme-info-tooltip .v-popper__arrow-outer{
+    border-color: #1b4d76;
+}
+
+.v-popper--theme-info-tooltip-sub .v-popper__inner{
+    background-color: #102E47;
+    color:#ffffff;
+    padding: 10px;
+    border-radius: 9px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.41);
+}
+
+.v-popper--theme-info-tooltip-sub .v-popper__arrow-outer{
+    border-color: #102E47;
+}
+
+.expand-enter-active, .expand-leave-active{
+    transition: max-height 0.1s cubic-bezier(0.25, 0.1, 0.2, 0.25);
+}
+.expand-enter, .expand-leave-to{
+    max-height: 0;
+    overflow: hidden;
+}
+
 </style>
 <script>
 import axios from "axios";
@@ -455,6 +366,7 @@ export default {
             id: "0",
             nombre: "",
             imagen: "storage/imagenes/blank-profile-picture-973460_1280.webp",
+            isSubMenuOpen: false
         };
     },
     mounted() {
@@ -508,6 +420,9 @@ export default {
         changeIMG(img) {
             if (img === true) return this.leerData();
         },
+        toggleSubMenu() {
+            this.isSubMenuOpen = !this.isSubMenuOpen;
+        }
     },
 };
 </script>

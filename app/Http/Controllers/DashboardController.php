@@ -29,4 +29,23 @@ class DashboardController extends Controller
         return response()->json($result);
 
     }
+
+    public function obtenerTotalSalarioHorasExtra(){
+        $result = DB::table('areas as a')
+            ->join('empresas as em', 'em.id', '=', 'a.empresa_id')
+            ->join('empleados as e', 'a.id', '=', 'e.area_id')
+            ->join('calculos_horas as ch', 'ch.empleado_id', '=', 'e.id')
+            ->select(
+                'em.nombre as nombre_empresa',
+                DB::raw('MONTHNAME(ch.created_at) as periodo'),
+                DB::raw('SUM(salario_neto) as total_horas')
+            )
+            ->whereBetween('ch.created_at', [now()->subMonths(3), now()])
+            ->groupBy('em.nombre', 'periodo')
+            ->orderBy('em.nombre', 'asc')
+            ->orderBy('periodo', 'asc')
+            ->get();
+
+        return response()->json($result);
+    }
 }

@@ -21,6 +21,7 @@ class CalculosHorasController extends Controller
                 $id_empleado = $registro['empleado_id'];
                 $empleado = Empleado::where('id', $id_empleado)->first();
 
+
                 $idEliminar = $registro['id'];
                 $jefeArea = $registro['jefe_area'];
                 $fecha = $registro['fecha_registro'];
@@ -28,9 +29,9 @@ class CalculosHorasController extends Controller
                 $diurnas = $registro['diurnas'];
                 $nocturnas = $registro['nocturnas'];
                 $diurnas_descanso = $registro['diurnas_descanso'];
-                $nocturnas_descanso = $registro['nocturnas_asueto'];
+                $nocturnas_descanso = $registro['nocturnas_descanso'];
                 $diurnas_asueto = $registro['diurnas_asueto'];
-                $nocturnas_asueto = $registro['diurnas_descanso'];
+                $nocturnas_asueto = $registro['nocturnas_asueto'];
 
                 $empleadoRegistrado = CalculosExtra::where('empleado_id', $empleado->id)
                     ->where('fecha_calculo', $fechaFormateada)
@@ -45,7 +46,6 @@ class CalculosHorasController extends Controller
 
 
                     $sumatoria = $diurnas + $nocturnas + $diurnas_descanso + $nocturnas_descanso + $diurnas_asueto + $nocturnas_asueto;
-                    //dd($sumatoria, $salarioGanado, $salarioDiario);
 
                     $salarioTotal = $salarioGanado + $salarioMensual;
 
@@ -66,7 +66,8 @@ class CalculosHorasController extends Controller
                     $CalculoHora->save();
 
                     $horaDelete = HoraExtra::findOrFail($idEliminar);
-                    $horaDelete->delete();
+                    $horaDelete->jefe_area = 0;
+                    $horaDelete->save();
                 }
             }
 
@@ -87,7 +88,9 @@ class CalculosHorasController extends Controller
         $nombre = $request->input('nombre');
         $email = $request->input('email');
 
+
         $horasExtrasQuery = CalculosExtra::query()->with('empleado.area.empresa');
+
 
         if ($idEmpresa !== "NA" && $idEmpresa !== null) {
             $horasExtrasQuery->whereHas('empleado.area', function ($query) use ($idEmpresa) {
