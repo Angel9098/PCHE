@@ -4,11 +4,7 @@
             <h1 class="text-center">Registro de Empleado</h1>
             <div class="card mt-3 mb-3 borderCircle bg-white">
                 <div class="card-body">
-                    <form
-                        class="needs-validation"
-                        novalidate
-                        @submit.prevent="registrar"
-                    >
+                    <form @submit.prevent="registrar">
                         <h4 class="alert-heading">Datos generales</h4>
                         <hr />
                         <div
@@ -17,15 +13,18 @@
                             <div class="form-group col-5">
                                 <label for="name">Nombres</label>
                                 <input
-                                    id="name"
+                                    v-model="$v.usuario.nombres.$model"
                                     type="text"
+                                    id="nombres"
                                     class="form-control"
-                                    v-model="usuario.nombres"
                                     required
                                 />
-                                <div class="invalid-feedback">
-                                    Ingrese nombre
-                                </div>
+                                <span
+                                    v-if="$v.usuario.nombres.$error"
+                                    class="text-danger"
+                                >
+                                    Este campo es obligatorio
+                                </span>
                             </div>
                             <div class="form-group col-6">
                                 <label for="last_name">Apellidos</label>
@@ -33,9 +32,15 @@
                                     id="last_name"
                                     type="text"
                                     class="form-control"
-                                    v-model="usuario.apellidos"
+                                    v-model="$v.usuario.apellidos.$model"
                                     required
                                 />
+                                <span
+                                    v-if="$v.usuario.apellidos.$error"
+                                    class="text-danger"
+                                >
+                                    Este campo es obligatorio
+                                </span>
                             </div>
                         </div>
                         <div
@@ -47,10 +52,16 @@
                                     id="job_title"
                                     type="text"
                                     class="form-control"
-                                    v-model="usuario.dui"
+                                    v-model="$v.usuario.dui.$model"
                                     required
                                     v-mask="'########-#'"
                                 />
+                                <span
+                                    v-if="$v.usuario.dui.$error"
+                                    class="text-danger"
+                                >
+                                    Este campo es obligatorio
+                                </span>
                             </div>
                             <div class="form-group col-6">
                                 <label for="email"
@@ -60,12 +71,21 @@
                                     id="email"
                                     type="email"
                                     class="form-control"
-                                    v-model="usuario.email"
+                                    v-model="$v.usuario.email.$model"
                                     required
                                     @change="verifyDomain"
                                 />
-                                <span v-if="verifyEmailBoolean" class="text-danger my-3">
+                                <span
+                                    v-if="verifyEmailBoolean"
+                                    class="text-danger my-3"
+                                >
                                     {{ MSErrorEmail }}
+                                </span>
+                                <span
+                                    v-if="$v.usuario.email.$error"
+                                    class="text-danger"
+                                >
+                                    Este campo es obligatorio
                                 </span>
                             </div>
                         </div>
@@ -84,9 +104,15 @@
                                     id="nameEmergency"
                                     type="text"
                                     class="form-control"
-                                    v-model="usuario.avisar_contacto"
+                                    v-model="$v.usuario.avisar_contacto.$model"
                                     required
                                 />
+                                <span
+                                    v-if="$v.usuario.avisar_contacto.$error"
+                                    class="text-danger"
+                                >
+                                    Este campo es obligatorio
+                                </span>
                             </div>
                             <div class="form-group col-6">
                                 <label for="phoneEmergency"
@@ -96,10 +122,18 @@
                                     id="phoneEmergency"
                                     type="text"
                                     class="form-control"
-                                    v-model="usuario.numero_emergencia"
+                                    v-model="
+                                        $v.usuario.numero_emergencia.$model
+                                    "
                                     required
                                     v-mask="'####-####'"
                                 />
+                                <span
+                                    v-if="$v.usuario.numero_emergencia.$error"
+                                    class="text-danger"
+                                >
+                                    Este campo es obligatorio
+                                </span>
                             </div>
                         </div>
 
@@ -113,7 +147,7 @@
                                 <select
                                     id="company"
                                     class="form-select"
-                                    v-model="usuario.empresa"
+                                    v-model="$v.usuario.empresa.$model"
                                     required
                                     @change="getAreas"
                                 >
@@ -125,13 +159,19 @@
                                         {{ empresa.nombre }}
                                     </option>
                                 </select>
+                                <span
+                                    v-if="$v.usuario.empresa.$error"
+                                    class="text-danger"
+                                >
+                                    Este campo es obligatorio
+                                </span>
                             </div>
                             <div class="form-group col-6">
                                 <label for="area">&#193;rea</label>
                                 <select
                                     id="area"
                                     class="form-select"
-                                    v-model="usuario.area_id"
+                                    v-model="$v.usuario.area_id.$model"
                                     @change="getHorarios"
                                     required
                                     :disabled="usuario.empresa == ''"
@@ -150,6 +190,12 @@
                                         {{ a.nombre_area }}
                                     </option>
                                 </select>
+                                <span
+                                    v-if="$v.usuario.area_id.$error"
+                                    class="text-danger"
+                                >
+                                    Este campo es obligatorio
+                                </span>
                             </div>
                         </div>
                         <div class="d-flex flex-row justify-content-between">
@@ -159,9 +205,15 @@
                                     id="job_title"
                                     type="text"
                                     class="form-control"
-                                    v-model="usuario.cargo"
+                                    v-model="$v.usuario.cargo.$model"
                                     required
                                 />
+                                <span
+                                    v-if="$v.usuario.cargo.$error"
+                                    class="text-danger"
+                                >
+                                    Este campo es obligatorio
+                                </span>
                             </div>
                             <div class="form-group col-6">
                                 <label for="salary">Salario</label>
@@ -169,9 +221,15 @@
                                     id="salary"
                                     type="text"
                                     class="form-control"
-                                    v-model="usuario.salario"
+                                    v-model="$v.usuario.salario.$model"
                                     required
                                 />
+                                <span
+                                    v-if="$v.usuario.salario.$error"
+                                    class="text-danger"
+                                >
+                                    Este campo es obligatorio
+                                </span>
                             </div>
                         </div>
 
@@ -264,14 +322,22 @@
         </div>
     </div>
 </template>
+<style>
+.btn-primary {
+}
+</style>
 <script>
+
+
 import axios from "axios";
+import { required, email } from "vuelidate/lib/validators";
 
 export default {
     props: ["id"],
     data() {
         return {
-            MSErrorEmail: 'Por favor, ten en cuenta que solo se permiten los siguientes dominios para esta aplicación: example@latmobile.com, example@sdsalgroup.com. Asegúrate de utilizar uno de estos dominios al registrar o ingresar.',
+            MSErrorEmail:
+                "Por favor, ten en cuenta que solo se permiten los siguientes dominios para esta aplicación: example@latmobile.com, example@sdsalgroup.com. Asegúrate de utilizar uno de estos dominios al registrar o ingresar.",
             usuario: {
                 nombres: "",
                 apellidos: "",
@@ -291,8 +357,24 @@ export default {
             horarios: [],
             horariosFilter: [],
             turno: "all",
-            verifyEmailBoolean :  false
+            verifyEmailBoolean: false,
         };
+    },
+    validations: {
+        usuario: {
+            nombres: { required },
+            apellidos: { required },
+            email: { required, email },
+            area_id: { required },
+            cargo: { required },
+            empresa: { required },
+            dui: { required },
+            horario_id: { required },
+            avisar_contacto: { required },
+            numero_emergencia: { required },
+            salario: { required },
+            // Agrega aquí las validaciones para los demás campos del objeto 'usuario' si es necesario.
+        },
     },
     mounted() {
         this.getEmpresas();
@@ -302,49 +384,59 @@ export default {
     },
     methods: {
         registrar() {
-            if (this.usuario.id != "") {
-                axios
-                    .post("empleados/actualizar", this.usuario, {
-                        headers: { "Content-type": "application/json" },
-                    })
-                    .then((response) => {
-                        this.cancelar();
-                        this.$toast.success("Empleado actualizado con exito", {
-                            timeout: 3000,
-                            position: "top-right",
-                            icon: true,
-                        });
-                    });
+            if (this.$v.usuario.$invalid) {
+                // Formulario no válido, no se envía.
+                return;
             } else {
-                axios
-                    .post("empleados/crear", this.usuario, {
-                        headers: { "Content-type": "application/json" },
-                    })
-                    .then((response) => {
-                        this.cancelar();
-                        this.$toast.success(response.data.message, {
-                            timeout: 3000,
-                            position: "top-right",
-                            icon: true,
+                if (this.usuario.id != "") {
+                    axios
+                        .post("empleados/actualizar", this.usuario, {
+                            headers: { "Content-type": "application/json" },
+                        })
+                        .then((response) => {
+                            this.cancelar();
+                            this.$toast.success(
+                                "Empleado actualizado con exito",
+                                {
+                                    timeout: 3000,
+                                    position: "top-right",
+                                    icon: true,
+                                }
+                            );
+                            this.$router.push("/empleados");
                         });
-                    });
+                } else {
+                    axios
+                        .post("empleados/crear", this.usuario, {
+                            headers: { "Content-type": "application/json" },
+                        })
+                        .then(async  (response) => {
+                           
+                           await this.$toast.success(response.data.message, {
+                                timeout: 3000,
+                                position: "top-right",
+                                icon: true,
+                            });
+                          await  this.$router.push("/empleados");
+                            this.cancelar();
+                        });
+                    
+                }
             }
         },
         verifyDomain() {
-            const dominio = this.usuario.email.split('@')[1];
-         
+            const dominio = this.usuario.email.split("@")[1];
+
             const regex = /^(latmobile\.com|sdsalgroup\.com)$/;
-           
-                if (regex.test(dominio)) {
-                    console.log(`El dominio ${dominio} es válido.`);
-                    this.verifyEmailBoolean = false;
-                } else {
-                    console.log(`El dominio ${dominio} no es válido.`);
-                   
-                    this.verifyEmailBoolean = true;
-                    
-                }
-            
+
+            if (regex.test(dominio)) {
+                console.log(`El dominio ${dominio} es válido.`);
+                this.verifyEmailBoolean = false;
+            } else {
+                console.log(`El dominio ${dominio} no es válido.`);
+
+                this.verifyEmailBoolean = true;
+            }
         },
 
         getEmpresas() {
@@ -376,40 +468,40 @@ export default {
                 });
         },
         userId(id) {
-            if(id != 0) {
+            if (id != 0) {
                 axios
-                .get(`empleadobyid?idEmpleado=${id}`)
-                .then((result) => {
-                    if (result.data && result.data.length > 0) {
-                        this.usuario.nombres = result.data[0].nombres;
-                        this.usuario.empresa = result.data[0].area.empresa.id;
-                        this.usuario.area_id = result.data[0].area.id;
-                        this.usuario.apellidos = result.data[0].apellidos;
-                        this.usuario.email = result.data[0].email;
-                        this.usuario.cargo = result.data[0].cargo;
-                        this.usuario.dui = result.data[0].dui;
-                        this.usuario.horario_id = result.data[0].horario_id;
-                        this.usuario.avisar_contacto =
-                            result.data[0].avisar_contacto;
-                        this.usuario.numero_emergencia =
-                            result.data[0].numero_emergencia;
-                        this.usuario.salario = result.data[0].salario;
-                        this.usuario.id = result.data[0].id;
-                    } else {
+                    .get(`empleadobyid?idEmpleado=${id}`)
+                    .then((result) => {
+                        if (result.data && result.data.length > 0) {
+                            this.usuario.nombres = result.data[0].nombres;
+                            this.usuario.empresa =
+                                result.data[0].area.empresa.id;
+                            this.usuario.area_id = result.data[0].area.id;
+                            this.usuario.apellidos = result.data[0].apellidos;
+                            this.usuario.email = result.data[0].email;
+                            this.usuario.cargo = result.data[0].cargo;
+                            this.usuario.dui = result.data[0].dui;
+                            this.usuario.horario_id = result.data[0].horario_id;
+                            this.usuario.avisar_contacto =
+                                result.data[0].avisar_contacto;
+                            this.usuario.numero_emergencia =
+                                result.data[0].numero_emergencia;
+                            this.usuario.salario = result.data[0].salario;
+                            this.usuario.id = result.data[0].id;
+                        } else {
+                            console.error(
+                                "No se encontraron datos para el empleado con ID:",
+                                id
+                            );
+                        }
+                    })
+                    .catch((error) => {
                         console.error(
-                            "No se encontraron datos para el empleado con ID:",
-                            id
+                            "Error al obtener datos del empleado:",
+                            error
                         );
-                    }
-                })
-                .catch((error) => {
-                    console.error(
-                        "Error al obtener datos del empleado:",
-                        error
-                    );
-                });
+                    });
             }
-            
         },
         filterHorario() {
             if (this.turno == "all") {
@@ -428,17 +520,26 @@ export default {
             this.usuario.horario_id = id;
         },
         cancelar() {
-            this.usuario.nombres = "";
-            this.usuario.apellidos = "";
-            this.usuario.email = "";
-            this.usuario.area_id = 0;
-            this.usuario.cargo = "";
-            this.usuario.empresa = "";
-            this.usuario.dui = "";
-            this.usuario.horario_id = 0;
-            this.usuario.avisar_contacto = "";
-            this.usuario.numero_emergencia = "";
-            this.usuario.salario = 0;
+            this.$confirm("¿Estás seguro de que deseas salir de esta pantalla??").then(() => {
+                if (!this.$v.usuario.$invalid) {
+                // Formulario no válido, no se envía.
+                return;
+            } else {
+                this.usuario.nombres = "";
+                this.usuario.apellidos = "";
+                this.usuario.email = "";
+                this.usuario.area_id = 0;
+                this.usuario.cargo = "";
+                this.usuario.empresa = "";
+                this.usuario.dui = "";
+                this.usuario.horario_id = 0;
+                this.usuario.avisar_contacto = "";
+                this.usuario.numero_emergencia = "";
+                this.usuario.salario = 0;
+                this.$router.push("/dashboard");
+            }
+});
+            
         },
     },
 };

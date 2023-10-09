@@ -7,15 +7,21 @@ import VueMask from 'v-mask';
 import "vue-toastification/dist/index.css"
 import moment from 'moment-timezone';
 import VueApexCharts from 'vue-apexcharts';
-
+import Vuelidate from 'vuelidate';
 import store from './store'; // Agregando estados 
+import VueSimpleAlert from "vue-simple-alert";
 import MenuFlotanteComponent from './components/MenuFlotanteComponent.vue';
 Vue.component('login-component', require('./components/LoginComponent.vue').default);
 Vue.use(VueRouter);
 Vue.use(VCalendar);
 Vue.use(VueMask);
 Vue.use(VueApexCharts);
+Vue.use(Vuelidate);
 Vue.component('apexchart', VueApexCharts);
+
+
+Vue.use(VueSimpleAlert);
+
 
 moment.tz.setDefault("America/El_Salvador");
 
