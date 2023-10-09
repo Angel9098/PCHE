@@ -8,6 +8,9 @@ import "vue-toastification/dist/index.css"
 import moment from 'moment-timezone';
 import VueApexCharts from 'vue-apexcharts';
 import Vuelidate from 'vuelidate';
+import FloatingVue from 'floating-vue';
+import 'floating-vue/dist/style.css';
+
 import store from './store'; // Agregando estados 
 import VueSimpleAlert from "vue-simple-alert";
 import MenuFlotanteComponent from './components/MenuFlotanteComponent.vue';
@@ -18,6 +21,26 @@ Vue.use(VueMask);
 Vue.use(VueApexCharts);
 Vue.use(Vuelidate);
 Vue.component('apexchart', VueApexCharts);
+Vue.use(FloatingVue, {
+    themes: {
+        'info-tooltip': {
+            '$extend': 'tooltip',
+            '$resetCss': true,
+            triggers: ['hover'],
+            autoHide: true,
+            placement: 'right',
+            distance: 10
+        },
+        'info-tooltip-sub': {
+            '$extend': 'tooltip',
+            '$resetCss': true,
+            triggers: ['hover'],
+            autoHide: true,
+            placement: 'right',
+            distance: 10
+        }
+    }
+});
 
 
 Vue.use(VueSimpleAlert);
