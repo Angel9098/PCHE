@@ -29,6 +29,7 @@
         "@popperjs/core": "^2.11.8",
         "apexcharts": "^3.43.0",
         "chart.js": "^3.0.0",
+        "exceljs": "^4.3.0",
         "floating-vue": "^1.0.0-beta.19",
         "html2pdf.js": "^0.9.3",
         "moment": "^2.29.4",
