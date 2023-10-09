@@ -8,6 +8,8 @@ use App\Empleado;
 use App\HoraExtra;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\DB;
+
 class CalculosHorasController extends Controller
 {
 
@@ -136,5 +138,43 @@ class CalculosHorasController extends Controller
         $empleadosConCalculos = $horasExtrasQuery->get();
 
         return response()->json($empleadosConCalculos);
+    }
+
+    public function graficaCalculoDeHorasPorMesEmpresa(Request $request)
+    {
+        try {
+
+            $resultado =  DB::table('calculos_horas')
+            ->select('empresas.id', 'empresas.nombre', DB::raw('SUM(calculos_horas.salario_neto) as total_salario'))
+            ->join('areas', 'calculos_horas.jefe_area', '=', 'areas.id')
+            ->join('empresas','areas.empresa_id','=','empresas.id')
+            ->where('calculos_horas.created_at', '>=', DB::raw('DATE_SUB(NOW(), INTERVAL 1 MONTH)'))
+            ->groupBy('empresas.id','empresas.nombre')
+            ->get();
+           // $horario = Horario::all();
+
+            return response()->json($resultado);
+
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error al traer registro',$e], 500);
+        }
+    }
+
+    public function graficaCalculoDeHorasDeTresMeses(Request $request){
+
+        try {
+
+            $resultado = DB::table('calculos_horas as c')
+            ->selectRaw('MONTH(c.created_at) AS Mes, SUM(c.salario_neto) AS horas_pagadas')
+            ->where('c.created_at', '>=', DB::raw('DATE_SUB(NOW(), INTERVAL 3 MONTH)'))
+            ->groupBy(DB::raw('MONTH(c.created_at)'))
+            ->orderBy('Mes')
+            ->get();
+
+            return response()->json($resultado);
+
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error al traer registro de 3 meses antes',$e], 500);
+        }
     }
 }
