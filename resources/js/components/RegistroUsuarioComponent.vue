@@ -327,8 +327,6 @@
 }
 </style>
 <script>
-
-
 import axios from "axios";
 import { required, email } from "vuelidate/lib/validators";
 
@@ -394,7 +392,7 @@ export default {
                             headers: { "Content-type": "application/json" },
                         })
                         .then((response) => {
-                            this.cancelar();
+                            
                             this.$toast.success(
                                 "Empleado actualizado con exito",
                                 {
@@ -410,17 +408,15 @@ export default {
                         .post("empleados/crear", this.usuario, {
                             headers: { "Content-type": "application/json" },
                         })
-                        .then(async  (response) => {
-                           
-                           await this.$toast.success(response.data.message, {
+                        .then(async (response) => {
+                            await this.$toast.success(response.data.message, {
                                 timeout: 3000,
                                 position: "top-right",
                                 icon: true,
                             });
-                          await  this.$router.push("/empleados");
-                            this.cancelar();
+                            await this.$router.push("/empleados");
+                           
                         });
-                    
                 }
             }
         },
@@ -520,26 +516,27 @@ export default {
             this.usuario.horario_id = id;
         },
         cancelar() {
-            this.$confirm("¿Estás seguro de que deseas salir de esta pantalla??").then(() => {
+            this.$confirm(
+                "¿Estás seguro de que deseas salir de esta pantalla?"
+            ).then(() => {
                 if (!this.$v.usuario.$invalid) {
-                // Formulario no válido, no se envía.
-                return;
-            } else {
-                this.usuario.nombres = "";
-                this.usuario.apellidos = "";
-                this.usuario.email = "";
-                this.usuario.area_id = 0;
-                this.usuario.cargo = "";
-                this.usuario.empresa = "";
-                this.usuario.dui = "";
-                this.usuario.horario_id = 0;
-                this.usuario.avisar_contacto = "";
-                this.usuario.numero_emergencia = "";
-                this.usuario.salario = 0;
-                this.$router.push("/dashboard");
-            }
-});
-            
+                    // Formulario no válido, no se envía.
+                    return;
+                } else {
+                    this.usuario.nombres = "";
+                    this.usuario.apellidos = "";
+                    this.usuario.email = "";
+                    this.usuario.area_id = 0;
+                    this.usuario.cargo = "";
+                    this.usuario.empresa = "";
+                    this.usuario.dui = "";
+                    this.usuario.horario_id = 0;
+                    this.usuario.avisar_contacto = "";
+                    this.usuario.numero_emergencia = "";
+                    this.usuario.salario = 0;
+                    this.$router.push("/dashboard");
+                }
+            });
         },
     },
 };
