@@ -290,4 +290,34 @@ class EmpleadoController extends Controller
 
         return response()->json($empleadosConHorasExtra);
     }
+
+    public function validarEmail(Request $request){
+        $email = $request->input('email');
+
+        // Verificar si el correo electrónico ya existe en la base de datos
+        $empleado = Empleado::where('email', $email)->first();
+
+        if ($empleado) {
+            // El correo electrónico ya existe
+            return response()->json(['message' => 'El correo electrónico ya está en uso'], 400);
+        }
+
+        // El correo electrónico no existe
+        return response()->json(['message' => 'El correo electrónico está disponible'], 200);
+    }
+
+    public function validarDui(Request $request){
+        $email = $request->input('dui');
+
+        // Verificar si el dui ya existe en la base de datos
+        $empleado = Empleado::where('dui', $email)->first();
+
+        if ($empleado) {
+            // El dui ya existe
+            return response()->json(['message' => 'El dui ya está en uso'], 400);
+        }
+
+        // El dui no existe
+        return response()->json(['message' => 'El dui está disponible'], 200);
+    }
 }

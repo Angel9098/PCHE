@@ -63,6 +63,8 @@ Route::get('empleadobyid', 'EmpleadoController@empleadoById');
 Route::get('empleados_area', 'EmpleadoController@allEmpleadosAreaEmpresa')->name('empleadosbyAreaEmpresa');
 Route::get('empleados/horas_extra', 'EmpleadoController@empleadosConHorasExtra')->name('empleadosbyHorasExtra');
 Route::get('findempleadobyid', 'EmpleadoController@findEmpleadoById');
+Route::get('empleados/existeEmail', 'EmpleadoController@validarEmail');
+Route::get('empleados/existeDui', 'EmpleadoController@validarDui');
 
 //rutas para los calculos
 Route::post('/calculo_horas', 'CalculosHorasController@createCalculo');
