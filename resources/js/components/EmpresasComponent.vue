@@ -216,17 +216,33 @@ export default {
 
         eliminarEmpresa(id) {
 
-            axios
-                .delete(`/empresas?id=${id}`)
-                .then((response) => {
-                    this.$toast.success('Empresa elimnada con exito');
-                    this.fetchEmpresas();
-                })
-                .catch((error) => {
-                    this.$toast.error('Empresa no ha podido ser eliminada');
+            /* Swal.fire({
+                 title: '¿Estas seguro que deseas eliminar?',
+                 text: "¡No podrás revertir esto!",
+                 icon: 'warning',
+                 showCancelButton: true,
+                 confirmButtonColor: '#3085d6',
+                 cancelButtonColor: '#d33',
+                 confirmButtonText: 'Borrar'
+             }).then((result) => {
+                 if (result.isConfirmed) {
+                     axios
+                         .delete(`/empresas?id=${id}`)
+                         .then((response) => {
+                             this.$toast.success('Empresa elimnada con exito');
+                             this.fetchEmpresas();
+                         })
+                         .catch((error) => {
+                             this.$toast.error('Empresa no ha podido ser eliminada');
 
-                });
-
+                         });
+                     Swal.fire(
+                         'Borrado!',
+                         'tu registro ha sido eliminado.',
+                         'Exito'
+                     )
+                 }
+             })*/
         },
         abrirModalAgregarEmpresa() {
             $("#modalAgregarEmpresa").modal("show");

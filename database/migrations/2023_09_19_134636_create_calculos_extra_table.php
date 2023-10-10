@@ -21,8 +21,10 @@ class CreateCalculosExtraTable extends Migration
             $table->integer('jefe_area');
             $table->integer('salario_mensual');
             $table->integer('total_horas');
-            $table->integer('salario_neto');
-            $table->integer('salario_total');
+            $table->float('salario_neto');
+            $table->float('descuento_AFP');
+            $table->float('descuento_ISSS');
+            $table->float('salario_total');
             $table->date('fecha_calculo');
             $table->timestamps();
 

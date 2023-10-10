@@ -1,8 +1,9 @@
 <template>
     <div class="bg-white d-flex flex-column justify-content-center align-items-center col-12 col-xs-12">
-        
+
         <div class="center-image d-flex flex-column justify-content-center align-items-center" style="margin-bottom: 1%">
-            <h2 class="h1 text-center mt-5" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">HISTORIAL DE HORAS EXTRAS</h2>
+            <h2 class="h1 text-center mt-5" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">HISTORIAL DE HORAS EXTRAS
+            </h2>
         </div>
         <div class="container mt-4">
             <h2 style="text-align: left;" class="mt-5">FILTROS DE BUSQUEDA</h2>
@@ -54,10 +55,10 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div>
             <div class="row">
-                
+
                 <div class="col-2">
                     <input v-model="duiJefe" type="text" @input="debouncefiltros" placeholder="Dui jefe"
                         class="form-control mb-2" disabled />
@@ -70,12 +71,12 @@
                     <input v-model="email" type="text" @input="debouncefiltros" placeholder="Email"
                         class="form-control mb-2" disabled />
                 </div>
-                           </div>
+            </div>
         </div>
 
         <div class="col-12 d-flex flex-column justify-content-center align-items-center">
             <div class="row">
-               
+
             </div>
             <div class="col-11 d-flex flex-column">
                 <div class="table-responsive">
@@ -102,10 +103,14 @@
                                 <td>{{ registro.empleado.salario | toCurrency }}</td>
                                 <td class="centered">{{ registro.diurnas !== 0 ? registro.diurnas : '-' }}</td>
                                 <td class="centered">{{ registro.nocturnas !== 0 ? registro.nocturnas : '-' }}</td>
-                                <td class="centered">{{ registro.diurnas_descanso !== 0 ? registro.diurnas_descanso : '-' }}</td>
-                                <td class="centered">{{ registro.nocturnas_descanso !== 0 ? registro.nocturnas_descanso : '-' }}</td>
-                                <td class="centered">{{ registro.diurnas_asueto !== 0 ? registro.diurnas_asueto : '-' }}</td>
-                                <td class="centered">{{ registro.nocturnas_asueto !== 0 ? registro.nocturnas_asueto : '-' }}</td>
+                                <td class="centered">{{ registro.diurnas_descanso !== 0 ? registro.diurnas_descanso : '-' }}
+                                </td>
+                                <td class="centered">{{ registro.nocturnas_descanso !== 0 ? registro.nocturnas_descanso :
+                                    '-' }}</td>
+                                <td class="centered">{{ registro.diurnas_asueto !== 0 ? registro.diurnas_asueto : '-' }}
+                                </td>
+                                <td class="centered">{{ registro.nocturnas_asueto !== 0 ? registro.nocturnas_asueto : '-' }}
+                                </td>
                             </tr>
                             <tr>
                                 <td></td>
@@ -162,7 +167,7 @@
             <div class="col-1">
             </div>
         </div>
-        <div  class="pdf-content">
+        <div class="pdf-content">
             <!-- Contenido para el PDF -->
             <div v-if="showPdfTemplate" ref="pdfContent" class="pdf-wrapper">
                 <!-- Encabezado -->
@@ -209,10 +214,14 @@
                                         <td>{{ registro.empleado.salario | toCurrency }}</td>
                                         <td class="centered">{{ registro.diurnas !== 0 ? registro.diurnas : '-' }}</td>
                                         <td class="centered">{{ registro.nocturnas !== 0 ? registro.nocturnas : '-' }}</td>
-                                        <td class="centered">{{ registro.diurnas_descanso !== 0 ? registro.diurnas_descanso : '-' }}</td>
-                                        <td class="centered">{{ registro.nocturnas_descanso !== 0 ? registro.nocturnas_descanso : '-' }}</td>
-                                        <td class="centered">{{ registro.diurnas_asueto !== 0 ? registro.diurnas_asueto : '-' }}</td>
-                                        <td class="centered">{{ registro.nocturnas_asueto !== 0 ? registro.nocturnas_asueto : '-' }}</td>
+                                        <td class="centered">{{ registro.diurnas_descanso !== 0 ? registro.diurnas_descanso
+                                            : '-' }}</td>
+                                        <td class="centered">{{ registro.nocturnas_descanso !== 0 ?
+                                            registro.nocturnas_descanso : '-' }}</td>
+                                        <td class="centered">{{ registro.diurnas_asueto !== 0 ? registro.diurnas_asueto :
+                                            '-' }}</td>
+                                        <td class="centered">{{ registro.nocturnas_asueto !== 0 ? registro.nocturnas_asueto
+                                            : '-' }}</td>
                                     </tr>
                                     <tr>
                                         <td></td>
@@ -221,10 +230,13 @@
                                         <td>{{ totalsueldo | toCurrency }}</td>
                                         <td class="centered">{{ totalDiurnas !== 0 ? totalDiurnas : '-' }}</td>
                                         <td class="centered">{{ totalNocturnas !== 0 ? totalNocturnas : '-' }}</td>
-                                        <td class="centered">{{ totalDiurnasDescanso !== 0 ? totalDiurnasDescanso : '-' }}</td>
-                                        <td class="centered">{{ totalNocturnasDescanso !== 0 ? totalNocturnasDescanso : '-' }}</td>
+                                        <td class="centered">{{ totalDiurnasDescanso !== 0 ? totalDiurnasDescanso : '-' }}
+                                        </td>
+                                        <td class="centered">{{ totalNocturnasDescanso !== 0 ? totalNocturnasDescanso : '-'
+                                        }}</td>
                                         <td class="centered">{{ totalDiurnasAsueto !== 0 ? totalDiurnasAsueto : '-' }}</td>
-                                        <td class="centered">{{ totalNocturnasAsueto !== 0 ? totalNocturnasAsueto : '-' }}</td>
+                                        <td class="centered">{{ totalNocturnasAsueto !== 0 ? totalNocturnasAsueto : '-' }}
+                                        </td>
                                     </tr>
                                 </tbody>
                                 <tbody v-else>
@@ -241,16 +253,16 @@
                     <div class="spacer"></div>
                     <div class="row">
                         <div class="col-4">
-                        <p>Emitido por: {{ nombre  }} </p>
+                            <p>Emitido por: {{ nombre }} </p>
+                        </div>
+                        <div class="col-4" style="text-align: center;">
+                            <p>Revisado por:_____________________ </p>
+                        </div>
+                        <div class="col-4" style="text-align: right;">
+                            <p>Aprobado por:_____________________</p>
+                        </div>
                     </div>
-                    <div class="col-4" style="text-align: center;">
-                        <p>Revisado por:_____________________ </p>
-                    </div>
-                    <div class="col-4" style="text-align: right;">
-                        <p>Aprobado por:_____________________</p>
-                    </div>
-                    </div>
-                    
+
 
                     <!-- Paginación como pie de página -->
                     <div class="col-12 ">
@@ -284,7 +296,7 @@ export default {
                 fechaDesde: "",
                 fechaHasta: "",
             },
-            user:{},
+            user: {},
             currentPage: 1,
             lastPage: 1,
             showPdfTemplate: false,
@@ -298,7 +310,7 @@ export default {
     created() {
         this.fetchEmpresas();
         this.buscarRegistrosByEmpresa()
-        if(localStorage.getItem("userInfo") != null){
+        if (localStorage.getItem("userInfo") != null) {
             this.user = JSON.parse(localStorage.getItem("userInfo"));
             this.nombre = this.user.nombres + " " + this.user.apellidos;
 
@@ -366,16 +378,16 @@ export default {
         },
 
         async fetchEmpresas() {
-    try {
-        const response = await axios.get("/empresas");
-        this.empresas = response.data.map((empresa) => ({
-            id: empresa.id,
-            nombre: empresa.nombre,
-        }));
-    } catch (error) {
-        console.error("Error al cargar empresas:", error);
-    }
-},
+            try {
+                const response = await axios.get("/empresas");
+                this.empresas = response.data.map((empresa) => ({
+                    id: empresa.id,
+                    nombre: empresa.nombre,
+                }));
+            } catch (error) {
+                console.error("Error al cargar empresas:", error);
+            }
+        },
 
         generatePDF() {
             // Mostrar la sección de contenido para generar el PDF
@@ -392,10 +404,10 @@ export default {
                     jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
                 };
 
-                 
+
                 // Utilizar html2pdf dentro de this.$nextTick
                 html2pdf().from(content).set(pdfOptions).save();
-                
+
 
 
 
@@ -477,7 +489,7 @@ export default {
 }
 
 .btn-custom:hover {
-    background-image: linear-gradient(to bottom, #3a92a7, #57b5cc);
+    background-image: linear-gradient(to bottom, #083946, #052831);
 }
 
 /* Ajustar el color del texto para que resalte más */
@@ -573,25 +585,31 @@ td {
 .spacer {
     height: 50px;
 }
-thead.text-center > th:nth-child(3) {
-width: 10%;
+
+thead.text-center>th:nth-child(3) {
+    width: 10%;
 }
+
 th.col-1:nth-child(1) {
-width: 10%;
+    width: 10%;
 }
-thead th:nth-child(3), tr td:nth-child(3) {
-width: 10%;
+
+thead th:nth-child(3),
+tr td:nth-child(3) {
+    width: 10%;
 }
+
 .pagination {
     bottom: 0;
     right: 0;
     margin-top: 20px;
     font-size: 0.9em;
 }
+
 .centered {
-  text-align: center;
+    text-align: center;
 }
+
 .fixed-width {
-  width: 5%;
-}
-</style>
+    width: 5%;
+}</style>

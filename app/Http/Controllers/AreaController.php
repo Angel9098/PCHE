@@ -63,14 +63,15 @@ class AreaController extends Controller
         return response()->json($areas);
     }
 
-    public function createArea(Request $request){
+    public function createArea(Request $request)
+    {
 
         try {
             // Validar los datos antes de crear el área
             $validatedData = $request->validate([
                 'nombre' => 'required|string',
                 'empresa_id' => 'required|integer',
-                'jefe_area' => 'required|integer',
+                'jefe_area' => 'integer',
             ]);
 
             $area = new Area();
@@ -80,15 +81,14 @@ class AreaController extends Controller
             $area->save();
 
             return response()->json(['message' => 'Area de empresa creada con éxito', 'area' => $area, 201]);
-
         } catch (\Exception $e) {
             // Manejar cualquier error y devolver una respuesta de error adecuada
             return response()->json(['error' => 'No se pudo crear el área. Detalles: ' . $e->getMessage()], 500);
         }
-
     }
 
-    public function updateArea(Request $request){
+    public function updateArea(Request $request)
+    {
 
         try {
             $idArea = $request->input('id');
@@ -111,15 +111,14 @@ class AreaController extends Controller
             $area->save();
 
             return response()->json(['message' => 'Area de empresa actualizada con éxito', 'area' => $area, 201]);
-
         } catch (\Exception $e) {
             // Manejar cualquier error y devolver una respuesta de error adecuada
             return response()->json(['error' => 'No se pudo editar el área. Detalles: ' . $e->getMessage()], 500);
         }
-
     }
 
-    public function deleteArea(Request $request){
+    public function deleteArea(Request $request)
+    {
 
         try {
             $id = $request->input('id');
@@ -131,38 +130,45 @@ class AreaController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => 'Error al eliminar el area'], 500);
         }
-
     }
 
-    public function listaDetalleAreas(Request $request){
+    public function listaDetalleAreas(Request $request)
+    {
 
-            $idEmpresa = $request->input('id_empresa');
+        $idEmpresa = $request->input('id_empresa');
 
-            // Realizar la consulta utilizando Eloquent
-            $query = DB::table('areas as a')
+        // Realizar la consulta utilizando Eloquent
+        $query = DB::table('areas as a')
             ->join('empresas as e', 'a.empresa_id', '=', 'e.id')
             ->join('empleados as em', 'a.jefe_area', '=', 'em.id')
-            ->select('a.id', 'a.nombre as nombre_area', 'e.nombre as nombre_empresa',
-                    DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe_area'), 'a.jefe_area as id_jefe', 'e.id as id_empresa');
+            ->select(
+                'a.id',
+                'a.nombre as nombre_area',
+                'e.nombre as nombre_empresa',
+                DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe_area'),
+                'a.jefe_area as id_jefe',
+                'e.id as id_empresa'
+            );
 
-            if (!empty($idEmpresa)) {
-                $query->where('e.id', $idEmpresa);
-            }
+        if (!empty($idEmpresa)) {
+            $query->where('e.id', $idEmpresa);
+        }
 
-            $resultados = $query->get();
+        $resultados = $query->get();
 
-            // Devolver los resultados en formato JSON
-            return response()->json($resultados);
+        // Devolver los resultados en formato JSON
+        return response()->json($resultados);
     }
 
-    public function listaJefeEmpleado(){
+    public function listaJefeEmpleado()
+    {
 
         $usuarioJefe = DB::table('usuarios as u')
-        ->join('empleados as em', 'u.empleado_id', '=', 'em.id')
-        ->join('areas as a', 'a.jefe_area', '=', 'u.id')
-        ->select('u.id', DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe'))
-        ->groupBy('u.id')
-        ->get();
+            ->join('empleados as em', 'u.empleado_id', '=', 'em.id')
+            ->join('areas as a', 'a.jefe_area', '=', 'u.id')
+            ->select('u.id', DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe'))
+            ->groupBy('u.id')
+            ->get();
 
         return response()->json($usuarioJefe);
     }

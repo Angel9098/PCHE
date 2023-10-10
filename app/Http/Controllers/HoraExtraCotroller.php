@@ -16,8 +16,7 @@ class HoraExtraCotroller extends Controller
             $registros = json_decode($request->getContent(), true);
             $registrosDepurados = [];
             $jefeArea = 1;
-            $noCarga = 1;
-
+            $contador = 0;
 
             foreach ($registros as $registro) {
                 $id_empleado = $registro['idEmpleado'];
@@ -50,30 +49,37 @@ class HoraExtraCotroller extends Controller
                 $nocturnas_descanso = $registroDepurado['nocturnasDescanso'];
                 $diurnas_asueto = $registroDepurado['diurnasAsueto'];
                 $nocturnas_asueto = $registroDepurado['nocturnasAsueto'];
-                $total = 1;
+                $total = 0;
+
+                $total = $diurnas + $nocturnas + $diurnas_descanso + $nocturnas_descanso + $diurnas_asueto + $nocturnas_asueto;
 
                 $empleadoRegistrado = HoraExtra::where('empleado_id', $empleado->id)
                     ->where('fecha_registro', $fechaFormateada)
                     ->first();
 
+                if ($diurnas != 0 || $nocturnas != 0 || $diurnas_descanso != 0 || $nocturnas_descanso != 0 || $diurnas_asueto != 0 || $nocturnas_asueto != 0) {
+                    if ($empleadoRegistrado === null) {
+                        $hora_extra = new HoraExtra([
+                            'empleado_id' => $empleado->id,
+                            'fecha_registro' => $fechaFormateada,
+                            'diurnas' => $diurnas,
+                            'nocturnas' => $nocturnas,
+                            'diurnas_descanso' => $diurnas_descanso,
+                            'nocturnas_descanso' => $nocturnas_descanso,
+                            'diurnas_asueto' => $diurnas_asueto,
+                            'nocturnas_asueto' => $nocturnas_asueto,
+                            'total' => $total,
+                            'procesado' => 0,
+                            'jefe_area' => $jefeArea,
+                        ]);
 
-                if ($empleadoRegistrado === null) {
-                    $hora_extra = new HoraExtra([
-                        'empleado_id' => $empleado->id,
-                        'fecha_registro' => $fechaFormateada,
-                        'diurnas' => $diurnas,
-                        'nocturnas' => $nocturnas,
-                        'diurnas_descanso' => $diurnas_descanso,
-                        'nocturnas_descanso' => $nocturnas_descanso,
-                        'diurnas_asueto' => $diurnas_asueto,
-                        'nocturnas_asueto' => $nocturnas_asueto,
-                        'total' => $total,
-                        'no_carga' => $noCarga,
-                        'jefe_area' => $jefeArea,
-                    ]);
-
-                    $hora_extra->save();
+                        $hora_extra->save();
+                        $contador++;
+                    }
                 }
+            }
+            if ($contador === 0) {
+                return response()->json(["message" => 'Registros ya se encuentran guardados'], 200);
             }
             return response()->json(["message" => 'Horas extra agregado con exito'], 201);
         } catch (\Exception $e) {
