@@ -16,8 +16,8 @@ class CreateAreaTable extends Migration
         Schema::create('areas', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->unsignedBigInteger('empresa_id'); // Agregamos la clave foránea
-            $table->unsignedBigInteger('jefe_area'); // Agregamos la clave foránea
+            $table->unsignedBigInteger('empresa_id');
+            $table->unsignedBigInteger('jefe_area')->nullable();
             $table->timestamps();
 
             $table->foreign('empresa_id')->references('id')->on('empresas');

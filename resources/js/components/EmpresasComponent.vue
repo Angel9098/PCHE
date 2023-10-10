@@ -137,6 +137,7 @@
 import axios from "axios";
 
 import moment from "moment";
+
 export default {
     data() {
         return {
@@ -215,19 +216,42 @@ export default {
         },
 
         eliminarEmpresa(id) {
-
-            axios
-                .delete(`/empresas?id=${id}`)
-                .then((response) => {
-                    this.$toast.success('Empresa elimnada con exito');
-                    this.fetchEmpresas();
-                })
-                .catch((error) => {
-                    this.$toast.error('Empresa no ha podido ser eliminada');
-
-                });
-
+            this.$swal.fire({
+                title: '¿Estas seguro que deseas eliminar?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Eliminar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios
+                        .delete(`/empresas?id=${id}`)
+                        .then((response) => {
+                            this.$swal.fire({
+                                title: '¡Borrado!',
+                                icon: 'success',
+                                text: response.data.message,
+                                showCancelButton: false,
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
+                            this.fetchEmpresas();
+                        })
+                        .catch((error) => {
+                            this.$swal.fire({
+                                title: 'Error',
+                                icon: 'error',
+                                text: response.data.message,
+                                showCancelButton: false,
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
+                        });
+                }
+            })
         },
+
         abrirModalAgregarEmpresa() {
             $("#modalAgregarEmpresa").modal("show");
         },

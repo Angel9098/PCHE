@@ -55,12 +55,19 @@
                                     v-model="$v.usuario.dui.$model"
                                     required
                                     v-mask="'########-#'"
+                                    @change="verifyDui"
                                 />
                                 <span
                                     v-if="$v.usuario.dui.$error"
                                     class="text-danger"
                                 >
                                     Este campo es obligatorio
+                                </span>
+                                <span
+                                    v-if="verifyEmailorDuiBoolean"
+                                    class="text-danger"
+                                >
+                                    {{ MSErrorEmailODui }}
                                 </span>
                             </div>
                             <div class="form-group col-6">
@@ -76,10 +83,16 @@
                                     @change="verifyDomain"
                                 />
                                 <span
-                                    v-if="verifyEmailBoolean"
+                                    v-if="verifyEmailExisteBoolean"
                                     class="text-danger my-3"
                                 >
                                     {{ MSErrorEmail }}
+                                </span>
+                                <span
+                                    v-if="verifyEmailBoolean"
+                                    class="text-danger"
+                                >
+                                    {{ MSErrorEmailODui }}
                                 </span>
                                 <span
                                     v-if="$v.usuario.email.$error"
@@ -305,7 +318,11 @@
                         <div
                             class="form-group col-12 d-flex flex-row justify-content-start"
                         >
-                            <button type="submit" :disabled="$v.$invalid" class="btn btn-primary">
+                            <button
+                                type="submit"
+                                :disabled="$v.$invalid"
+                                class="btn btn-primary"
+                            >
                                 Guardar
                             </button>
                             <button
@@ -334,6 +351,7 @@ export default {
     props: ["id"],
     data() {
         return {
+            MSErrorEmailODui: "",
             MSErrorEmail:
                 "Por favor, ten en cuenta que solo se permiten los siguientes dominios para esta aplicación: example@latmobile.com, example@sdsalgroup.com. Asegúrate de utilizar uno de estos dominios al registrar o ingresar.",
             usuario: {
@@ -356,6 +374,8 @@ export default {
             horariosFilter: [],
             turno: "all",
             verifyEmailBoolean: false,
+            verifyEmailorDuiBoolean: false,
+            verifyEmailExisteBoolean: false,
         };
     },
     validations: {
@@ -392,7 +412,6 @@ export default {
                             headers: { "Content-type": "application/json" },
                         })
                         .then((response) => {
-                            
                             this.$toast.success(
                                 "Empleado actualizado con exito",
                                 {
@@ -415,26 +434,24 @@ export default {
                                 icon: true,
                             });
                             await this.$router.push("/empleados");
-                           
                         });
                 }
             }
         },
+        verifyDui() {
+            console.log(this.usuario.dui);
+            this.verifyDuiAsync(this.usuario.dui);
+        },
         verifyDomain() {
             const dominio = this.usuario.email.split("@")[1];
-
             const regex = /^(latmobile\.com|sdsalgroup\.com)$/;
-
             if (regex.test(dominio)) {
-                console.log(`El dominio ${dominio} es válido.`);
                 this.verifyEmailBoolean = false;
+                this.verifyEmail(this.usuario.email);
             } else {
-                console.log(`El dominio ${dominio} no es válido.`);
-
                 this.verifyEmailBoolean = true;
             }
         },
-
         getEmpresas() {
             axios
                 .get("empresas", {
@@ -537,6 +554,47 @@ export default {
                     this.$router.push("/dashboard");
                 }
             });
+        },
+        async verifyDuiAsync(dui) {
+            const url = `empleados/existeDui?dui=${dui}`
+            try {
+                const response = await fetch(url);
+                if (response.status === 200) {
+                    const data = await response.json();
+                this.verifyDuiBoolean = true;
+                console.log(data);
+                }else if (response.status === 404) {
+                    const data = await response.json();
+                this.verifyDuiBoolean = true;
+                console.log(data.message);
+                } else {
+                    throw new Error("La solicitud no fue exitosa");
+                }
+            } catch (error) {
+                this.verifyEmailorDuiBoolean = true;
+                console.error("Error al realizar la solicitud fetch:", error);
+            }
+        },
+        async verifyEmail(Email) {
+            const url = `empleados/existeEmail?email=${Email}`
+            try {
+                const response = await fetch(url);
+                if (response.status === 200) {
+                    const data = await response.json();
+                this.verifyEmailBoolean = true;
+                console.log(data);
+                }else if (response.status === 404) {
+                    const data = await response.json();
+                this.verifyEmailBoolean = true;
+                console.log(data.message);
+                } else {
+                    throw new Error("La solicitud no fue exitosa");
+                }
+                
+            } catch (error) {
+                this.verifyEmailorDuiBoolean = true;
+                console.error("Error al realizar la solicitud fetch:", error);
+            }
         },
     },
 };

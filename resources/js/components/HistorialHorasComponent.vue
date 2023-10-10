@@ -43,10 +43,12 @@
                                     </div>
                                 </div>
                                 <div class="col-2">
-                                    <input v-model="filtros.dui" @input="debounceSearchEmpleadoByinput" type="text" placeholder="DUI" class="form-control mb-2" />
+                                    <input v-model="filtros.dui" @input="debounceSearchEmpleadoByinput" type="text"
+                                        placeholder="DUI" class="form-control mb-2" />
                                 </div>
                                 <div class="col-4">
-                                    <input v-model="filtros.nombre" @input="debounceSearchEmpleadoByinput" type="text" placeholder="Nombre" class="form-control mb-2" />
+                                    <input v-model="filtros.nombre" @input="debounceSearchEmpleadoByinput" type="text"
+                                        placeholder="Nombre" class="form-control mb-2" />
                                 </div>
                             </div>
                             <div class="row">
@@ -73,7 +75,8 @@
                                     </div>
                                 </div>
                                 <div class="col-3">
-                                    <input v-model="filtros.email"  @input="debounceSearchEmpleadoByinput" type="text" placeholder="Email" class="form-control mb-2" />
+                                    <input v-model="filtros.email" @input="debounceSearchEmpleadoByinput" type="text"
+                                        placeholder="Email" class="form-control mb-2" />
                                 </div>
                             </div>
 
@@ -90,26 +93,30 @@
                     <table class="table table-hover table-bordered table-sm mt-4 align-middle">
                         <thead class="text-center bg-primary text-white">
                             <th scope="col" class="col-1">ID Empleado</th>
-                            <th scope="col" >Nombre</th>
+                            <th scope="col">Nombre</th>
                             <th scope="col" class="col-1">Fecha</th>
                             <th scope="col" class="col-1">Sueldo</th>
                             <th scope="col" class="col-1">Empresa</th>
                             <th scope="col" class="col-1">&#193;rea</th>
                             <th scope="col" class="col-1">Total Horas</th>
                             <th scope="col" class="col-1">Salario Ganado</th>
+                            <th scope="col" class="col-1">Descuento AFP</th>
+                            <th scope="col" class="col-1">Descuento ISSS</th>
                             <th scope="col" class="col-1">Salario Total</th>
                         </thead>
                         <tbody class="text-center" v-if="calculosHoras.length > 0">
                             <tr v-for="registro in calculosHoras" :key="registro.id">
                                 <td scope="row">{{ registro.empleado.dui }}</td>
                                 <td>{{ registro.empleado.nombres + " " + registro.empleado.apellidos }}</td>
-                                <td>{{ formatFecha(registro.fecha_calculo)}}</td>
-                                <td>{{ registro.empleado.salario | toCurrency}}</td>
+                                <td>{{ formatFecha(registro.fecha_calculo) }}</td>
+                                <td>{{ registro.empleado.salario | toCurrency }}</td>
                                 <td>{{ registro.empleado.area.empresa.nombre }}</td>
                                 <td>{{ registro.empleado.area.nombre }}</td>
                                 <td class="centered">{{ registro.total_horas }}</td>
                                 <td>{{ registro.salario_neto | toCurrency }}</td>
-                                <td>{{ registro.salario_total | toCurrency}}</td>
+                                <td>{{ registro.descuento_AFP }}</td>
+                                <td>{{ registro.descuento_ISSS }}</td>
+                                <td>{{ registro.salario_total | toCurrency }}</td>
                             </tr>
                         </tbody>
                         <tbody v-else>
@@ -186,51 +193,55 @@
                     <div class="col-12 d-flex flex-column">
                         <div class="table-responsive">
                             <table class="table table-hover table-bordered table-sm mt-4 align-middle">
-                        <thead class="text-center bg-primary text-white">
-                            <th scope="col" class="col-1">ID Empleado</th>
-                            <th scope="col" >Nombre</th>
-                            <th scope="col">Fecha</th>
-                            <th scope="col">Sueldo</th>
-                            <th scope="col" class="col-1">Empresa</th>
-                            <th scope="col" class="col-1">Area</th>
-                            <th scope="col" class="col-1">Total horas</th>
-                            <th scope="col" class="col-1">Salario ganado</th>
-                            <th scope="col" class="col-1">Salario total</th>
-                        </thead>
-                        <tbody class="text-center" v-if="calculosHoras.length > 0">
-                            <tr v-for="registro in calculosHoras" :key="registro.id">
-                                <td scope="row">{{ registro.empleado.dui }}</td>
-                                <td>{{ registro.empleado.nombres + " " + registro.empleado.apellidos }}</td>
-                                <td>{{formatFecha(registro.fecha_calculo) }}</td>
-                                <td>{{ registro.empleado.salario | toCurrency }}</td>
-                                <td>{{ registro.empleado.area.empresa.nombre }}</td>
-                                <td>{{ registro.empleado.area.nombre }}</td>
-                                <td>{{ registro.total_horas }}</td>
-                                <td>{{ registro.salario_neto }}</td>
-                                <td>{{ registro.salario_total }}</td>
-                            </tr>
-                        </tbody>
-                        <tbody v-else>
-                            <tr>
-                                <td colspan="9" class="text-center">
-                                    No hay registros para mostrar
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                <thead class="text-center bg-primary text-white">
+                                    <th scope="col" class="col-1">ID Empleado</th>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Fecha</th>
+                                    <th scope="col">Sueldo</th>
+                                    <th scope="col" class="col-1">Empresa</th>
+                                    <th scope="col" class="col-1">Area</th>
+                                    <th scope="col" class="col-1">Total horas</th>
+                                    <th scope="col" class="col-1">Salario ganado</th>
+                                    <th scope="col" class="col-1">Descuento AFP</th>
+                                    <th scope="col" class="col-1">Descuento ISSS</th>
+                                    <th scope="col" class="col-1">Salario total</th>
+                                </thead>
+                                <tbody class="text-center" v-if="calculosHoras.length > 0">
+                                    <tr v-for="registro in calculosHoras" :key="registro.id">
+                                        <td scope="row">{{ registro.empleado.dui }}</td>
+                                        <td>{{ registro.empleado.nombres + " " + registro.empleado.apellidos }}</td>
+                                        <td>{{ formatFecha(registro.fecha_calculo) }}</td>
+                                        <td>{{ registro.empleado.salario | toCurrency }}</td>
+                                        <td>{{ registro.empleado.area.empresa.nombre }}</td>
+                                        <td>{{ registro.empleado.area.nombre }}</td>
+                                        <td>{{ registro.total_horas }}</td>
+                                        <td>{{ registro.salario_neto }}</td>
+                                        <td>{{ registro.descuento_AFP }}</td>
+                                        <td>{{ registro.descuento_ISSS }}</td>
+                                        <td>{{ registro.salario_total }}</td>
+                                    </tr>
+                                </tbody>
+                                <tbody v-else>
+                                    <tr>
+                                        <td colspan="9" class="text-center">
+                                            No hay registros para mostrar
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <!-- Espaciador para separar la tabla del pie de página -->
                     <div class="row">
                         <div class="col-4">
-                        <p>Emitido por: {{ nombreJefe }} </p>
-                    </div>
-                    <div class="col-4" style="text-align: center;">
-                        <p>Revisado por:_____________________ </p>
-                    </div>
-                    <div class="col-4" style="text-align: right;">
-                        <p>Aprobado por:_____________________</p>
-                    </div>
+                            <p>Emitido por: {{ nombreJefe }} </p>
+                        </div>
+                        <div class="col-4" style="text-align: center;">
+                            <p>Revisado por:_____________________ </p>
+                        </div>
+                        <div class="col-4" style="text-align: right;">
+                            <p>Aprobado por:_____________________</p>
+                        </div>
                     </div>
                     <!-- Paginación como pie de página -->
                     <div class="pagination">
@@ -276,7 +287,7 @@ export default {
             totalPages: 1,
             EmpresaSelect: {},
             AreaSelect: {},
-            
+
         };
     },
     created() {
@@ -326,7 +337,7 @@ export default {
 
             this.buscarRegistrosByEmpresa(this.filtros);
         }, 300),
-       
+
         exportar() {
             const workbook = new ExcelJS.Workbook();
             const worksheet = workbook.addWorksheet("Reporte de Horas Extras");
@@ -407,7 +418,7 @@ export default {
         },
 
         fetchEmpresas() {
-            const {nombres, apellidos} = JSON.parse(localStorage.getItem('userInfo'));
+            const { nombres, apellidos } = JSON.parse(localStorage.getItem('userInfo'));
             this.nombreJefe = `${nombres} ${apellidos}`;
             axios
                 .get("/empresas")
@@ -546,6 +557,7 @@ export default {
     background-color: #f9f9f9;
     padding: 15px;
 }
+
 .pdf-wrapper {
     position: relative;
     min-height: 100%;
@@ -566,6 +578,7 @@ export default {
     justify-content: space-between;
     padding: 10px;
 }
+
 .title-container {
     flex: 1;
     text-align: center;
@@ -586,30 +599,33 @@ td {
 .spacer {
     height: 50px;
 }
-thead.text-center > th:nth-child(3) {
-width: 10%;
+
+thead.text-center>th:nth-child(3) {
+    width: 10%;
 }
+
 th.col-1:nth-child(1) {
-width: 10%;
+    width: 10%;
 }
-thead th:nth-child(3), tr td:nth-child(3) {
-width: 10%;
+
+thead th:nth-child(3),
+tr td:nth-child(3) {
+    width: 10%;
 }
 
 th.col-3 {
-width: 16%;
+    width: 16%;
 }
 
 th.col-1:nth-child(6) {
-width: 10%;
+    width: 10%;
 }
 
 th.col-1:nth-child(5) {
-width: 13%;
+    width: 13%;
 }
 
 .centered {
-  text-align: center;
+    text-align: center;
 }
-
 </style>
