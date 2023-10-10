@@ -251,6 +251,7 @@ export default {
                 }
             })
         },
+
         abrirModalAgregarEmpresa() {
             $("#modalAgregarEmpresa").modal("show");
         },
