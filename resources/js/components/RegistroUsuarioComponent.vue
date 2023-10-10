@@ -80,7 +80,7 @@
                                     class="form-control"
                                     v-model="$v.usuario.email.$model"
                                     required
-                                    @change="verifyEmail"
+                                    @change="verifyDomain"
                                 />
                                 <span
                                     v-if="verifyEmailExisteBoolean"
@@ -89,7 +89,7 @@
                                     {{ MSErrorEmail }}
                                 </span>
                                 <span
-                                    v-if="verifyEmailorDuiBoolean"
+                                    v-if="verifyEmailBoolean"
                                     class="text-danger"
                                 >
                                     {{ MSErrorEmailODui }}
@@ -440,14 +440,14 @@ export default {
         },
         verifyDui() {
             console.log(this.usuario.dui);
-            verifyDuiAsync(this.usuario.dui);
+            this.verifyDuiAsync(this.usuario.dui);
         },
         verifyDomain() {
             const dominio = this.usuario.email.split("@")[1];
             const regex = /^(latmobile\.com|sdsalgroup\.com)$/;
             if (regex.test(dominio)) {
                 this.verifyEmailBoolean = false;
-                verifyEmail(this.usuario.email);
+                this.verifyEmail(this.usuario.email);
             } else {
                 this.verifyEmailBoolean = true;
             }
@@ -556,38 +556,41 @@ export default {
             });
         },
         async verifyDuiAsync(dui) {
+            const url = `empleados/existeDui?dui=${dui}`
             try {
-                const response = await fetch("", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: dui,
-                });
-                if (!response.ok)
-                    throw new Error("La solicitud no fue exitosa");
-                const data = await response.json();
-                this.verifyEmailorDuiBoolean = true;
+                const response = await fetch(url);
+                if (response.status === 200) {
+                    const data = await response.json();
+                this.verifyDuiBoolean = true;
                 console.log(data);
+                }else if (response.status === 404) {
+                    const data = await response.json();
+                this.verifyDuiBoolean = true;
+                console.log(data.message);
+                } else {
+                    throw new Error("La solicitud no fue exitosa");
+                }
             } catch (error) {
                 this.verifyEmailorDuiBoolean = true;
                 console.error("Error al realizar la solicitud fetch:", error);
             }
         },
         async verifyEmail(Email) {
+            const url = `empleados/existeEmail?email=${Email}`
             try {
-                const response = await fetch("", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: Email,
-                });
-                if (!response.ok)
-                    throw new Error("La solicitud no fue exitosa");
-                const data = await response.json();
+                const response = await fetch(url);
+                if (response.status === 200) {
+                    const data = await response.json();
                 this.verifyEmailBoolean = true;
                 console.log(data);
+                }else if (response.status === 404) {
+                    const data = await response.json();
+                this.verifyEmailBoolean = true;
+                console.log(data.message);
+                } else {
+                    throw new Error("La solicitud no fue exitosa");
+                }
+                
             } catch (error) {
                 this.verifyEmailorDuiBoolean = true;
                 console.error("Error al realizar la solicitud fetch:", error);
