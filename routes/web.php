@@ -67,7 +67,8 @@ Route::get('findempleadobyid', 'EmpleadoController@findEmpleadoById');
 //rutas para los calculos
 Route::post('/calculo_horas', 'CalculosHorasController@createCalculo');
 Route::post('/calculos', 'CalculosHorasController@allCalculos');
-
+Route::get('/calculo_horas/graficasPorEmpresa', 'CalculosHorasController@graficaCalculoDeHorasPorMesEmpresa');
+Route::get('/calculo_horas/graficaDeTresMeses', 'CalculosHorasController@graficaCalculoDeHorasDeTresMeses');
 
 Route::post('horas_extra/crear', 'HoraExtraCotroller@createHoraExtra')->name('horas_extra');
 Route::post('horas_extra', 'HoraExtraCotroller@allHoras')->name('horas_extra.all');
