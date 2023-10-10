@@ -10,6 +10,8 @@ import VueApexCharts from 'vue-apexcharts';
 import Vuelidate from 'vuelidate';
 import FloatingVue from 'floating-vue';
 import 'floating-vue/dist/style.css';
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 import store from './store'; // Agregando estados 
 import VueSimpleAlert from "vue-simple-alert";
@@ -19,6 +21,7 @@ Vue.use(VueRouter);
 Vue.use(VCalendar);
 Vue.use(VueMask);
 Vue.use(VueApexCharts);
+Vue.use(VueSweetalert2);
 Vue.use(Vuelidate);
 Vue.component('apexchart', VueApexCharts);
 Vue.use(FloatingVue, {

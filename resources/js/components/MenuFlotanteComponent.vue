@@ -1,202 +1,104 @@
 <template>
     <div id="app">
-        <nav
-            class="w-100 navbar navbar-primary bg-primary positionNavBar"
-            :hidden="
-                currentPath == '/' ||
-                currentPath == '/business' ||
-                currentPath == '/access-denied'
-            "
-        >
-            <div class="container-fluid">
-                <button
-                    class="navbar-toggler bg-white"
-                    type="button"
-                    data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvasDarkNavbar"
-                    aria-controls="offcanvasDarkNavbar"
-                    aria-label="Toggle navigation"
-                >
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <a class="navbar-brand" href="#">
-                    <img
-                        class="wiHImg"
-                        width="80"
-                        height="50"
-                        src="assets/img/logopngblanco_Mesa de trabajo 1.png"
-                        alt=""
-                    />
-                    
-                </a>
-                <div
-                    class="offcanvas offcanvas-start text-bg-primary"
-                    tabindex="-1"
-                    id="offcanvasDarkNavbar"
-                    aria-labelledby="offcanvasDarkNavbarLabel"
-                >
-                    <div class="offcanvas-header">
-                        <h5
-                            class="offcanvas-title text-white"
-                            id="offcanvasDarkNavbarLabel"
-                        >
-                            <router-link class="navbar-brand" to="/dashboard">
-                                <img
-                                    :src="imagen"
-                                    alt="Logo"
-                                    width="30"
-                                    height="30"
-                                    class="mx-1 cicle"
-                                />
-                                {{ changeIMG(this.$store.state.changeIMG) }}
-                                <strong class="text-white">{{ nombre }}</strong>
-                            </router-link>
-                        </h5>
-                        <button
-                            type="button"
-                            class="btn-close btn-close-white"
-                            data-bs-dismiss="offcanvas"
-                            aria-label="Close"
-                        ></button>
-                    </div>
-                    <div class="offcanvas-body">
-                        <ul
-                            class="navbar-nav justify-content-end flex-grow-1 pe-3"
-                        >
-                            <li class="nav-item">
-                                <router-link
-                                    class="nav-link active text-white"
-                                    aria-current="page"
-                                    to="/dashboard"
-                                    ><i class="fa-solid fa-house mx-2"></i>
-                                    Inicio</router-link
-                                >
-                            </li>
-                            <li
-                                v-if="userRoles === 'administrador'"
-                                class="nav-item"
-                            >
-                                <router-link
-                                    class="nav-link text-white text-uppercase"
-                                    to="/registro/0"
-                                    ><i
-                                        class="fa-solid fa-circle-plus mx-2"
-                                    ></i>
-                                    Registrar empleados</router-link
-                                >
-                            </li>
-                            <li v-if="userRoles === 'jefe'" class="nav-item">
-                                <router-link
-                                    class="nav-link text-white text-uppercase"
-                                    to="/importacionhoras"
-                                    ><i
-                                        class="fa-solid fa-file-arrow-up mx-2"
-                                    ></i>
-                                    Agregar horas extras
+        <div class="w-100 d-flex flex-row justify-content-end positionNavBar">
+            <nav class="w-100 navbar navbar-primary bg-primary" style="padding-top: 0px; padding-bottom: 0px;" :hidden="currentPath == '/' || currentPath == '/business' || currentPath == '/access-denied'">
+                <div class="container-fluid" style="padding-left: 0px; padding-right: 0px;">
+                    <a class="toggle-btn" role="button" data-bs-toggle="offcanvas" href="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" @click="toggleSideBar">
+                        <i class="fa-solid fa-bars text-white" style="font-size: 25px; margin-top: 15px;"></i>
+                    </a>
+                    <a class="navbar-brand" href="#">
+                        <img class="wiHImg" width="80" height="50" src="assets/img/logopngblanco_Mesa de trabajo 1.png" alt=""/>
+                    </a>
+                    <div class="offcanvas offcanvas-start text-bg-primary" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
+                        <div class="offcanvas-header">
+                            <h5 class="offcanvas-title text-white" id="offcanvasDarkNavbarLabel">
+                                <router-link class="navbar-brand" to="/dashboard">
+                                    <img :src="imagen" alt="Logo" width="30" height="30" class="mx-1 cicle"/>
+                                    {{ changeIMG(this.$store.state.changeIMG) }}
+                                    <strong class="text-white">{{ nombre }}</strong>
                                 </router-link>
-                            </li>
-                            <li v-if="userRoles === 'jefe'" class="nav-item">
-                                <router-link
-                                    class="nav-link text-white text-uppercase"
-                                    to="/editarperfilusuario"
-                                    ><i class="fa-solid fa-user mx-2"></i>
-                                    Perfil usuario
-                                </router-link>
-                            </li>
-                            <li
-                                v-if="userRoles === 'administrador'"
-                                class="nav-item"
-                            >
-                                <router-link
-                                    class="nav-link text-white text-uppercase"
-                                    to="/empleados"
-                                    ><i class="fa-solid fa-users mx-2"></i>
-                                    Empleados</router-link
-                                >
-                            </li>
-                            <li
-                                v-if="userRoles === 'administrador'"
-                                class="nav-item"
-                            >
-                                <router-link
-                                    class="nav-link text-white text-uppercase"
-                                    to="/empresas"
-                                    ><i class="fa-solid fa-building mx-2"></i>
-                                    Empresas</router-link
-                                >
-                            </li>
-                            <li
-                                v-if="userRoles === 'administrador'"
-                                class="nav-item"
-                            >
-                                <router-link
-                                    class="nav-link text-white text-uppercase"
-                                    to="/areas"
-                                    ><i
-                                        class="fa-solid fa-network-wired mx-2"
-                                    ></i>
-                                    &#193;reas</router-link
-                                >
-                            </li>
-                            <li
-                                v-if="userRoles === 'administrador'"
-                                class="nav-item"
-                            >
-                                <router-link
-                                    class="nav-link text-white text-uppercase"
-                                    to="/activacionusuario"
-                                    ><i class="fa-solid fa-user-check mx-2"></i>
-                                    Activar Usuario</router-link
-                                >
-                            </li>
-                            <li
-                                v-if="userRoles === 'administrador'"
-                                class="nav-item"
-                            >
-                                <router-link
-                                    class="nav-link text-white text-uppercase"
-                                    to="/calendarios"
-                                    ><i class="fa-solid fa-calendar mx-2"></i>
-                                    Calendario</router-link
-                                >
-                            </li>
-                            <li
-                                v-if="userRoles === 'administrador'"
-                                class="nav-item"
-                            >
-                                <router-link
-                                    class="nav-link text-white text-uppercase"
-                                    to="/historialhoras"
-                                    ><i
-                                        class="fa-brands fa-searchengin mx-2"
-                                    ></i>
-                                    Historial horas extras</router-link
-                                >
-                            </li>
-                            <li
-                                v-if="userRoles === 'administrador'"
-                                class="nav-item"
-                            >
-                                <router-link
-                                    class="nav-link text-white text-uppercase"
-                                    to="/seleccionararchivo"
-                                    ><i class="fa-solid fa-file mx-2"></i>
-                                    Selecci&#243;n archivo</router-link
-                                >
-                            </li>
-                        </ul>
-                        <button
-                            @click="cerrarSesion"
-                            class="btn bg-black btn-primary text-uppercase btnGray my-4"
-                            type="button"
-                        >
-                            Cerrar sesi&#243;n
-                        </button>
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close" @click="toggleSideBar"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                                <li class="nav-item">
+                                    <router-link class="nav-link active text-white" aria-current="page" to="/dashboard">
+                                        <i class="fa-solid fa-house mx-2"></i>
+                                        Inicio
+                                    </router-link>
+                                </li>
+                                <li v-if="userRoles === 'administrador'" class="nav-item">
+                                    <router-link class="nav-link text-white text-uppercase" to="/registro/0">
+                                        <i class="fa-solid fa-circle-plus mx-2"></i>
+                                        Registrar empleados
+                                    </router-link>
+                                </li>
+                                <li v-if="userRoles === 'jefe'" class="nav-item">
+                                    <router-link class="nav-link text-white text-uppercase" to="/importacionhoras">
+                                        <i class="fa-solid fa-file-arrow-up mx-2"></i>
+                                        Agregar horas extras
+                                    </router-link>
+                                </li>
+                                <li v-if="userRoles === 'jefe'" class="nav-item">
+                                    <router-link class="nav-link text-white text-uppercase" to="/editarperfilusuario">
+                                        <i class="fa-solid fa-user mx-2"></i>
+                                        Perfil usuario
+                                    </router-link>
+                                </li>
+                                <li v-if="userRoles === 'administrador'" class="nav-item">
+                                    <router-link class="nav-link text-white text-uppercase" to="/empleados">
+                                        <i class="fa-solid fa-users mx-2"></i>
+                                        Empleados
+                                    </router-link>
+                                </li>
+                                <li v-if="userRoles === 'administrador'" class="nav-item">
+                                    <router-link class="nav-link text-white text-uppercase" to="/empresas">
+                                        <i class="fa-solid fa-building mx-2"></i>
+                                        Empresas
+                                    </router-link>
+                                </li>
+                                <li v-if="userRoles === 'administrador'" class="nav-item">
+                                    <router-link class="nav-link text-white text-uppercase" to="/areas">
+                                        <i class="fa-solid fa-network-wired mx-2"></i>
+                                        &#193;reas
+                                    </router-link>
+                                </li>
+                                <li v-if="userRoles === 'administrador'" class="nav-item">
+                                    <router-link class="nav-link text-white text-uppercase" to="/activacionusuario">
+                                        <i class="fa-solid fa-user-check mx-2"></i>
+                                        Activar Usuario
+                                    </router-link>
+                                </li>
+                                <li v-if="userRoles === 'administrador'" class="nav-item">
+                                    <router-link class="nav-link text-white text-uppercase" to="/calendarios">
+                                        <i class="fa-solid fa-calendar mx-2"></i>
+                                        Calendario
+                                    </router-link>
+                                </li>
+                                <li v-if="userRoles === 'administrador'" class="nav-item">
+                                    <router-link class="nav-link text-white text-uppercase" to="/historialhoras">
+                                        <i class="fa-brands fa-searchengin mx-2"></i>
+                                        Historial horas extras
+                                    </router-link>
+                                </li>
+                                <li v-if="userRoles === 'administrador'" class="nav-item">
+                                    <router-link class="nav-link text-white text-uppercase" to="/seleccionararchivo">
+                                        <i class="fa-solid fa-file mx-2"></i>
+                                        Selecci&#243;n archivo
+                                    </router-link>
+                                </li>
+                            </ul>
+                            <button @click="cerrarSesion" class="btn bg-black btn-primary text-uppercase btnGray my-4" type="button">
+                                Cerrar sesi&#243;n
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </nav>
-                <nav class="flexMenu bg-primary" :hidden="currentPath == '/' || currentPath == '/business'">
+            </nav>
+        </div>
+
+                <nav class="flexMenu bg-primary" :hidden="currentPath == '/' || currentPath == '/business' || expandSideBar == true">
                     <ul class="ul">
                         <router-link class="my-1 text-uppercase item" to="/dashboard" v-tooltip="{theme:'info-tooltip', content:'Dashboard'}">
                             <i class="fa-solid fa-house text-white iconItem"></i>
@@ -281,7 +183,7 @@
     margin-top: 13px;
 }
 
-.item:hover{
+.toggle-btn:hover, .item:hover{
     background-color: #7DCADC;
 }
 
@@ -325,6 +227,14 @@ a:hover {
     z-index: 1000;
 }
 
+.toggle-btn{
+    display: list-item;
+    height: 60px;
+    text-align: center;
+    width: 55px;
+    list-style: none;
+}
+
 .v-popper--theme-info-tooltip .v-popper__inner{
     background-color: #1b4d76;
     color:#ffffff;
@@ -366,7 +276,8 @@ export default {
             id: "0",
             nombre: "",
             imagen: "storage/imagenes/blank-profile-picture-973460_1280.webp",
-            isSubMenuOpen: false
+            isSubMenuOpen: false,
+            expandSideBar: false
         };
     },
     mounted() {
@@ -422,6 +333,9 @@ export default {
         },
         toggleSubMenu() {
             this.isSubMenuOpen = !this.isSubMenuOpen;
+        },
+        toggleSideBar() {
+            this.expandSideBar = !this.expandSideBar;
         }
     },
 };
