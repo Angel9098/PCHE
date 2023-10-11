@@ -242,7 +242,7 @@ export default {
                             this.$swal.fire({
                                 title: 'Error',
                                 icon: 'error',
-                                text: response.data.message,
+                                text: error.data.message,
                                 showCancelButton: false,
                                 showConfirmButton: false,
                                 timer: 2000

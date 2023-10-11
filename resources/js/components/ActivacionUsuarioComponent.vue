@@ -153,37 +153,51 @@ export default {
                 axios
                     .get(`/empleado_dui?dui=${this.duiEmpleado}`)
                     .then((response) => {
-                        this.empleado = response.data;
-
-                        if (this.empleado) {
-                            if (this.empleado.nombres == null) {
-                                this.nombres = null;
-                                this.apellidosEmpleado = null;
-                                this.empresa = null;
-                                this.cargo = null;
-                                this.correo = null;
-                                this.idEmpleado = null;
-                                this.rol = null;
-                                this.$toast.error('Empleado no encontrado');
-                            } else {
-                                this.nombres = this.empleado.nombres;
-                                this.apellidosEmpleado = this.empleado.apellidos;
-                                this.empresa = this.empleado.area.empresa.nombre;
-                                this.cargo = this.empleado.cargo;
-                                this.correo = this.empleado.email;
-                                this.idEmpleado = this.empleado.id;
-                                this.rol = this.empleado.rol;
-                            }
+                        this.empleado = response.data.object;
+                        if (response.data.status == 200) {
+                            this.nombres = this.empleado.nombres;
+                            this.apellidosEmpleado = this.empleado.apellidos;
+                            this.empresa = this.empleado.area.empresa.nombre;
+                            this.cargo = this.empleado.cargo;
+                            this.correo = this.empleado.email;
+                            this.idEmpleado = this.empleado.id;
+                            this.rol = this.empleado.rol;
                         }
                     })
                     .catch((error) => {
-                        console.error("Error al buscar empleado:", error);
+                        if (error.response && error.response.data.status == 400) {
+                            this.nombres = null;
+                            this.apellidosEmpleado = null;
+                            this.empresa = null;
+                            this.cargo = null;
+                            this.correo = null;
+                            this.idEmpleado = null;
+                            this.rol = null;
+                            this.$swal.fire({
+                                title: 'Error',
+                                icon: 'error',
+                                text: error.response.data.message,
+                                showCancelButton: false,
+                                showConfirmButton: false,
+                                timer: 2000,
+
+                            })
+
+                        }
+
                     });
             }
         },
         guardar() {
             if (this.contrasenia == '') {
-                this.$toast.error('Debe ingresar una contraseña para el empleado');
+                this.$swal.fire({
+                    title: 'Error',
+                    icon: 'warning',
+                    text: 'Debe ingresar una contraseña para el empleado',
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    timer: 2000
+                })
             } else {
                 if (!this.duiEmpleado == '' && !this.nombres == '' && !this.apellidosEmpleado == '' && !this.correo == '') {
                     const datosRegistro = {
@@ -200,8 +214,14 @@ export default {
 
                     axios.post('/registrarse', datosRegistro)
                         .then((response) => {
-
-                            this.$toast.success("Usuario creado con exito");
+                            this.$swal.fire({
+                                title: 'Exito',
+                                icon: 'success',
+                                text: response.data.message,
+                                showCancelButton: false,
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
                             this.nombres = null;
                             this.duiEmpleado = null;
                             this.contrasenia = null;
@@ -216,11 +236,24 @@ export default {
 
                         })
                         .catch((error) => {
-                            console.error("Error al registrar empleado:", error);
-                            this.$toast.error('Error al registrar empleado');
+                            this.$swal.fire({
+                                title: 'Error',
+                                icon: 'error',
+                                text: error.data.message,
+                                showCancelButton: false,
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
                         });
                 } else {
-                    this.$toast.error('Debe agregar un empleado');
+                    this.$swal.fire({
+                        title: 'Error',
+                        icon: 'warning',
+                        text: 'Debe agregar un empleado',
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
                 }
 
             }
@@ -242,3 +275,17 @@ export default {
     },
 };
 </script>
+<style>
+.swal2-popup {
+    background-color: #143c5ef4;
+    color: white;
+}
+
+.swal2-title {
+    color: white;
+}
+
+.swal2-content {
+    color: white;
+}
+</style>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Area;
+use App\CustomResponse;
 use Illuminate\Http\Request;
 use \App\Empleado;
 use App\HoraExtra;
@@ -125,6 +126,7 @@ class EmpleadoController extends Controller
         }
     }
 
+    //endpoint 1
     public function empleadoByDui(Request $request)
     {
         try {
@@ -132,9 +134,12 @@ class EmpleadoController extends Controller
             $duiEmpleado = $request->input('dui');
 
             $empleado = Empleado::with('area.empresa')->where('dui', 'LIKE', "%$duiEmpleado%")->first();
-            return response()->json($empleado);
+            if ($empleado === null) {
+                return CustomResponse::make(null, 'Empleado no encontrado', 400, null);
+            }
+            return CustomResponse::make($empleado, '', 200, null);
         } catch (\Exception $e) {
-            return response()->json(['ocurrio un error al obtener el empleado' => $e], 500);
+            return CustomResponse::make($empleado, 'Error al obtener empleado', 500, $e->getMessage());
         }
     }
 
@@ -291,7 +296,8 @@ class EmpleadoController extends Controller
         return response()->json($empleadosConHorasExtra);
     }
 
-    public function validarEmail(Request $request){
+    public function validarEmail(Request $request)
+    {
         $email = $request->input('email');
 
         // Verificar si el correo electrónico ya existe en la base de datos
@@ -306,7 +312,8 @@ class EmpleadoController extends Controller
         return response()->json(['message' => 'El correo electrónico está disponible'], 200);
     }
 
-    public function validarDui(Request $request){
+    public function validarDui(Request $request)
+    {
         $email = $request->input('dui');
 
         // Verificar si el dui ya existe en la base de datos

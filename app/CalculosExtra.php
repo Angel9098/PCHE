@@ -8,7 +8,7 @@ class CalculosExtra extends Model
 {
     protected $table = 'calculos_horas';
     protected $fillable = [
-        'id_corte', 'empleado_id', 'salario_mensual', 'total_horas', 'salario_neto', 'salario_total', 'fecha_calculo','jefe_area'
+        'id_corte', 'empleado_id', 'salario_mensual', 'total_horas', 'salario_neto', 'descuento_AFP', 'descuento_ISSS', 'salario_total', 'fecha_calculo', 'jefe_area'
     ];
 
     public function empleado()

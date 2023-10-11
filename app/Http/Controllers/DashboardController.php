@@ -7,10 +7,6 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    public function index()
-    {
-        return view('welcome');
-    }
 
     public function obtenerHorasExtraPorEmpresa(Request $request)
     {
@@ -27,10 +23,10 @@ class DashboardController extends Controller
             ->get();
 
         return response()->json($result);
-
     }
 
-    public function obtenerTotalSalarioHorasExtra(){
+    public function obtenerTotalSalarioHorasExtra()
+    {
         $result = DB::table('areas as a')
             ->join('empresas as em', 'em.id', '=', 'a.empresa_id')
             ->join('empleados as e', 'a.id', '=', 'e.area_id')

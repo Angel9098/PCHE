@@ -78,6 +78,7 @@
                                     <input v-model="filtros.email" @input="debounceSearchEmpleadoByinput" type="text"
                                         placeholder="Email" class="form-control mb-2" />
                                 </div>
+
                             </div>
 
                         </div>
@@ -271,6 +272,7 @@ export default {
             duiJefe: "",
             nombreJefe: "",
             email: "",
+            isSubMenuOpen: false,
             filtros: {
                 selectEmpresa: "",
                 selectArea: "",
@@ -279,6 +281,7 @@ export default {
                 email: "",
                 fechaDesde: "",
                 fechaHasta: "",
+
             },
             currentDate: new Date().toLocaleDateString(),
             showPdfTemplate: false,

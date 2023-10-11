@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\CalculosExtra;
 use App\Corte;
+use App\CustomResponse;
 use App\Empleado;
 use App\HoraExtra;
-use App\Http\Responses\CustomResponse;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
@@ -66,8 +66,8 @@ class CalculosHorasController extends Controller
                         'id_corte' => $idCorte->id,
                         'fecha_calculo' => $fechaFormateada,
                         'salario_mensual' => $salarioMensual,
-                        'Descuento_AFP' => $descuentoAfp,
-                        'Descuento_ISSS' => $descuentoIsss,
+                        'descuento_AFP' => $descuentoAfp,
+                        'descuento_ISSS' => $descuentoIsss,
                         'total_horas' => $sumatoria,
                         'salario_neto' => $salarioGanado,
                         'salario_total' => $salarioTotal,
@@ -80,8 +80,7 @@ class CalculosHorasController extends Controller
                 }
             }
 
-            return CustomResponse::make($registros, 'Cálculos realizados con éxito', 200);
-            // return response()->json(["message" => 'Calculos realizados con exito'], 201);
+            return CustomResponse::make($registros, 'Cálculos realizados con éxito', 200, null);
         } catch (\Exception $e) {
             return CustomResponse::make(null, 'Error en los cálculos', 500, $e->getMessage());
         }

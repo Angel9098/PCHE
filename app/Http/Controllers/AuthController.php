@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\CustomResponse;
 use App\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -51,26 +52,28 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        // Validar datos de registro
-        $this->validate($request, [
-            'correo' => 'required|string|max:255',
-            'contrasenia' => 'required|string|min:6',
-        ]);
+        try {
+            // Validar datos de registro
+            $this->validate($request, [
+                'correo' => 'required|string|max:255',
+                'contrasenia' => 'required|string|min:6',
+            ]);
 
-        // Crear usuario
-        $usuario = Usuario::create([
-            'email' => $request->input('correo'),
-            'password' => bcrypt($request->input('contrasenia')),
-            'empleado_id' => $request->input('idEmpleado'),
-            'rol' => $request->input('rol'),
+            // Crear usuario
+            $usuario = Usuario::create([
+                'email' => $request->input('correo'),
+                'password' => bcrypt($request->input('contrasenia')),
+                'empleado_id' => $request->input('idEmpleado'),
+                'rol' => $request->input('rol'),
 
-        ]);
+            ]);
 
-        // Iniciar sesión automáticamente
-        Auth::login($usuario);
+            Auth::login($usuario);
 
-        // Redirigir al usuario a la página deseada después del registro
-        return response()->json(['message' => 'Usuario creado con exito'], 201);
+            return CustomResponse::make($usuario, 'Usuario creado con exito', 200, null);
+        } catch (\Exception $e) {
+            return CustomResponse::make(null, 'Error al crear usuario', 500, $e->getMessage());
+        }
     }
 
     public function editarPerfilUser(Request $request)
@@ -87,5 +90,5 @@ class AuthController extends Controller
         $usuario->imagen = $nombreImagen;
         $usuario->save();
         return response()->json(['message' =>  $usuario], 200);
-   }
+    }
 }

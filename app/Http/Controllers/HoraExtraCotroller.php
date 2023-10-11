@@ -93,12 +93,24 @@ class HoraExtraCotroller extends Controller
         $idEmpresa = $request->input('selectEmpresa');
         $fechaDesde = $request->input('fechaDesde');
         $fechaHasta = $request->input('fechaHasta');
+        $estado = $request->input('estado');
 
         $horasExtrasQuery = HoraExtra::query()->with('empleado');
 
         $horasExtrasQuery = HoraExtra::query()
             ->with('empleado')
-            ->where('jefe_area', '!=', 0);
+            ->where('procesado', '!=', 1);
+
+        if ($estado !== null && $estado == 1) {
+            $horasExtrasQuery = HoraExtra::query()
+                ->with('empleado')
+                ->where('procesado', '=', 1);
+        }
+        if ($estado !== null && $estado == 0) {
+            $horasExtrasQuery = HoraExtra::query()
+                ->with('empleado')
+                ->where('procesado', '=', 0);
+        }
 
         if ($idEmpresa !== "NA" && $idEmpresa !== null) {
             $horasExtrasQuery->whereHas('empleado.area', function ($query) use ($idEmpresa) {

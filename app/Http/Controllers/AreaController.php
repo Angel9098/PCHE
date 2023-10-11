@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Area;
+use App\CustomResponse;
 use Illuminate\Http\Request;
 use App\Empleado;
 use Exception;
@@ -10,48 +11,42 @@ use Illuminate\Support\Facades\DB;
 
 class AreaController extends Controller
 {
-    public function showAreas()
-    {
-        return view('areas');
-    }
-
     public function index(Request $request)
     {
-        // Obtener el valor del parámetro de consulta 'idEmpresa'
+        /*endpoint para devolver las areas recibiendo el id de una empresa y devolviendo las areas que corresponden a esa empresa */
         $idEmpresa = $request->input('idEmpresa');
-
-        // Realizar una consulta para obtener todas las áreas de la empresa especificada
         $areas = Area::where('empresa_id', $idEmpresa)->get();
 
-        // Verificar si se encontraron áreas para la empresa
         if ($areas->isEmpty()) {
-            return response()->json(['message' => 'No se encontraron áreas para la empresa especificada'], 404);
+            return CustomResponse::make(null, 'No se encontraron áreas para la empresa especificada', 400, null);
         }
-
-        return response()->json(['message' => 'Áreas de la empresa recuperadas con éxito', 'areas' => $areas], 200);
+        return CustomResponse::make($areas, 'Áreas de la empresa recuperadas con éxito', 200, null);
     }
 
-    public function areaById(Request $request)
+    /*public function areaById(Request $request)
     {
         $idArea = $request->input('id');
 
         $area = Area::find($idArea);
 
         return response()->json($area);
-    }
+    }*/
 
-    public function horariosArea(Request $request)
+    /*public function horariosArea(Request $request)
     {
-        $idArea = $request->input('idArea');
+        try {
+            $idArea = $request->input('idArea');
 
-        $empleados = Empleado::where('area_id', $idArea)->get();
+            $empleados = Empleado::where('area_id', $idArea)->get();
+            $horarios = $empleados->pluck('idHorario')->unique();
 
-        $horarios = $empleados->pluck('idHorario')->unique();
+            return CustomResponse::make($horarios, 'Horarios disponibles para el área recuperados con éxito', 200, null);
+        } catch (Exception $e) {
+            return CustomResponse::make(null, 'Error al obtener horarios', 500, $e->getMessage());
+        }
+    }*/
 
-        return response()->json(['message' => 'Horarios disponibles para el área recuperados con éxito', 'horarios' => $horarios], 200);
-    }
-
-    public function empresaArea($id)
+    /*public function empresaArea($id)
     {
 
         $areas = DB::table('empresas')
@@ -61,7 +56,7 @@ class AreaController extends Controller
             ->get();
 
         return response()->json($areas);
-    }
+    }*/
 
     public function createArea(Request $request)
     {
@@ -80,10 +75,10 @@ class AreaController extends Controller
             $area->jefe_area = $request->input('jefe_area');
             $area->save();
 
-            return response()->json(['message' => 'Area de empresa creada con éxito', 'area' => $area, 201]);
+            return CustomResponse::make($area, 'Area de empresa creada con éxito', 200, null);
         } catch (\Exception $e) {
-            // Manejar cualquier error y devolver una respuesta de error adecuada
-            return response()->json(['error' => 'No se pudo crear el área. Detalles: ' . $e->getMessage()], 500);
+
+            return CustomResponse::make($area, 'No se pudo crear el área', 500, $e->getMessage());
         }
     }
 
