@@ -64,10 +64,10 @@
                                     Este campo es obligatorio
                                 </span>
                                 <span
-                                    v-if="verifyEmailorDuiBoolean"
+                                    v-if="verifyDuiEmailorBoolean"
                                     class="text-danger"
                                 >
-                                    {{ MSErrorEmailODui }}
+                                    {{ MSErrorDui }}
                                 </span>
                             </div>
                             <div class="form-group col-6">
@@ -89,7 +89,7 @@
                                     {{ MSErrorEmail }}
                                 </span>
                                 <span
-                                    v-if="verifyEmailBoolean"
+                                    v-if="verifyEmailorDuiBoolean"
                                     class="text-danger"
                                 >
                                     {{ MSErrorEmailODui }}
@@ -351,6 +351,7 @@ export default {
     props: ["id"],
     data() {
         return {
+            MSErrorDui: "",
             MSErrorEmailODui: "",
             MSErrorEmail:
                 "Por favor, ten en cuenta que solo se permiten los siguientes dominios para esta aplicación: example@latmobile.com, example@sdsalgroup.com. Asegúrate de utilizar uno de estos dominios al registrar o ingresar.",
@@ -375,6 +376,7 @@ export default {
             turno: "all",
             verifyEmailBoolean: false,
             verifyEmailorDuiBoolean: false,
+            verifyDuiEmailorBoolean: false,
             verifyEmailExisteBoolean: false,
         };
     },
@@ -556,43 +558,44 @@ export default {
             });
         },
         async verifyDuiAsync(dui) {
-            const url = `empleados/existeDui?dui=${dui}`
+            const url = `empleados/existeDui?dui=${dui}`;
             try {
                 const response = await fetch(url);
                 if (response.status === 200) {
+                    this.verifyDuiEmailorBoolean = true;
                     const data = await response.json();
-                this.verifyDuiBoolean = true;
-                console.log(data);
-                }else if (response.status === 404) {
-                    const data = await response.json();
-                this.verifyDuiBoolean = true;
-                console.log(data.message);
-                } else {
-                    throw new Error("La solicitud no fue exitosa");
-                }
+                    console.log(data.message);
+                    this.MSErrorDui =
+                        data.message === undefined || data.message === ""
+                            ? "El dui ya está en uso"
+                            : data.message;
+                } else if (response.status === 404)
+                    this.verifyDuiEmailorBoolean = false;
             } catch (error) {
-                this.verifyEmailorDuiBoolean = true;
-                console.error("Error al realizar la solicitud fetch:", error);
+                this.verifyDuiEmailorBoolean = true;
+                this.MSErrorDui =
+                    "No he logrado verificar si el DUI existe o no.";
+                console.error("No he logrado verificar si el DUI existe o no.");
             }
         },
         async verifyEmail(Email) {
-            const url = `empleados/existeEmail?email=${Email}`
+            const url = `empleados/existeEmail?email=${Email}`;
             try {
                 const response = await fetch(url);
                 if (response.status === 200) {
                     const data = await response.json();
-                this.verifyEmailBoolean = true;
-                console.log(data);
-                }else if (response.status === 404) {
-                    const data = await response.json();
-                this.verifyEmailBoolean = true;
-                console.log(data.message);
-                } else {
-                    throw new Error("La solicitud no fue exitosa");
-                }
-                
+                    this.verifyEmailorDuiBoolean = true;
+                    this.MSErrorEmailODui =
+                        data.message === undefined || data.message === ""
+                            ? "El correo electrónico ya está en uso"
+                            : data.message;
+                    console.log(data);
+                } else if (response.status === 404)
+                    this.verifyEmailorDuiBoolean = false;
             } catch (error) {
                 this.verifyEmailorDuiBoolean = true;
+                this.MSErrorEmailODui =
+                    "No he logrado verificar si el Email existe o no.";
                 console.error("Error al realizar la solicitud fetch:", error);
             }
         },
