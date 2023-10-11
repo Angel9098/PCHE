@@ -149,7 +149,7 @@
                         </a>
                     </ul>
                 </nav>
-        <div :class=" currentPath == '/' || currentPath == '/business' || currentPath == '/access-denied' ? 'd-flex flex-row h-full justify-content-center' : 'd-flex flex-row h-full justify-content-end'">
+        <div :class=" currentPath == '/' || currentPath == '/business' || currentPath == '/access-denied' ? 'd-flex flex-row justify-content-center' : 'd-flex flex-row justify-content-end'">
             <main class="d-flex flex-row justify-content-center h-100" :style=" currentPath == '/' || currentPath == '/business' || currentPath == '/access-denied' ? 'width:100%' : 'width:97%' ">
                 <router-view></router-view>
             </main>
@@ -313,7 +313,7 @@ export default {
                         this.id = result.data[0].id;
                         this.nombre = `${result.data[0].nombres} ${result.data[0].apellidos}`;
                         //this.localStorage.setItem('nombreUser', JSON.stringify(this.nombre));
-                    
+
                     })
                     .catch((error) => {});
             } else if (localStorage.getItem("user") === null)

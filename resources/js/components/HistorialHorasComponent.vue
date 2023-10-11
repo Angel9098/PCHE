@@ -1,6 +1,10 @@
 <template>
     <div class="bg-white d-flex flex-column justify-content-center align-items-center col-12 col-xs-12">
 
+        <h2 class="h1 text-center mt-5" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); margin-bottom: 1%;">HISTORIAL
+            C&#193;LCULOS
+        </h2>
+
         <div class="container mt-4">
             <div class="accordion" id="accordionFilters">
                 <div class="accordion-item">
@@ -78,7 +82,6 @@
                                     <input v-model="filtros.email" @input="debounceSearchEmpleadoByinput" type="text"
                                         placeholder="Email" class="form-control mb-2" />
                                 </div>
-
                             </div>
 
                         </div>
@@ -272,7 +275,6 @@ export default {
             duiJefe: "",
             nombreJefe: "",
             email: "",
-            isSubMenuOpen: false,
             filtros: {
                 selectEmpresa: "",
                 selectArea: "",
@@ -281,7 +283,6 @@ export default {
                 email: "",
                 fechaDesde: "",
                 fechaHasta: "",
-
             },
             currentDate: new Date().toLocaleDateString(),
             showPdfTemplate: false,
