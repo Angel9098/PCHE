@@ -60,9 +60,13 @@ class EmpresaController extends Controller
     public function create(Request $request)
     {
         try {
-            $imagen = $request->file('imagen');
-            $nombreImagen = uniqid() . '.' . $imagen->getClientOriginalExtension();
-            $rutaImagen = $imagen->storeAs('public/imagenes', $nombreImagen);
+            $nombreImagen = null;
+            if($request->hasFile('imagen')){
+                $imagen = $request->file('imagen');
+                $nombreImagen = uniqid() . '.' . $imagen->getClientOriginalExtension();
+                $rutaImagen = $imagen->storeAs('public/imagenes', $nombreImagen);
+            }
+
 
 
             $empresa = new Empresa([

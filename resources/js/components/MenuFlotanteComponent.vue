@@ -106,12 +106,12 @@
                         <router-link v-if="userRoles === 'jefe'" class="my-1 text-uppercase item" to="/importacionhoras" v-tooltip="{ theme: 'info-tooltip', content: 'Importar Horas' }">
                             <i class="fa-solid fa-file-arrow-up text-white iconItem"></i>
                         </router-link>
-                        <a class="my-1 item" role="button" id="dropdownMenu2" data-bs-toggle="collapse" href="#subMenu" aria-expanded="false" @click="toggleSubMenu" aria-controls="subMenu" v-tooltip="{ theme: 'info-tooltip', content: 'Empleados' }">
-                            <i class="fa-solid fa-users-gear text-white iconItem"></i><i class="fa-solid fa-caret-down text-white iconItem"></i>
+                        <a class="item" role="button" id="dropdownMenu2" data-bs-toggle="collapse" href="#subMenu" aria-expanded="false" @click="toggleSubMenu" aria-controls="subMenu" v-tooltip="{ theme: 'info-tooltip', content: 'Empleados' }">
+                            <i class="fa-solid fa-users-gear text-white iconItem"></i><i class="fa-solid fa-caret-down text-white iconItem animate__animated animate__bounce"></i>
                         </a>
                         <transition name="expand">
                                 <div class="submenu" id="subMenu" v-if="isSubMenuOpen">
-                                    <router-link v-if="userRoles === 'administrador'" class="my-1 text-uppercase item" to="/registro/0" v-tooltip="{ theme: 'info-tooltip-sub', content: 'Registrar Empleados' }">
+                                    <router-link v-if="userRoles === 'administrador'" class="text-uppercase item" to="/registro/0" v-tooltip="{ theme: 'info-tooltip-sub', content: 'Registrar Empleados' }">
                                         <i class="fa-solid fa-circle-plus text-white iconItem"></i>
                                         <!-- Registrar empleados -->
                                     </router-link>
@@ -129,7 +129,7 @@
                                     </router-link>
                                 </div>
                         </transition>
-                        <router-link v-if="userRoles === 'administrador'" class="my-1 text-uppercase item" to="/empresas" v-tooltip="{ theme: 'info-tooltip', content: 'Empresas' }">
+                        <router-link v-if="userRoles === 'administrador'" class="text-uppercase item" to="/empresas" v-tooltip="{ theme: 'info-tooltip', content: 'Empresas' }">
                             <i class="fa-solid fa-building text-white iconItem"></i>
                         </router-link>
                         <router-link v-if="userRoles === 'administrador'" class="my-1 text-uppercase item" to="/areas" v-tooltip="{ theme: 'info-tooltip', content: 'Áreas' }">
@@ -260,11 +260,14 @@ a:hover {
 }
 
 .expand-enter-active, .expand-leave-active{
-    transition: max-height 0.1s cubic-bezier(0.25, 0.1, 0.2, 0.25);
+    /*transition: max-height 0.1s cubic-bezier(0.25, 0.1, 0.2, 0.25);*/
+    transition: transform 0.9s ease-out;
 }
 .expand-enter, .expand-leave-to{
-    max-height: 0;
-    overflow: hidden;
+    /*max-height: 0;
+    overflow: hidden;*/
+    transform: translateY(-20%);
+    opacity: 0;
 }
 
 </style>
