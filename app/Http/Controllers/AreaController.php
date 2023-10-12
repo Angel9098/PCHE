@@ -132,13 +132,10 @@ class AreaController extends Controller
             $idEmpresa = $request->input('id_empresa');
 
             // Realizar la consulta utilizando Eloquent
-            $query = DB::table('empleados as em')
-                ->join('areas as a', 'a.id', '=', 'em.area_id')
-                ->join('empresas as e', 'e.id', '=', 'a.empresa_id')
-                ->join('usuarios as u', 'u.empleado_id', '=', 'em.id')
-                ->select('a.id as area_id', 'a.nombre as nombre_area', 'e.nombre as nombre_empresa', DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe_area'), 'a.jefe_area as id_jefe', 'e.id as id_empresa')
-                ->where('u.rol', '=', 'jefe')
-                ->whereNull('a.jefe_area');
+            $query = DB::table('areas as a')
+            ->join('empresas as e', 'a.empresa_id', '=', 'e.id')
+            ->leftJoin('empleados as em', 'em.id', '=', 'a.jefe_area')
+            ->select('a.id as area_id', 'a.nombre as nombre_area', 'e.nombre as nombre_empresa', DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe_area'), 'a.jefe_area as id_jefe', 'e.id as id_empresa');
 
             if (!empty($idEmpresa)) {
                 $query->where('e.id', $idEmpresa);
@@ -160,11 +157,15 @@ class AreaController extends Controller
     public function listaJefeEmpleado()
     {
         try{
-            $usuarioJefe = DB::table('usuarios as u')
-                ->join('empleados as em', 'u.empleado_id', '=', 'em.id')
-                ->select('u.id', DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe'))
-                ->where('u.rol', '=', 'jefe')
-                ->get();
+            $usuarioJefe = DB::table('empleados as em')
+            ->join('areas as a', 'a.id', '=', 'em.area_id')
+            ->join('empresas as e', 'a.empresa_id', '=', 'e.id')
+            ->join('usuarios as u', 'u.empleado_id', '=', 'em.id')
+            ->select('u.id', DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe'))
+            ->where('u.rol', '=', 'jefe')
+            ->whereNull('a.jefe_area')
+            ->get();
+
             if($usuarioJefe == null){
                 return CustomResponse::make(null, 'No hay elementos disponibles', 400, null);
             }
