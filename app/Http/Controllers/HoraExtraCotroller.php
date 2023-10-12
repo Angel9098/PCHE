@@ -6,6 +6,7 @@ use App\Empleado;
 use App\HoraExtra;
 use GuzzleHttp\Psr7\Message;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HoraExtraCotroller extends Controller
 {
@@ -40,9 +41,9 @@ class HoraExtraCotroller extends Controller
                 $id_empleado = $registroDepurado['idEmpleado'];
 
                 $empleado = Empleado::where('dui', $id_empleado)->first();
-
                 $fechaRegis = $registroDepurado['fecha'];
-                $fechaFormateada = date('Y-m-d', strtotime($fechaRegis));
+                $fechaFormateada = date('Y-m-d', strtotime(str_replace('/', '-', $fechaRegis)));
+
                 $diurnas = $registroDepurado['diurnas'];
                 $nocturnas = $registroDepurado['nocturnas'];
                 $diurnas_descanso = $registroDepurado['diurnasDescanso'];
@@ -56,6 +57,7 @@ class HoraExtraCotroller extends Controller
                 $empleadoRegistrado = HoraExtra::where('empleado_id', $empleado->id)
                     ->where('fecha_registro', $fechaFormateada)
                     ->first();
+
 
                 if ($diurnas != 0 || $nocturnas != 0 || $diurnas_descanso != 0 || $nocturnas_descanso != 0 || $diurnas_asueto != 0 || $nocturnas_asueto != 0) {
                     if ($empleadoRegistrado === null) {
@@ -81,7 +83,7 @@ class HoraExtraCotroller extends Controller
             if ($contador === 0) {
                 return response()->json(["message" => 'Registros ya se encuentran guardados'], 200);
             }
-            return response()->json(["message" => 'Horas extra agregado con exito'], 201);
+            return response()->json(["message" => 'Horas extra agregado con éxito'], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }

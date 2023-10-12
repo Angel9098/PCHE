@@ -98,29 +98,25 @@
                         <thead class="text-center bg-primary text-white">
                             <th scope="col" class="col-1">ID Empleado</th>
                             <th scope="col">Nombre</th>
-                            <th scope="col" class="col-1">Fecha</th>
-                            <th scope="col" class="col-1">Sueldo</th>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Sueldo</th>
                             <th scope="col" class="col-1">Empresa</th>
-                            <th scope="col" class="col-1">&#193;rea</th>
-                            <th scope="col" class="col-1">Total Horas</th>
-                            <th scope="col" class="col-1">Salario Ganado</th>
-                            <th scope="col" class="col-1">Descuento AFP</th>
-                            <th scope="col" class="col-1">Descuento ISSS</th>
-                            <th scope="col" class="col-1">Salario Total</th>
+                            <th scope="col" class="col-1">Area</th>
+                            <th scope="col" class="col-1">Total horas</th>
+                            <th scope="col" class="col-1">Salario ganado</th>
+                            <th scope="col" class="col-1">Salario total</th>
                         </thead>
                         <tbody class="text-center" v-if="calculosHoras.length > 0">
                             <tr v-for="registro in calculosHoras" :key="registro.id">
-                                <td scope="row">{{ registro.empleado.dui }}</td>
-                                <td>{{ registro.empleado.nombres + " " + registro.empleado.apellidos }}</td>
+                                <td scope="row">{{ registro.dui }}</td>
+                                <td>{{ registro.nombres }}</td>
                                 <td>{{ formatFecha(registro.fecha_calculo) }}</td>
-                                <td>{{ registro.empleado.salario | toCurrency }}</td>
-                                <td>{{ registro.empleado.area.empresa.nombre }}</td>
-                                <td>{{ registro.empleado.area.nombre }}</td>
-                                <td class="centered">{{ registro.total_horas }}</td>
-                                <td>{{ registro.salario_neto | toCurrency }}</td>
-                                <td>{{ registro.descuento_AFP }}</td>
-                                <td>{{ registro.descuento_ISSS }}</td>
-                                <td>{{ registro.salario_total | toCurrency }}</td>
+                                <td>{{ registro.salario_mensual | toCurrency }}</td>
+                                <td>{{ registro.nombre_empresa }}</td>
+                                <td>{{ registro.nombre_area }}</td>
+                                <td>{{ registro.total_horas }}</td>
+                                <td>{{ registro.salario_neto }}</td>
+                                <td>{{ registro.total_salario_neto }}</td>
                             </tr>
                         </tbody>
                         <tbody v-else>
@@ -206,23 +202,19 @@
                                     <th scope="col" class="col-1">Area</th>
                                     <th scope="col" class="col-1">Total horas</th>
                                     <th scope="col" class="col-1">Salario ganado</th>
-                                    <th scope="col" class="col-1">Descuento AFP</th>
-                                    <th scope="col" class="col-1">Descuento ISSS</th>
                                     <th scope="col" class="col-1">Salario total</th>
                                 </thead>
                                 <tbody class="text-center" v-if="calculosHoras.length > 0">
                                     <tr v-for="registro in calculosHoras" :key="registro.id">
-                                        <td scope="row">{{ registro.empleado.dui }}</td>
-                                        <td>{{ registro.empleado.nombres + " " + registro.empleado.apellidos }}</td>
+                                        <td scope="row">{{ registro.dui }}</td>
+                                        <td>{{ registro.nombres }}</td>
                                         <td>{{ formatFecha(registro.fecha_calculo) }}</td>
-                                        <td>{{ registro.empleado.salario | toCurrency }}</td>
-                                        <td>{{ registro.empleado.area.empresa.nombre }}</td>
-                                        <td>{{ registro.empleado.area.nombre }}</td>
+                                        <td>{{ registro.salario_mensual | toCurrency }}</td>
+                                        <td>{{ registro.nombre_empresa }}</td>
+                                        <td>{{ registro.nombre_area }}</td>
                                         <td>{{ registro.total_horas }}</td>
                                         <td>{{ registro.salario_neto }}</td>
-                                        <td>{{ registro.descuento_AFP }}</td>
-                                        <td>{{ registro.descuento_ISSS }}</td>
-                                        <td>{{ registro.salario_total }}</td>
+                                        <td>{{ registro.total_salario_neto }}</td>
                                     </tr>
                                 </tbody>
                                 <tbody v-else>

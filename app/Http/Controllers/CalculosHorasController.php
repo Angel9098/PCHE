@@ -29,8 +29,9 @@ class CalculosHorasController extends Controller
 
                 $idEliminar = $registro['id'];
                 $jefeArea = $registro['jefe_area'];
-                $fecha = $registro['fecha_registro'];
-                $fechaFormateada = date('Y-m-d', strtotime($fecha));
+                $fechaRegis = $registro['fecha_registro'];
+                $fechaFormateada = date('Y-m-d', strtotime(str_replace('/', '-', $fechaRegis)));
+
                 $diurnas = $registro['diurnas'];
                 $nocturnas = $registro['nocturnas'];
                 $diurnas_descanso = $registro['diurnas_descanso'];
@@ -59,6 +60,7 @@ class CalculosHorasController extends Controller
                         ->first();
 
                     $salarioTotal = $salarioTotal - ($descuentoAfp + $descuentoIsss);
+
 
                     $CalculoHora = new CalculosExtra([
                         'empleado_id' => $empleado->id,
@@ -96,7 +98,37 @@ class CalculosHorasController extends Controller
         $nombre = $request->input('nombre');
         $email = $request->input('email');
 
-        $horasExtrasQuery = CalculosExtra::query()->with('empleado.area.empresa');
+        $horasExtrasQuery = CalculosExtra::query()
+            ->select(
+                'calculos_horas.empleado_id',
+                DB::raw("CONCAT(empleados.nombres, ' ', empleados.apellidos) as nombres"),
+                'empleados.dui as dui',
+                'areas.nombre as nombre_area',
+                'empresas.nombre as nombre_empresa',
+                'calculos_horas.jefe_area',
+                'calculos_horas.fecha_calculo',
+                'calculos_horas.salario_neto',
+                'calculos_horas.total_horas',
+                'calculos_horas.salario_mensual'
+            )
+            ->addSelect(DB::raw('CASE WHEN calculos_horas.fecha_calculo = MAX_DATE.fecha_calculo THEN subquery.total_salario_neto ELSE NULL END AS total_salario_neto'))
+            ->join(
+                DB::raw('(SELECT empleado_id, SUM(salario_neto) AS total_salario_neto FROM calculos_horas GROUP BY empleado_id) AS subquery'),
+                'calculos_horas.empleado_id',
+                '=',
+                'subquery.empleado_id'
+            )
+            ->join(
+                DB::raw('(SELECT empleado_id, MAX(fecha_calculo) AS fecha_calculo FROM calculos_horas GROUP BY empleado_id) AS MAX_DATE'),
+                'calculos_horas.empleado_id',
+                '=',
+                'MAX_DATE.empleado_id'
+            )
+            ->join('empleados', 'calculos_horas.empleado_id', '=', 'empleados.id')
+            ->join('areas', 'empleados.area_id', '=', 'areas.id')
+            ->join('empresas', 'areas.empresa_id', '=', 'empresas.id')
+            ->orderBy('calculos_horas.empleado_id', 'asc')
+            ->orderBy('calculos_horas.fecha_calculo', 'asc');
 
 
         if ($idEmpresa !== "NA" && $idEmpresa !== null) {
@@ -106,8 +138,9 @@ class CalculosHorasController extends Controller
         }
 
         if ($fechaDesde !== null && $fechaDesde !== '') {
-            $horasExtrasQuery->where('fecha_calculo', '>=', $fechaDesde);
+            $horasExtrasQuery->where('calculos_horas.fecha_calculo', '>=', $fechaDesde);
         }
+
         if ($dui !== null && $dui !== '') {
             $horasExtrasQuery->whereHas('empleado', function ($query) use ($dui) {
                 if (!empty($dui)) {
@@ -115,6 +148,7 @@ class CalculosHorasController extends Controller
                 }
             });
         }
+
         if ($nombre !== null && $nombre !== '') {
             $horasExtrasQuery->whereHas('empleado', function ($query) use ($nombre) {
                 if (!empty($nombre)) {
@@ -122,6 +156,7 @@ class CalculosHorasController extends Controller
                 }
             });
         }
+
         if ($email !== null && $email !== '') {
             $horasExtrasQuery->whereHas('empleado', function ($query) use ($email) {
                 if (!empty($email)) {
@@ -131,7 +166,7 @@ class CalculosHorasController extends Controller
         }
 
         if ($fechaHasta !== null && $fechaHasta !== '') {
-            $horasExtrasQuery->where('fecha_calculo', '<=', $fechaHasta);
+            $horasExtrasQuery->where('calculos_horas.fecha_calculo', '<=', $fechaHasta);
         }
 
         if ($idArea !== "NA" && $idArea !== null) {
@@ -142,7 +177,6 @@ class CalculosHorasController extends Controller
 
         $empleadosConCalculos = $horasExtrasQuery->get();
         return CustomResponse::make($empleadosConCalculos, '', 200, null);
-
     }
 
     public function graficaCalculoDeHorasPorMesEmpresa(Request $request)
