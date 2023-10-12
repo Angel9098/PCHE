@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Area;
 use App\Empresa;
+use App\CustomResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -36,10 +37,9 @@ class EmpresaController extends Controller
 
             // Finalmente, elimina la empresa
             $empresa->delete();
-
-            return response()->json(['message' => 'La empresa ha sido eliminada exitosamente'], 200);
+            return CustomResponse::make($empresa, 'La empresa ha sido eliminada exitosamente', 200, null);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'La empresa no ha podido eliminarse'], 500);
+            return CustomResponse::make(null, 'La empresa no ha podido eliminarse', 500, $e->getMessage());
         }
     }
 
@@ -50,9 +50,9 @@ class EmpresaController extends Controller
 
             $empresa = Empresa::where('id', $id)->first();
 
-            return response()->json([$empresa], 200);
+            return CustomResponse::make($empresa, '', 200, null);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'error al obtener la empresa'], 500);
+            return CustomResponse::make(null, 'error al obtener la empresa', 500, null);
         }
     }
 
@@ -78,9 +78,9 @@ class EmpresaController extends Controller
 
             $empresa->save();
 
-            return response()->json(["message" => 'Empresa creada exitosamente'], 200);
+            return CustomResponse::make($empresa, 'Empresa creada exitosamente', 200, null);
         } catch (QueryException $ex) {
-            return response()->json(["message" => 'Error al agregar empresa: ' . $ex->getMessage()], 500);
+            return CustomResponse::make(null, 'Error al agregar empresa:', 500, $ex->getMessage());
         }
     }
 
@@ -104,11 +104,11 @@ class EmpresaController extends Controller
 
             $empresa->save();
 
-            return response()->json(["message" => 'Empresa actualizada exitosament'], 200);
+            return CustomResponse::make($empresa, 'Empresa actualizada exitosamente', 201, null);
         } catch (ModelNotFoundException $ex) {
-            return response()->json(["message" => 'Empresa no encontrada'], 404);
+            return CustomResponse::make(null, 'Empresa no encontrada', 404, null);
         } catch (QueryException $ex) {
-            return response()->json(["message" => 'Error al actualizar empresa: ' . $ex->getMessage()], 500);
+            return CustomResponse::make(null, 'Error al actualizar empresa:', 500, $ex->getMessage());
         }
     }
 
@@ -118,17 +118,17 @@ class EmpresaController extends Controller
         $id = $request->input('id');
 
         if (!$id) {
-            return response()->json(['error' => 'Falta el parámetro "id" en la consulta'], 400);
+            return CustomResponse::make(null, 'Falta el parámetro "id" en la consulta', 400, null);
         }
 
         $empresas = Empresa::find($id);
 
         if (!$empresas) {
-            return response()->json(['error' => 'empresa no encontrada'], 404);
+            return CustomResponse::make(null, 'Empresa no encontrada', 404, null);
         }
 
         $areas = $empresas->areas;
 
-        return response()->json($areas);
+        return CustomResponse::make($areas, '', 200, null);
     }
 }

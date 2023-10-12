@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Empleado;
 use App\HoraExtra;
+use App\CustomResponse;
 use GuzzleHttp\Psr7\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -81,11 +82,11 @@ class HoraExtraCotroller extends Controller
                 }
             }
             if ($contador === 0) {
-                return response()->json(["message" => 'Registros ya se encuentran guardados'], 200);
+                return CustomResponse::make($hora_extra, 'Registros ya se encuentran guardados', 200, null);
             }
-            return response()->json(["message" => 'Horas extra agregado con éxito'], 201);
+            return CustomResponse::make($hora_extra, 'Horas extra agregado con éxito', 201, null);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return CustomResponse::make(null, 'error en la creacion de horas extra', 500, null);
         }
     }
 
@@ -135,17 +136,16 @@ class HoraExtraCotroller extends Controller
         }
 
         $empleadosConHorasExtra = $horasExtrasQuery->get();
-
-        return response()->json($empleadosConHorasExtra);
+        return CustomResponse::make($empleadosConHorasExtra, '', 200, null);
     }
 
     public function limpiarTabla()
     {
         try {
             HoraExtra::truncate();
-            return response()->json(['message' => 'Tabla HoraExtra limpiada con éxito']);
+            return CustomResponse::make(null, 'Tabla HoraExtra limpiada con éxito', 200, null);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return CustomResponse::make(null, 'Error en la ejecucion', 500, $e->getMessage());
         }
     }
 }

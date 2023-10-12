@@ -9,6 +9,7 @@ use \App\Empleado;
 use App\HoraExtra;
 use App\UserAct;
 use App\Usuario;
+use Exception;
 use GuzzleHttp\Psr7\Message;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -26,9 +27,9 @@ class EmpleadoController extends Controller
         try {
             $nombre = $request->input('nombres');
             $empleados = Empleado::where('nombres', 'LIKE', "%$nombre%")->get();
-            return response()->json($empleados);
+            return CustomResponse::make($empleados, '', 200, null);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'ocurrio un error al generar la busqueada'], 500);
+            return CustomResponse::make(null, 'Ocurrio un error al generar la busqueada', 500, $e->getMessage());
         }
     }
 
@@ -40,10 +41,8 @@ class EmpleadoController extends Controller
             $empleado = Empleado::findOrFail($idEmpleado);
 
             if (!$empleado) {
-                return response()->json(['message' => 'Empleado no encontrado'], 404);
+                return CustomResponse::make(null, 'Empleado no encontrado', 404, null);
             }
-
-
 
             $empleado->nombres = $request->input('nombres');
             $empleado->apellidos = $request->input('apellidos');
@@ -58,12 +57,10 @@ class EmpleadoController extends Controller
 
             $empleado->save();
 
-
-
             // Retornar una respuesta JSON con los datos actualizados
-            return response()->json(['message' => 'Empleado actualizado con éxito', 'empleado' => $empleado, 200]);
+            return CustomResponse::make($empleado, 'Empleado actualizado con éxito', 201, null);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error al actualizar el registro', $e], 500);
+            return CustomResponse::make(null, 'Error al actualizar el registro', 500, $e->getMessage());
         }
     }
 
@@ -105,10 +102,10 @@ class EmpleadoController extends Controller
                 $empleado->salario = $request->input('salario');
                 $empleado->save();
 
-                return response()->json(['message' => 'Empleado creado con éxito', 'empleado' => $empleado, 200]);
+                return CustomResponse::make($empleado, 'Empleado creado con éxito', 201, null);
             }
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error al crear registro', $e], 500);
+            return CustomResponse::make(null, 'Error al crear el registro', 500, $e->getMessage());
         }
     }
 
@@ -120,9 +117,9 @@ class EmpleadoController extends Controller
             $empleados = Empleado::findOrFail($id);
             $empleados->delete();
 
-            return response()->json(['message' => 'Registro eliminado con éxito'], 200);
+            return CustomResponse::make($empleados, 'Empleado eliminado con éxito', 200, null);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error al eliminar el registro'], 500);
+            return CustomResponse::make(null, 'Error al eliminar el registro', 500, $e->getMessage());
         }
     }
 
@@ -149,18 +146,22 @@ class EmpleadoController extends Controller
 
             $idEmpleado = $request->input('idEmpleado');
             $empleado = Empleado::where('id', $idEmpleado)->with('area.empresa')->get();
-
-            return response()->json($empleado);
+            return CustomResponse::make($empleado, '', 200, null);
         } catch (\Exception $e) {
-            return response()->json(['ocurrio un error al obtener el empleado' => $e], 500);
+            return CustomResponse::make(null, 'ocurrio un error al obtener el empleado', 500, null);
         }
     }
 
     public function findEmpleadoById(Request $request)
     {
-        $id = $request->input('id');
-        $empleado = Empleado::find($id);
-        return response()->json($empleado);
+        try{
+            $id = $request->input('id');
+            $empleado = Empleado::find($id);
+
+            return CustomResponse::make($empleado, '', 200, null);
+        }catch(Exception $ex){
+            return CustomResponse::make(null, 'ocurrio un error al obtener el empleado', 500, null);
+        }
     }
 
     public function actualizarContrasenia(Request $request)
@@ -176,15 +177,15 @@ class EmpleadoController extends Controller
             $empleado = Usuario::find($idUsuario);
             //dd($empleado);
             if (!$empleado) {
-                return response()->json(['error' => 'Usuario no encontrado'], 404);
+                return CustomResponse::make(null, 'Usuario no encontrado', 400, null);
             }
 
             //verificar si la contraseña antigua esta correcta
             if (!Hash::check($oldPassword, $empleado->password)) {
-                return response()->json(['error' => 'Contraseña antigua es incorrecta'], 400);
+                return CustomResponse::make(null, 'Contraseña antigua es incorrecta', 400, null);
             }
             if ($newPassword != $confirmPassword) {
-                return response()->json(['error' => 'Las contraseñas no coiciden'], 400);
+                return CustomResponse::make(null, 'Las contraseñas no coiciden', 400, null);
             }
 
             $empleado->update([
@@ -192,9 +193,9 @@ class EmpleadoController extends Controller
             ]);
 
             // Password updated successfully
-            return response()->json(['message' => 'Contraseña actualizada exitosamente'], 200);
+            return CustomResponse::make($empleado, 'Contraseña actualizada exitosamente', 201, null);
         } catch (\Exception $e) {
-            return response()->json(['ocurrio un error al obtener el usuario' => $e->getMessage()], 500);
+            return CustomResponse::make(null, 'Ocurrio un error al obtener el usuario', 500, $e->getMessage());
         }
     }
 
@@ -208,9 +209,9 @@ class EmpleadoController extends Controller
                 ->select('e.*')
                 ->where('ar.empresa_id', '=', $idEmpresa)
                 ->get();
-            return response()->json($empleados);
+            return CustomResponse::make($empleados, '', 200, null);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'ocurrio un error al generar la busqueada'], 500);
+            return CustomResponse::make(null, 'Ocurrio un error al generar la busqueada', 500, $e->getMessage());
         }
     }
 
@@ -231,9 +232,6 @@ class EmpleadoController extends Controller
             $cargo = $request->input('cargo');
             $email = $request->input('email');
             $idEmpresa = $request->input('selectedOption');
-
-
-
 
             $empleados = Empleado::with('area.empresa')
                 ->where(function ($query) use ($nombres) {
@@ -267,10 +265,9 @@ class EmpleadoController extends Controller
                     }
                 })
                 ->get();
-
-            return response()->json($empleados);
+                return CustomResponse::make($empleados, '', 200, null);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'ocurrio un error al generar la busqueda'], 500);
+            return CustomResponse::make(null, 'Ocurrio un error al generar la busqueda', 500, $e->getMessage());
         }
     }
     public function empleadosConHorasExtra(Request $request)
@@ -293,7 +290,7 @@ class EmpleadoController extends Controller
         }
         $empleadosConHorasExtra = $query->get();
 
-        return response()->json($empleadosConHorasExtra);
+        return CustomResponse::make($empleadosConHorasExtra, '', 200, null);
     }
 
     public function validarEmail(Request $request)
@@ -305,11 +302,11 @@ class EmpleadoController extends Controller
 
         if ($empleado) {
             // El correo electrónico ya existe
-            return response()->json(['message' => 'El correo electrónico ya está en uso'], 400);
+            return CustomResponse::make(null, 'El correo electrónico ya está en uso', 400, null);
         }
 
         // El correo electrónico no existe
-        return response()->json(['message' => 'El correo electrónico está disponible'], 200);
+        return CustomResponse::make(null, 'El correo electrónico está disponible', 200, null);
     }
 
     public function validarDui(Request $request)
@@ -321,10 +318,10 @@ class EmpleadoController extends Controller
 
         if ($empleado) {
             // El dui ya existe
-            return response()->json(['message' => 'El dui ya está en uso'], 400);
+            return CustomResponse::make(null, 'El dui ya está en uso', 400, null);
         }
 
         // El dui no existe
-        return response()->json(['message' => 'El dui está disponible'], 200);
+        return CustomResponse::make(null, 'El dui esta disponible', 200, null);
     }
 }

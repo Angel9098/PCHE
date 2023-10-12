@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\CustomResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -10,7 +11,7 @@ class DashboardController extends Controller
 
     public function obtenerHorasExtraPorEmpresa(Request $request)
     {
-        $idEmpresa = $request->input('idEmpresa'); // Asegúrate de que el valor de idEmpresa esté disponible en la solicitud.
+        $idEmpresa = $request->input('idEmpresa');
 
         $result = DB::table('areas as a')
             ->join('empresas as em', 'em.id', '=', 'a.empresa_id')
@@ -21,8 +22,7 @@ class DashboardController extends Controller
             ->whereRaw("DATE_FORMAT(ch.created_at, '%Y-%m') = DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m')")
             ->groupBy('a.nombre')
             ->get();
-
-        return response()->json($result);
+        return CustomResponse::make($result, '', 200, '');
     }
 
     public function obtenerTotalSalarioHorasExtra()
@@ -42,6 +42,6 @@ class DashboardController extends Controller
             ->orderBy('periodo', 'asc')
             ->get();
 
-        return response()->json($result);
+        return CustomResponse::make($result, '', 200, '');
     }
 }

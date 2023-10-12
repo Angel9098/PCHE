@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\CustomResponse;
 use App\Usuario;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -32,11 +33,9 @@ class AuthController extends Controller
         if (Auth::guard('web')->attempt($credentials)) {
 
             $user = Auth::user(); // Obtener el usuario autenticado
-
-            return response()->json(['message' => 'Inicio de sesión exitoso', 'Usuario' => $user], 200);
+            return CustomResponse::make($user, 'Inicio de sesión exitoso', 200, null);
         }
-
-        return response()->json(['message' => 'Credenciales inválidas'], 401);
+        return CustomResponse::make(null, 'Credenciales inválidas', 401, null);
     }
 
     public function logout()
@@ -78,17 +77,22 @@ class AuthController extends Controller
 
     public function editarPerfilUser(Request $request)
     {
-        $imagen = $request->file('imagen');
-        $nombreImagen = uniqid() . '.' . $imagen->getClientOriginalExtension();
-        $rutaImagen = $imagen->storeAs('public/imagenes', $nombreImagen);
-        $urlImagen = asset('storage/' . $rutaImagen);
-        $idEmpleado =  $request->input('id');
-        $usuario = Usuario::findOrFail($idEmpleado);
-        if (!$usuario) {
-            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        try{
+            $imagen = $request->file('imagen');
+            $nombreImagen = uniqid() . '.' . $imagen->getClientOriginalExtension();
+            $rutaImagen = $imagen->storeAs('public/imagenes', $nombreImagen);
+            $urlImagen = asset('storage/' . $rutaImagen);
+            $idEmpleado =  $request->input('id');
+            $usuario = Usuario::findOrFail($idEmpleado);
+            if (!$usuario) {
+                return CustomResponse::make($usuario, 'Usuario no encontrado', 404, null);
+            }
+            $usuario->imagen = $nombreImagen;
+            $usuario->save();
+
+            return CustomResponse::make($usuario, 'Perfil usuario modificado con exito', 200, null);
+        }catch(Exception $e){
+            return CustomResponse::make(null, 'Error en el servidor', 500, $e->getMessage());
         }
-        $usuario->imagen = $nombreImagen;
-        $usuario->save();
-        return response()->json(['message' =>  $usuario], 200);
     }
 }
