@@ -561,7 +561,7 @@ export default {
             const url = `empleados/existeDui?dui=${dui}`;
             try {
                 const response = await fetch(url);
-                if (response.status === 200) {
+                if (!response.ok) {
                     this.verifyDuiEmailorBoolean = true;
                     const data = await response.json();
                     console.log(data.message);
@@ -569,8 +569,7 @@ export default {
                         data.message === undefined || data.message === ""
                             ? "El dui ya está en uso"
                             : data.message;
-                } else if (response.status === 404)
-                    this.verifyDuiEmailorBoolean = false;
+                } else {this.verifyDuiEmailorBoolean = false;}
             } catch (error) {
                 this.verifyDuiEmailorBoolean = true;
                 this.MSErrorDui =
@@ -582,7 +581,7 @@ export default {
             const url = `empleados/existeEmail?email=${Email}`;
             try {
                 const response = await fetch(url);
-                if (response.status === 200) {
+                if (!response.ok) {
                     const data = await response.json();
                     this.verifyEmailorDuiBoolean = true;
                     this.MSErrorEmailODui =
@@ -590,8 +589,7 @@ export default {
                             ? "El correo electrónico ya está en uso"
                             : data.message;
                     console.log(data);
-                } else if (response.status === 404)
-                    this.verifyEmailorDuiBoolean = false;
+                } else {this.verifyEmailorDuiBoolean = false;}
             } catch (error) {
                 this.verifyEmailorDuiBoolean = true;
                 this.MSErrorEmailODui =

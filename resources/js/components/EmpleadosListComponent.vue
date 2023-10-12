@@ -63,7 +63,7 @@
         </div>
 
         <div class="container">
-            <h2 class="h1 text-center mt-5"  style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">LISTADO DE EMPLEADOS</h2>
+            <h2 class="h1 text-center mt-5" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">LISTADO DE EMPLEADOS</h2>
             <table class="table table-hover table-bordered mt-4">
                 <thead class="table-primary bg-primary">
                     <tr class="text-center">
@@ -89,6 +89,9 @@
                         <td class="actions-cell">
                             <button @click="seleccionar(empleado.id)" class="btn btn-primary" type="button">
                                 <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button @click="eliminarEmpresa(empleado.id)" class="btn btn-danger custom-btn" type="button">
+                                <i class="fas fa-trash-alt text-white"></i>
                             </button>
                         </td>
                     </tr>
@@ -212,6 +215,28 @@ export default {
             this.currentPage = page;
             this.fetchEmpleados();
         },
+        eliminarEmpresa(id) {
+
+            this.$swal({
+                title: 'Estas seguro de eliminar el registro?',
+                text: "¡No podrás revertir esto!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '¡Sí, bórralo!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.$swal(
+                        'Deleted!',
+                        'Su archivo ha sido eliminado.',
+                        'success'
+                    )
+
+
+                }
+            })
+        }
     },
 };
 </script>
@@ -363,4 +388,5 @@ th.col-1:nth-child(1) {
 thead th:nth-child(3),
 tr td:nth-child(3) {
     width: 10%;
-}</style>
+}
+</style>
