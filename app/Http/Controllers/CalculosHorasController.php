@@ -96,7 +96,6 @@ class CalculosHorasController extends Controller
         $nombre = $request->input('nombre');
         $email = $request->input('email');
 
-
         $horasExtrasQuery = CalculosExtra::query()->with('empleado.area.empresa');
 
 
@@ -106,32 +105,32 @@ class CalculosHorasController extends Controller
             });
         }
 
-        if ($fechaDesde !== null) {
+        if ($fechaDesde !== null && $fechaDesde !== '') {
             $horasExtrasQuery->where('fecha_calculo', '>=', $fechaDesde);
         }
-        if ($dui !== null) {
-            $horasExtrasQuery->whereHas('empleado', function ($query) use ($idArea) {
+        if ($dui !== null && $dui !== '') {
+            $horasExtrasQuery->whereHas('empleado', function ($query) use ($dui) {
                 if (!empty($dui)) {
                     $query->where('dui', 'LIKE', "%$dui%");
                 }
             });
         }
-        if ($nombre !== null) {
-            $horasExtrasQuery->whereHas('empleado', function ($query) use ($idArea) {
+        if ($nombre !== null && $nombre !== '') {
+            $horasExtrasQuery->whereHas('empleado', function ($query) use ($nombre) {
                 if (!empty($nombre)) {
                     $query->where('nombres', 'LIKE', "%$nombre%");
                 }
             });
         }
-        if ($email !== null) {
-            $horasExtrasQuery->whereHas('empleado', function ($query) use ($idArea) {
+        if ($email !== null && $email !== '') {
+            $horasExtrasQuery->whereHas('empleado', function ($query) use ($email) {
                 if (!empty($email)) {
                     $query->where('email', 'LIKE', "%$email%");
                 }
             });
         }
 
-        if ($fechaHasta !== null) {
+        if ($fechaHasta !== null && $fechaHasta !== '') {
             $horasExtrasQuery->where('fecha_calculo', '<=', $fechaHasta);
         }
 
@@ -142,8 +141,8 @@ class CalculosHorasController extends Controller
         }
 
         $empleadosConCalculos = $horasExtrasQuery->get();
+        return CustomResponse::make($empleadosConCalculos, '', 200, null);
 
-        return response()->json($empleadosConCalculos);
     }
 
     public function graficaCalculoDeHorasPorMesEmpresa(Request $request)

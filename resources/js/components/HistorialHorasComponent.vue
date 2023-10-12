@@ -439,7 +439,7 @@ export default {
 
         async buscarRegistrosByEmpresa() {
             const response = await axios.post("calculos", this.filtros);
-            this.calculosHoras = response.data;
+            this.calculosHoras = response.data.object;
         },
 
         changePage(page) {
