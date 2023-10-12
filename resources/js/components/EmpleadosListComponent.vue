@@ -229,11 +229,9 @@ export default {
                 if (result.isConfirmed) {
                     this.$swal(
                         'Deleted!',
-                        'Su archivo ha sido eliminado.',
+                        'Su registro ha sido eliminado.',
                         'success'
                     )
-
-
                 }
             })
         }
