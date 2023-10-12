@@ -87,7 +87,7 @@
                         <td>{{ empleado.area.nombre }}</td>
                         <td>{{ empleado.area.empresa.nombre }}</td>
                         <td class="actions-cell">
-                            <button @click="seleccionar(empleado.id)" class="btn btn-primary" type="button">
+                            <button @click="seleccionar(empleado.id)" class="btn btn-primary my-2" type="button">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </button>
                             <button @click="eliminarEmpresa(empleado.id)" class="btn btn-danger custom-btn" type="button">
@@ -199,8 +199,11 @@ export default {
                 .get("/empleados_area?page=" + this.currentPage)
                 .then((response) => {
                     this.empleados = "";
+                    console.log(response.data.data);
+                    // const  condicion = (object) => object.eliminar;
+                    // const dataFiltros = response.data.data.filter(condicion)
+                    // this.empleados = dataFilter
                     this.empleados = response.data.data;
-
                     this.lastPage = response.data.last_page;
                 })
                 .catch((error) => {
