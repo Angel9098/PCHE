@@ -172,22 +172,12 @@ export default {
                 if (this.filtros.selectedOption === "NA") {
                     this.filtros.selectedOption = "";
                 }
-                if (
-                    this.filtros.nombre === "" &&
-                    this.filtros.apellido === "" &&
-                    this.filtros.cargo === "" &&
-                    this.filtros.dui === "" &&
-                    this.filtros.email === "" &&
-                    this.filtros.selectedOption != ""
-                ) {
-                    this.fetchEmpleados();
-                } else {
-                    const response = await axios.post(
-                        "/empleados/filtro/busqueda",
-                        this.filtros
-                    );
-                    this.empleados = response.data.object;
-                }
+                const response = await axios.post(
+                    "/empleados/filtro/busqueda",
+                    this.filtros
+                );
+                this.empleados = response.data.object;
+
             } catch (error) {
                 console.error(
                     "Error al buscar empleados:",
