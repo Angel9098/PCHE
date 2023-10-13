@@ -34,12 +34,12 @@
                         <td>{{ item.nombre_jefe_area }}</td>
                         <td>
                             <div class="d-flex flex-row justify-content-around">
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#modalCrear" @click="showModificarArea(item.area_id, item.id_empresa)"
-                                    title="Editar"><i class="fa-solid fa-pen-to-square text-white"></i></button>
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                    data-bs-target="#modalEliminar" @click="showDeleteModal(item.area_id)" title="Eliminar"><i
-                                        class="fa-solid fa-trash-alt text-white"></i></button>
+                                <button type="button" class="btn btn-primary" @click="showModificarArea(item.area_id, item.id_empresa)" title="Editar">
+                                    <i class="fa-solid fa-pen-to-square text-white"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger" @click="showDeleteModal(item.area_id)" title="Eliminar">
+                                    <i class="fa-solid fa-trash-alt text-white"></i>
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -82,26 +82,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="modal fade" id="modalEliminar" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-            aria-labelledby="modalEliminarLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5">Eliminar &#193;rea</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>¿Está seguro de eliminar el &#225;rea seleccionada?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-danger text-white" @click="deleteArea()">Eliminar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
 </template>
 <script>
@@ -221,8 +201,7 @@ export default {
             this.area.empresa_id = idEmpresa;
         },
         showModificarArea(idArea, idEmpresa) {
-            const modalBackground = document.querySelector('.show');
-            modalBackground.classList.add('modal-backdrop');
+            $('#modalCrear').modal('show');
             this.getJefaturas();
             this.accionModal = 'Modificar'; //Accion para modificar titulo y rellenar campos
             this.rellenarCampos(idArea, idEmpresa);
@@ -237,44 +216,82 @@ export default {
             Vue.set(this.areaCrear, 'nombre', this.area.nombre_area);
             Vue.set(this.areaCrear, 'empresa_id', this.area.empresa_id);
             Vue.set(this.areaCrear, 'jefe_area', this.area.id_jefe);
-            axios.put(`areas/update?id=${this.area.area_id}`, this.areaCrear, { headers: { 'Content-type': 'application/json' } }).then(resp => {
+            axios.put(`areas/update?id=${this.area.area_id}`, this.areaCrear, { headers: { 'Content-type': 'application/json' } }).then(response => {
                 this.$swal.close();
-                if (resp.data.status == 200) {
+                if (response.data.status == 200) {
                     this.$swal.fire({
                         title: '¡Hecho!',
                         icon: 'success',
-                        text: resp.data.message,
+                        text: response.data.message,
                         showCancelButton: false,
                         showConfirmButton: false,
                         timer: 2000
                     })
                     this.getAreasByEmpresa();
-                    const myModal = document.getElementById('modalCrear');
-                    myModal.classList.remove('show');
-                    myModal.style.display = 'none';
-                    const modalBackground = document.querySelector('.modal-backdrop');
-                    modalBackground.className = '';
+                    $('#modalCrear').modal('hide');
+                }
+            }).catch(error => {
+                if (error.response) {
+                    this.$swal.fire({
+                        title: 'Error',
+                        icon: 'error',
+                        text: error.response.data.message,
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
                 }
             });
         },
         showDeleteModal(idArea) {
             this.selectedEliminar = idArea;
+            this.$swal.fire({
+                title: '¿Estás seguro que deseas eliminar?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.deleteArea();
+                }
+            });
         },
         deleteArea() {
-            axios.delete(`areas/delete?id=${this.selectedEliminar}`, { headers: { 'Content-type': 'application/json' } }).then(resp => {
-                if (resp.status == 200) {
-                    this.$toast.success('Área eliminada', {
-                        position: "top-right",
-                        timeout: 3000,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        closeButton: "button",
-                        icon: true
-                    });
+            this.$swal.fire({
+                title: 'Cargando...',
+                html: '<div class="my-5 d-flex flex-row justify-content-center"><div class="sk-chase"><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div></div></div>',
+                showCancelButton: false,
+                showConfirmButton: false
+            });
+            axios.delete(`areas/delete?id=${this.selectedEliminar}`, { headers: { 'Content-type': 'application/json' } }).then(response => {
+                this.$swal.close();
+                if (response.status == 200) {
+                    this.$swal.fire({
+                        title: '¡Hecho!',
+                        icon: 'success',
+                        text: 'Área eliminada con éxito',
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
                     this.getAreasByEmpresa();
                     $('#modalEliminar').modal('hide');
                 }
-            })
+            }).catch(error => {
+                if (error.response) {
+                    this.$swal.fire({
+                        title: 'Error',
+                        icon: 'error',
+                        text: error.response.data.message,
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                }
+            });
         }
     },
     filters: {
