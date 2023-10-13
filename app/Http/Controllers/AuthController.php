@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\CustomResponse;
 use App\Usuario;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,11 +33,9 @@ class AuthController extends Controller
         if (Auth::guard('web')->attempt($credentials)) {
 
             $user = Auth::user(); // Obtener el usuario autenticado
-
-            return response()->json(['message' => 'Inicio de sesión exitoso', 'Usuario' => $user], 200);
+            return CustomResponse::make($user, 'Inicio de sesión exitoso', 200, null);
         }
-
-        return response()->json(['message' => 'Credenciales inválidas'], 401);
+        return CustomResponse::make(null, 'Credenciales inválidas', 401, null);
     }
 
     public function logout()
@@ -51,41 +51,48 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        // Validar datos de registro
-        $this->validate($request, [
-            'correo' => 'required|string|max:255',
-            'contrasenia' => 'required|string|min:6',
-        ]);
+        try {
+            // Validar datos de registro
+            $this->validate($request, [
+                'correo' => 'required|string|max:255',
+                'contrasenia' => 'required|string|min:6',
+            ]);
 
-        // Crear usuario
-        $usuario = Usuario::create([
-            'email' => $request->input('correo'),
-            'password' => bcrypt($request->input('contrasenia')),
-            'empleado_id' => $request->input('idEmpleado'),
-            'rol' => $request->input('rol'),
+            // Crear usuario
+            $usuario = Usuario::create([
+                'email' => $request->input('correo'),
+                'password' => bcrypt($request->input('contrasenia')),
+                'empleado_id' => $request->input('idEmpleado'),
+                'rol' => $request->input('rol'),
 
-        ]);
+            ]);
 
-        // Iniciar sesión automáticamente
-        Auth::login($usuario);
+            Auth::login($usuario);
 
-        // Redirigir al usuario a la página deseada después del registro
-        return response()->json(['message' => 'Usuario creado con exito'], 201);
+            return CustomResponse::make($usuario, 'Usuario creado con exito', 200, null);
+        } catch (\Exception $e) {
+            return CustomResponse::make(null, 'Error al crear usuario', 500, $e->getMessage());
+        }
     }
 
     public function editarPerfilUser(Request $request)
     {
-        $imagen = $request->file('imagen');
-        $nombreImagen = uniqid() . '.' . $imagen->getClientOriginalExtension();
-        $rutaImagen = $imagen->storeAs('public/imagenes', $nombreImagen);
-        $urlImagen = asset('storage/' . $rutaImagen);
-        $idEmpleado =  $request->input('id');
-        $usuario = Usuario::findOrFail($idEmpleado);
-        if (!$usuario) {
-            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        try{
+            $imagen = $request->file('imagen');
+            $nombreImagen = uniqid() . '.' . $imagen->getClientOriginalExtension();
+            $rutaImagen = $imagen->storeAs('public/imagenes', $nombreImagen);
+            $urlImagen = asset('storage/' . $rutaImagen);
+            $idEmpleado =  $request->input('id');
+            $usuario = Usuario::findOrFail($idEmpleado);
+            if (!$usuario) {
+                return CustomResponse::make($usuario, 'Usuario no encontrado', 404, null);
+            }
+            $usuario->imagen = $nombreImagen;
+            $usuario->save();
+
+            return CustomResponse::make($usuario, 'Perfil usuario modificado con exito', 200, null);
+        }catch(Exception $e){
+            return CustomResponse::make(null, 'Error en el servidor', 500, $e->getMessage());
         }
-        $usuario->imagen = $nombreImagen;
-        $usuario->save();
-        return response()->json(['message' =>  $usuario], 200);
-   }
+    }
 }

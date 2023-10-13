@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Area;
+use App\CustomResponse;
 use Illuminate\Http\Request;
 use App\Empleado;
 use Exception;
@@ -10,25 +11,16 @@ use Illuminate\Support\Facades\DB;
 
 class AreaController extends Controller
 {
-    public function showAreas()
-    {
-        return view('areas');
-    }
-
     public function index(Request $request)
     {
-        // Obtener el valor del parámetro de consulta 'idEmpresa'
+        /*endpoint para devolver las areas recibiendo el id de una empresa y devolviendo las areas que corresponden a esa empresa */
         $idEmpresa = $request->input('idEmpresa');
-
-        // Realizar una consulta para obtener todas las áreas de la empresa especificada
         $areas = Area::where('empresa_id', $idEmpresa)->get();
 
-        // Verificar si se encontraron áreas para la empresa
         if ($areas->isEmpty()) {
-            return response()->json(['message' => 'No se encontraron áreas para la empresa especificada'], 404);
+            return CustomResponse::make(null, 'No se encontraron áreas para la empresa especificada', 400, null);
         }
-
-        return response()->json(['message' => 'Áreas de la empresa recuperadas con éxito', 'areas' => $areas], 200);
+        return CustomResponse::make($areas, 'Áreas de la empresa recuperadas con éxito', 200, null);
     }
 
     public function areaById(Request $request)
@@ -40,18 +32,21 @@ class AreaController extends Controller
         return response()->json($area);
     }
 
-    public function horariosArea(Request $request)
+    /*public function horariosArea(Request $request)
     {
-        $idArea = $request->input('idArea');
+        try {
+            $idArea = $request->input('idArea');
 
-        $empleados = Empleado::where('area_id', $idArea)->get();
+            $empleados = Empleado::where('area_id', $idArea)->get();
+            $horarios = $empleados->pluck('idHorario')->unique();
 
-        $horarios = $empleados->pluck('idHorario')->unique();
+            return CustomResponse::make($horarios, 'Horarios disponibles para el área recuperados con éxito', 200, null);
+        } catch (Exception $e) {
+            return CustomResponse::make(null, 'Error al obtener horarios', 500, $e->getMessage());
+        }
+    }*/
 
-        return response()->json(['message' => 'Horarios disponibles para el área recuperados con éxito', 'horarios' => $horarios], 200);
-    }
-
-    public function empresaArea($id)
+    /*public function empresaArea($id)
     {
 
         $areas = DB::table('empresas')
@@ -61,7 +56,7 @@ class AreaController extends Controller
             ->get();
 
         return response()->json($areas);
-    }
+    }*/
 
     public function createArea(Request $request)
     {
@@ -80,10 +75,10 @@ class AreaController extends Controller
             $area->jefe_area = $request->input('jefe_area');
             $area->save();
 
-            return response()->json(['message' => 'Area de empresa creada con éxito', 'area' => $area, 201]);
+            return CustomResponse::make($area, 'Area de empresa creada con éxito', 200, null);
         } catch (\Exception $e) {
-            // Manejar cualquier error y devolver una respuesta de error adecuada
-            return response()->json(['error' => 'No se pudo crear el área. Detalles: ' . $e->getMessage()], 500);
+
+            return CustomResponse::make($area, 'No se pudo crear el área', 500, $e->getMessage());
         }
     }
 
@@ -95,7 +90,7 @@ class AreaController extends Controller
             $area = Area::find($idArea);
 
             if (!$area) {
-                return response()->json(['message' => 'Area no encontrada'], 404);
+                return CustomResponse::make($area, 'Area no encontrada', 404, null);
             }
 
             // Validar los datos antes de editar el área
@@ -110,10 +105,10 @@ class AreaController extends Controller
             $area->jefe_area = $request->input('jefe_area');
             $area->save();
 
-            return response()->json(['message' => 'Area de empresa actualizada con éxito', 'area' => $area, 201]);
+            return CustomResponse::make($area, 'Area de empresa actualizada con éxito', 201, null);
         } catch (\Exception $e) {
             // Manejar cualquier error y devolver una respuesta de error adecuada
-            return response()->json(['error' => 'No se pudo editar el área. Detalles: ' . $e->getMessage()], 500);
+            return CustomResponse::make(null, 'No se pudo editar el área. Detalles:', 500, $e->getMessage());
         }
     }
 
@@ -125,51 +120,62 @@ class AreaController extends Controller
 
             $area = Area::findOrFail($id);
             $area->delete();
-
-            return response()->json(['message' => 'Area eliminada con éxito'], 200);
+            return CustomResponse::make($area, 'Area eliminada con éxito', 201, null);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error al eliminar el area'], 500);
+            return CustomResponse::make(null, 'Error al eliminar el area', 500, $e->getMessage());
         }
     }
 
     public function listaDetalleAreas(Request $request)
     {
+        try{
+            $idEmpresa = $request->input('id_empresa');
 
-        $idEmpresa = $request->input('id_empresa');
-
-        // Realizar la consulta utilizando Eloquent
-        $query = DB::table('areas as a')
+            // Realizar la consulta utilizando Eloquent
+            $query = DB::table('areas as a')
             ->join('empresas as e', 'a.empresa_id', '=', 'e.id')
-            ->join('empleados as em', 'a.jefe_area', '=', 'em.id')
-            ->select(
-                'a.id',
-                'a.nombre as nombre_area',
-                'e.nombre as nombre_empresa',
-                DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe_area'),
-                'a.jefe_area as id_jefe',
-                'e.id as id_empresa'
-            );
+            ->leftJoin('empleados as em', 'em.id', '=', 'a.jefe_area')
+            ->select('a.id as area_id', 'a.nombre as nombre_area', 'e.nombre as nombre_empresa', DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe_area'), 'a.jefe_area as id_jefe', 'e.id as id_empresa');
 
-        if (!empty($idEmpresa)) {
-            $query->where('e.id', $idEmpresa);
+            if (!empty($idEmpresa)) {
+                $query->where('e.id', $idEmpresa);
+            }
+
+            $resultados = $query->get();
+
+            if($resultados == null){
+                return CustomResponse::make(null, 'No hay elementos disponibles', 400, null);
+            }
+
+            // Devolver los resultados en formato JSON
+            return CustomResponse::make($resultados, '', 200, null);
+        }catch(Exception $e){
+            return CustomResponse::make(null, 'Hubo un problema en el servidor', 500, $e->getMessage());
         }
-
-        $resultados = $query->get();
-
-        // Devolver los resultados en formato JSON
-        return response()->json($resultados);
     }
 
     public function listaJefeEmpleado()
     {
-
-        $usuarioJefe = DB::table('usuarios as u')
-            ->join('empleados as em', 'u.empleado_id', '=', 'em.id')
-            ->join('areas as a', 'a.jefe_area', '=', 'u.id')
+        try{
+            $usuarioJefe = DB::table('empleados as em')
+            ->join('areas as a', 'a.id', '=', 'em.area_id')
+            ->join('empresas as e', 'a.empresa_id', '=', 'e.id')
+            ->join('usuarios as u', 'u.empleado_id', '=', 'em.id')
             ->select('u.id', DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe'))
-            ->groupBy('u.id')
+            ->where('u.rol', '=', 'jefe')
+            ->whereNull('a.jefe_area')
             ->get();
 
-        return response()->json($usuarioJefe);
+            if($usuarioJefe == null){
+                return CustomResponse::make(null, 'No hay elementos disponibles', 400, null);
+            }
+
+            return CustomResponse::make($usuarioJefe, '', 200, null);
+
+        }catch(Exception $e){
+            return CustomResponse::make(null, 'Hubo un error en el servidor', 500, $e->getMessage());
+        }
+
     }
+
 }

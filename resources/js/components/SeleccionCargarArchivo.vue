@@ -1,10 +1,10 @@
 <template>
     <div class="bg-white d-flex flex-column justify-content-center align-items-center col-12 col-xs-12">
 
-        <div class="center-image d-flex flex-column justify-content-center align-items-center" style="margin-bottom: 1%">
-            <h2 class="h1 text-center mt-5" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">HISTORIAL DE HORAS EXTRAS
+
+            <h2 class="h1 text-center mt-5" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); margin-bottom: 1%;">HISTORIAL DE HORAS EXTRAS
             </h2>
-        </div>
+
         <div class="container mt-4">
             <h2 style="text-align: left;" class="mt-5">FILTROS DE BUSQUEDA</h2>
         </div>
@@ -71,6 +71,16 @@
                     <input v-model="email" type="text" @input="debouncefiltros" placeholder="Email"
                         class="form-control mb-2" disabled />
                 </div>
+                <div class="col-3">
+                    <div class="form-group d-flex" @input="debouncefiltros" style="width: 100%;">
+                        <select v-model="filtros.estado" class="form-select">
+                            <option value="" disabled selected>Estado</option>
+                            <option value="1">Procesados</option>
+                            <option value="0">No procesados</option>
+                        </select>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -115,8 +125,8 @@
                             <tr>
                                 <td></td>
                                 <td></td>
+                                <td></td>
                                 <td>Total</td>
-                                <td>{{ totalsueldo | toCurrency }}</td>
                                 <td class="centered">{{ totalDiurnas !== 0 ? totalDiurnas : '-' }}</td>
                                 <td class="centered">{{ totalNocturnas !== 0 ? totalNocturnas : '-' }}</td>
                                 <td class="centered">{{ totalDiurnasDescanso !== 0 ? totalDiurnasDescanso : '-' }}</td>
@@ -295,6 +305,7 @@ export default {
                 selectArea: "",
                 fechaDesde: "",
                 fechaHasta: "",
+                estado: "",
             },
             user: {},
             currentPage: 1,
@@ -446,11 +457,29 @@ export default {
             });
         },
         async procesarCalculos() {
-
             const response = await axios.post("calculo_horas", this.horasExtras);
-            var mensaje = response.data;
-            this.$toast.success('Calculos realizados');
-            this.buscarRegistrosByEmpresa(this.filtros);
+
+            if (response.data.status == 200) {
+                this.$swal.fire({
+                    title: '¡Exito!',
+                    icon: 'success',
+                    text: response.data.message,
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+                this.buscarRegistrosByEmpresa(this.filtros);
+
+            } else if (response.data.status == 500) {
+                this.$swal.fire({
+                    title: 'Error',
+                    icon: 'error',
+                    text: response.data.message,
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            }
 
         },
         changePage(page) {
@@ -612,4 +641,5 @@ tr td:nth-child(3) {
 
 .fixed-width {
     width: 5%;
-}</style>
+}
+</style>

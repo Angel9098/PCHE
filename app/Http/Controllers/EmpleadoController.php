@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Area;
+use App\CalculosExtra;
+use App\CustomResponse;
 use Illuminate\Http\Request;
 use \App\Empleado;
 use App\HoraExtra;
 use App\UserAct;
 use App\Usuario;
+use Exception;
 use GuzzleHttp\Psr7\Message;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -19,15 +22,181 @@ class EmpleadoController extends Controller
         $empleados = Empleado::all();
         return response()->json($empleados);
     }
+    public function planillaQuincenal(Request $request)
+    {
+        //$empleados = Empleado::where('nombres', 'LIKE', "%$nombre%")->get();
 
+        $empleados = Empleado::all();
+        $anio = date('Y');
+
+        $mes = intval(date('m')) - 1;
+
+        $dia = intval(date('d'));
+
+        $datos = [];
+        $resultados = [];
+
+        foreach ($empleados as $empleado) {
+
+            if ($dia >= 1 && $dia <= 15) {
+                $sueldoGanadoQuincena1 = CalculosExtra::query()
+                    ->select('calculos_horas.empleado_id')
+                    ->selectRaw("SUM(calculos_horas.salario_neto) as total_salario_neto")
+                    ->selectRaw("SUM(calculos_horas.total_horas) as total_horas_extras")
+                    ->join('empleados', 'calculos_horas.empleado_id', '=', 'empleados.id')
+                    ->where('calculos_horas.empleado_id', $empleado->id)
+                    ->whereMonth('calculos_horas.fecha_calculo', $mes)
+                    ->whereYear('calculos_horas.fecha_calculo', $anio)
+                    ->whereDay('calculos_horas.fecha_calculo', '<=', 15)
+                    ->groupBy('calculos_horas.empleado_id')
+                    ->first();
+
+                $sueldoMensual = $sueldoGanadoQuincena1 != null ? (($empleado->salario / 2) + $sueldoGanadoQuincena1->total_salario_neto) : ($empleado->salario / 2);
+                $sueldoQuincenal = $sueldoMensual / 2;
+                $isssQuincenal = ($sueldoQuincenal * 0.035) <= 30  ? ($sueldoQuincenal * 0.035) : 30;
+                $afpQuincenal = $sueldoQuincenal  * 0.0825;
+
+                $aplicableRenta = $sueldoQuincenal  - ($isssQuincenal + $afpQuincenal);
+                $rentaTotal = 0;
+                if ($aplicableRenta > 236.01 && $aplicableRenta < 447.62) {
+                    if ($aplicableRenta > 236.00) {
+                        $exceso = $aplicableRenta - 236.00;
+                        $excesoRenta = $exceso * 0.1;
+                        $cuotaFija = 8.83;
+                        $rentaTotal = $excesoRenta + $cuotaFija;
+                    }
+                } else if ($aplicableRenta >= 447.63 && $aplicableRenta <= 1019.05) {
+                    if ($aplicableRenta > 447.62) {
+                        $exceso = $aplicableRenta - 447.62;
+                        $excesoRenta = $exceso * 0.2;
+                        $cuotaFija = 30;
+                        $rentaTotal = $excesoRenta + $cuotaFija;
+                    }
+                } else if ($aplicableRenta >= 1019.06) {
+                    if ($aplicableRenta > 1019.05) {
+                        $exceso = $aplicableRenta - 1020;
+                        $excesoRenta = $exceso * 0.3;
+                        $cuotaFija = 144.28;
+                        $rentaTotal = $excesoRenta + $cuotaFija;
+                    }
+                }
+                $resultados["sueldoMesual"] = $sueldoMensual;
+                $resultados["imponibleRenta"] = $aplicableRenta;
+                $resultados["afp"] = $afpQuincenal;
+                $resultados["isss"] = $isssQuincenal;
+                $resultados["TotalPagar"] = $aplicableRenta - $rentaTotal;
+                $resultados["idEmpleado"] = $empleado->id;
+                $resultados["horasExtra"] = $sueldoGanadoQuincena1 != null ? $sueldoGanadoQuincena1->total_salario_neto : 0;
+                $resultados["totalHorasExtras"] = $sueldoGanadoQuincena1 != null ? $sueldoGanadoQuincena1->total_horas_extras : 0;
+                $resultados["dui"] = $empleado->dui;
+
+                array_push($datos, $resultados);
+            } elseif ($dia > 15 && $dia <= cal_days_in_month(CAL_GREGORIAN, $mes, $anio)) {
+                $sueldoGanadoQuincena2 = CalculosExtra::query()
+                    ->select('calculos_horas.empleado_id')
+                    ->selectRaw("SUM(calculos_horas.salario_neto) as total_salario_neto")
+                    ->join('empleados', 'calculos_horas.empleado_id', '=', 'empleados.id')
+                    ->where('calculos_horas.empleado_id', $empleado->id)
+                    ->whereMonth('calculos_horas.fecha_calculo', $mes)
+                    ->whereYear('calculos_horas.fecha_calculo', $anio)
+                    ->whereDay('calculos_horas.fecha_calculo', '>', 15)
+                    ->groupBy('calculos_horas.empleado_id')
+                    ->first();
+
+                $sueldoMensual = $sueldoGanadoQuincena2 != null ? (($empleado->salario) + $sueldoGanadoQuincena2->total_salario_neto) : ($empleado->salario);
+                $isssMensual = ($sueldoMensual * 0.035) > 30  ? ($sueldoMensual * 0.035) : 30;
+
+                $afpMensual = $sueldoMensual  * 0.0825;
+
+                $aplicableRentaMensual = $sueldoMensual - ($isssMensual + $afpMensual);
+                $rentaTotalMensual = 0;
+                if ($aplicableRentaMensual >= 472.01 && $aplicableRentaMensual <= 895.24) {
+                    if ($aplicableRentaMensual > 472.00) {
+                        $exceso = $aplicableRentaMensual - 472.00;
+                        $excesoRenta = $exceso * 0.1;
+                        $cuotaFija = 17.67;
+                        $rentaTotalMensual = $excesoRenta + $cuotaFija;
+                    }
+                } else if ($aplicableRentaMensual >= 895.25 && $aplicableRentaMensual <= 2038.10) {
+                    if ($aplicableRentaMensual > 895.24) {
+                        $exceso = $aplicableRentaMensual - 896.24;
+                        $excesoRenta = $exceso * 0.2;
+                        $cuotaFija = 60;
+                        $rentaTotalMensual = $excesoRenta + $cuotaFija;
+                    }
+                } else if ($aplicableRentaMensual >= 2038.11) {
+                    if ($aplicableRentaMensual > 2038.10) {
+                        $exceso = $aplicableRentaMensual - 2038.10;
+                        $excesoRenta = $exceso * 0.3;
+                        $cuotaFija = 288.57;
+                        $rentaTotalMensual = $excesoRenta + $cuotaFija;
+                    }
+                }
+                /**---------------------calculo quincenal para diferencia---------------- */
+                $sueldoGanadoQuincena1 = CalculosExtra::query()
+                    ->select('calculos_horas.empleado_id')
+                    ->selectRaw("SUM(calculos_horas.salario_neto) as total_salario_neto")
+                    ->selectRaw("SUM(calculos_horas.total_horas) as total_horas_extras")
+                    ->join('empleados', 'calculos_horas.empleado_id', '=', 'empleados.id')
+                    ->where('calculos_horas.empleado_id', $empleado->id)
+                    ->whereMonth('calculos_horas.fecha_calculo', $mes)
+                    ->whereYear('calculos_horas.fecha_calculo', $anio)
+                    ->whereDay('calculos_horas.fecha_calculo', '<=', 15)
+                    ->groupBy('calculos_horas.empleado_id')
+                    ->first();
+
+                $sueldoMensual = $sueldoGanadoQuincena1 != null ? (($empleado->salario / 2) + $sueldoGanadoQuincena1->total_salario_neto) : ($empleado->salario / 2);
+                $sueldoQuincenal = $sueldoMensual / 2;
+                $isssQuincenal = ($sueldoQuincenal * 0.035) > 30  ? ($sueldoQuincenal * 0.035) : 30;
+                $afpQuincenal = $sueldoQuincenal  * 0.0825;
+
+                $aplicableRenta = $sueldoQuincenal  - ($isssQuincenal + $afpQuincenal);
+                $rentaTotal = 0;
+                if ($aplicableRenta > 236.01 && $aplicableRenta < 447.62) {
+                    if ($aplicableRenta > 236.00) {
+                        $exceso = $aplicableRenta - 236.00;
+                        $excesoRenta = $exceso * 0.1;
+                        $cuotaFija = 8.83;
+                        $rentaTotal = $excesoRenta + $cuotaFija;
+                    }
+                } else if ($aplicableRenta >= 447.63 && $aplicableRenta <= 1019.05) {
+                    if ($aplicableRenta > 447.62) {
+                        $exceso = $aplicableRenta - 447.62;
+                        $excesoRenta = $exceso * 0.2;
+                        $cuotaFija = 30;
+                        $rentaTotal = $excesoRenta + $cuotaFija;
+                    }
+                } else if ($aplicableRenta >= 1019.06) {
+                    if ($aplicableRenta > 1019.05) {
+                        $exceso = $aplicableRenta - 1020;
+                        $excesoRenta = $exceso * 0.3;
+                        $cuotaFija = 144.28;
+                        $rentaTotal = $excesoRenta + $cuotaFija;
+                    }
+                }
+
+                $resultados["sueldoMesual"] = $sueldoMensual;
+                $resultados["imponibleRenta"] = $aplicableRentaMensual;
+                $resultados["afp"] = $afpMensual - $afpQuincenal;
+                $resultados["isss"] = $isssMensual - $isssQuincenal;
+                $resultados["TotalPagar"] = $aplicableRenta - $rentaTotal;
+                $resultados["idEmpleado"] = $empleado->id;
+                $resultados["horasExtra"] = $sueldoGanadoQuincena1 != null ? $sueldoGanadoQuincena1->total_salario_neto : 0;
+                $resultados["totalHorasExtras"] = $sueldoGanadoQuincena1 != null ? $sueldoGanadoQuincena1->total_horas_extras : 0;
+                $resultados["dui"] = $empleado->dui;
+            }
+        }
+
+        return CustomResponse::make($datos, '', 200, null);
+    }
     public function empleadosBusquedaNombre(Request $request)
     {
         try {
             $nombre = $request->input('nombres');
             $empleados = Empleado::where('nombres', 'LIKE', "%$nombre%")->get();
-            return response()->json($empleados);
+            return CustomResponse::make($empleados, '', 200, null);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'ocurrio un error al generar la busqueada'], 500);
+            return CustomResponse::make(null, 'Ocurrio un error al generar la busqueada', 500, $e->getMessage());
         }
     }
 
@@ -39,10 +208,8 @@ class EmpleadoController extends Controller
             $empleado = Empleado::findOrFail($idEmpleado);
 
             if (!$empleado) {
-                return response()->json(['message' => 'Empleado no encontrado'], 404);
+                return CustomResponse::make(null, 'Empleado no encontrado', 404, null);
             }
-
-
 
             $empleado->nombres = $request->input('nombres');
             $empleado->apellidos = $request->input('apellidos');
@@ -57,12 +224,10 @@ class EmpleadoController extends Controller
 
             $empleado->save();
 
-
-
             // Retornar una respuesta JSON con los datos actualizados
-            return response()->json(['message' => 'Empleado actualizado con éxito', 'empleado' => $empleado, 200]);
+            return CustomResponse::make($empleado, 'Empleado actualizado con éxito', 201, null);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error al actualizar el registro', $e], 500);
+            return CustomResponse::make(null, 'Error al actualizar el registro', 500, $e->getMessage());
         }
     }
 
@@ -104,10 +269,10 @@ class EmpleadoController extends Controller
                 $empleado->salario = $request->input('salario');
                 $empleado->save();
 
-                return response()->json(['message' => 'Empleado creado con éxito', 'empleado' => $empleado, 200]);
+                return CustomResponse::make($empleado, 'Empleado creado con éxito', 201, null);
             }
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error al crear registro', $e], 500);
+            return CustomResponse::make(null, 'Error al crear el registro', 500, $e->getMessage());
         }
     }
 
@@ -119,12 +284,13 @@ class EmpleadoController extends Controller
             $empleados = Empleado::findOrFail($id);
             $empleados->delete();
 
-            return response()->json(['message' => 'Registro eliminado con éxito'], 200);
+            return CustomResponse::make($empleados, 'Empleado eliminado con éxito', 200, null);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error al eliminar el registro'], 500);
+            return CustomResponse::make(null, 'Error al eliminar el registro', 500, $e->getMessage());
         }
     }
 
+    //endpoint 1
     public function empleadoByDui(Request $request)
     {
         try {
@@ -132,9 +298,12 @@ class EmpleadoController extends Controller
             $duiEmpleado = $request->input('dui');
 
             $empleado = Empleado::with('area.empresa')->where('dui', 'LIKE', "%$duiEmpleado%")->first();
-            return response()->json($empleado);
+            if ($empleado === null) {
+                return CustomResponse::make(null, 'Empleado no encontrado', 400, null);
+            }
+            return CustomResponse::make($empleado, '', 200, null);
         } catch (\Exception $e) {
-            return response()->json(['ocurrio un error al obtener el empleado' => $e], 500);
+            return CustomResponse::make($empleado, 'Error al obtener empleado', 500, $e->getMessage());
         }
     }
 
@@ -144,18 +313,22 @@ class EmpleadoController extends Controller
 
             $idEmpleado = $request->input('idEmpleado');
             $empleado = Empleado::where('id', $idEmpleado)->with('area.empresa')->get();
-
-            return response()->json($empleado);
+            return CustomResponse::make($empleado, '', 200, null);
         } catch (\Exception $e) {
-            return response()->json(['ocurrio un error al obtener el empleado' => $e], 500);
+            return CustomResponse::make(null, 'ocurrio un error al obtener el empleado', 500, null);
         }
     }
 
     public function findEmpleadoById(Request $request)
     {
-        $id = $request->input('id');
-        $empleado = Empleado::find($id);
-        return response()->json($empleado);
+        try {
+            $id = $request->input('id');
+            $empleado = Empleado::find($id);
+
+            return CustomResponse::make($empleado, '', 200, null);
+        } catch (Exception $ex) {
+            return CustomResponse::make(null, 'ocurrio un error al obtener el empleado', 500, null);
+        }
     }
 
     public function actualizarContrasenia(Request $request)
@@ -171,15 +344,15 @@ class EmpleadoController extends Controller
             $empleado = Usuario::find($idUsuario);
             //dd($empleado);
             if (!$empleado) {
-                return response()->json(['error' => 'Usuario no encontrado'], 404);
+                return CustomResponse::make(null, 'Usuario no encontrado', 400, null);
             }
 
             //verificar si la contraseña antigua esta correcta
             if (!Hash::check($oldPassword, $empleado->password)) {
-                return response()->json(['error' => 'Contraseña antigua es incorrecta'], 400);
+                return CustomResponse::make(null, 'Contraseña antigua es incorrecta', 400, null);
             }
             if ($newPassword != $confirmPassword) {
-                return response()->json(['error' => 'Las contraseñas no coiciden'], 400);
+                return CustomResponse::make(null, 'Las contraseñas no coiciden', 400, null);
             }
 
             $empleado->update([
@@ -187,9 +360,9 @@ class EmpleadoController extends Controller
             ]);
 
             // Password updated successfully
-            return response()->json(['message' => 'Contraseña actualizada exitosamente'], 200);
+            return CustomResponse::make($empleado, 'Contraseña actualizada exitosamente', 201, null);
         } catch (\Exception $e) {
-            return response()->json(['ocurrio un error al obtener el usuario' => $e->getMessage()], 500);
+            return CustomResponse::make(null, 'Ocurrio un error al obtener el usuario', 500, $e->getMessage());
         }
     }
 
@@ -203,9 +376,9 @@ class EmpleadoController extends Controller
                 ->select('e.*')
                 ->where('ar.empresa_id', '=', $idEmpresa)
                 ->get();
-            return response()->json($empleados);
+            return CustomResponse::make($empleados, '', 200, null);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'ocurrio un error al generar la busqueada'], 500);
+            return CustomResponse::make(null, 'Ocurrio un error al generar la busqueada', 500, $e->getMessage());
         }
     }
 
@@ -226,9 +399,6 @@ class EmpleadoController extends Controller
             $cargo = $request->input('cargo');
             $email = $request->input('email');
             $idEmpresa = $request->input('selectedOption');
-
-
-
 
             $empleados = Empleado::with('area.empresa')
                 ->where(function ($query) use ($nombres) {
@@ -262,10 +432,9 @@ class EmpleadoController extends Controller
                     }
                 })
                 ->get();
-
-            return response()->json($empleados);
+            return CustomResponse::make($empleados, '', 200, null);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'ocurrio un error al generar la busqueda'], 500);
+            return CustomResponse::make(null, 'Ocurrio un error al generar la busqueda', 500, $e->getMessage());
         }
     }
     public function empleadosConHorasExtra(Request $request)
@@ -288,10 +457,11 @@ class EmpleadoController extends Controller
         }
         $empleadosConHorasExtra = $query->get();
 
-        return response()->json($empleadosConHorasExtra);
+        return CustomResponse::make($empleadosConHorasExtra, '', 200, null);
     }
 
-    public function validarEmail(Request $request){
+    public function validarEmail(Request $request)
+    {
         $email = $request->input('email');
 
         // Verificar si el correo electrónico ya existe en la base de datos
@@ -299,14 +469,15 @@ class EmpleadoController extends Controller
 
         if ($empleado) {
             // El correo electrónico ya existe
-            return response()->json(['message' => 'El correo electrónico ya está en uso'], 400);
+            return CustomResponse::make(null, 'El correo electrónico ya está en uso', 400, null);
         }
 
         // El correo electrónico no existe
-        return response()->json(['message' => 'El correo electrónico está disponible'], 200);
+        return CustomResponse::make(null, 'El correo electrónico está disponible', 200, null);
     }
 
-    public function validarDui(Request $request){
+    public function validarDui(Request $request)
+    {
         $email = $request->input('dui');
 
         // Verificar si el dui ya existe en la base de datos
@@ -314,10 +485,10 @@ class EmpleadoController extends Controller
 
         if ($empleado) {
             // El dui ya existe
-            return response()->json(['message' => 'El dui ya está en uso'], 400);
+            return CustomResponse::make(null, 'El dui ya está en uso', 400, null);
         }
 
         // El dui no existe
-        return response()->json(['message' => 'El dui está disponible'], 200);
+        return CustomResponse::make(null, 'El dui esta disponible', 200, null);
     }
 }

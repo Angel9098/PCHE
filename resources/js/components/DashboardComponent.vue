@@ -38,7 +38,7 @@
             </div>
             <div class="col-6 border border-1 rounded-3">
                 <h3 class="text-center mt-2">Comparativo horas extra</h3>
-                <div id="chartLines"></div>
+                <apexchart width="100%" type="bar" :options="optionsLines" :series="optionsLines.series" id="chartLines"></apexchart>
             </div>
         </div>
         
@@ -93,6 +93,8 @@ export default {
             empresaID: 0,
             serieDonut: [],
             categorysDonut: [],
+            comparativoBars: [],
+            comparativoCategories: [],
             nombre: '',
             chartDataDonut: {
                 labels: [],
@@ -117,11 +119,18 @@ export default {
                         borderRadius: 10,
                         dataLabels: {
                             position: 'top'
-                    }
-                  }  
+                        }
+                    }  
                 },
                 xaxis: {
                     categories:['Enero', 'Febrero', 'Marzo']
+                },
+                yaxis: {
+                    labels: {
+                        formatter: function (value) {
+                            return '$' + value
+                        }
+                    }
                 }
             },
             series: [{
@@ -147,13 +156,16 @@ export default {
                                 fontSize: '22px'
                             },
                             value: {
-                                fontSize: '16px'
+                                fontSize: '16px',
+                                formatter: function (val) {
+                                    return '$' + val
+                                }
                             },
                             total: {
                                 show: true,
                                 label: 'Total',
                                 formatter: function (w) {
-                                    return 249
+                                    return '$' + 210
                                 }
                             }
                         }
@@ -162,7 +174,7 @@ export default {
                 labels: ['Optimissa', 'Lat Mobile', 'Monetae']
             },
             optionsLines: {
-                series: [
+                series: []/* [
                     {
                         name: 'Lat Mobile',
                         data: [22, 44, 10]
@@ -175,10 +187,10 @@ export default {
                         name: 'Optimissa',
                         data: [65, 56, 63]
                     },
-                ],
+                ] */,
                 chart: {
                     type: 'bar',
-                    height: 420
+                    height: 400
                 },
                 plotOptions: {
                     bar: {
@@ -196,7 +208,7 @@ export default {
                     colors: ['transparent']
                 },
                 xaxis: {
-                    categories: ['Enero', 'Febrero', 'Marzo']
+                    categories: ['Agosto','Septiembre','Octubre']
                 },
                 yaxis: {
                     title: {
@@ -220,14 +232,15 @@ export default {
         var chartCircle = new ApexCharts(document.querySelector('#radialBar1'), this.optionsRadial);
         chartCircle.render();
 
-        var chartBar = new ApexCharts(document.querySelector("#chartLines"), this.optionsLines);
-        chartBar.render();
+        //var chartBar = new ApexCharts(document.querySelector("#chartLines"), this.optionsLines);
+        //chartBar.render();
 
         this.leerData();
         this.getEmpresas();
         if(localStorage.getItem('user') !== null){
             this.usuario = JSON.parse(localStorage.getItem('user'));
         }
+        this.getHorasExtraComparativo();
     },
     methods: {
         cerrarSesion(){
@@ -255,19 +268,47 @@ export default {
                 console.error("Error al cargar empresas:", error);
             });
         },
+        getRecuentoHorasExtra() {
+            
+        },
         getHorasExtraByArea() {
             this.chartDataDonut.labels = [];
             this.chartDataDonut.datasets[0].data = [];
             this.categorysDonut = [];
             this.serieDonut = [];
             axios.get(`dashboard/horasExtraEmpresa?idEmpresa=${this.empresaID}`, { headers: { 'Content-type': 'application/json' } }).then(resp => {
-                console.log(resp.data);
                 resp.data.forEach(element => {
                     this.categorysDonut.push(element.nombre_area);
                     this.serieDonut.push(element.total_horas);
                 });
                 this.chartDataDonut.labels = this.categorysDonut;
                 this.chartDataDonut.datasets[0].data = this.serieDonut;
+            })
+        },
+        getHorasExtraComparativo() {
+            axios.get('dashboard/horasExtraTotal', { headers: { 'Content-type': 'application/json' } }).then(resp => {
+                resp.data.forEach(element => {
+                    if (this.comparativoBars.length == 0) {
+                        this.comparativoBars.push({ name: element.nombre_empresa, data: [element.total_horas] });
+                        this.comparativoCategories.push(element.periodo);
+                    } else {
+                        if (this.comparativoBars.findIndex(item => item.name == element.nombre_empresa) != -1) {
+                            let index = this.comparativoBars.findIndex(item => item.name == element.nombre_empresa);
+                            this.comparativoBars[index].data.push(element.total_horas);
+                        } else {
+                            this.comparativoBars.push({ name: element.nombre_empresa, data: [element.total_horas] });
+                        }
+
+                        if (this.comparativoCategories.findIndex(item => item == element.periodo) == -1) {
+                            this.comparativoCategories.push(element.periodo);
+                        }
+                    }
+                });
+                this.optionsLines.series = this.comparativoBars;
+                Vue.set(this.optionsLines.xaxis, 'categories', this.comparativoCategories);
+                //this.optionsLines.xaxis = { ...this.optionsLines.xaxis, categories: this.comparativoCategories };
+                this.$forceUpdate();
+                console.log(this.optionsLines.xaxis.categories)
             })
         }
     }

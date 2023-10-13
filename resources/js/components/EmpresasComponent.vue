@@ -70,23 +70,24 @@
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">Agregar Empresa</h5>
-                            <button type="button" class="close" data-dismiss="modal" @click="cerrarModalAgregarEmpresa">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <h5 v-if="data.id == 0" class="modal-title">Agregar Empresa</h5>
+                            <h5 v-else class="modal-title">Modificar Empresa</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body gridClass">
                             <div class="p-4">
                                 <picture class="mb-3">
                                     <source :srcset="defaultBooleand ? defaultImagen : perfil.imagen" type="image" />
-                                    <img :src="defaultBooleand ? defaultImagen : perfil.imagen"
+                                    <img v-if="data.id == 0" :src="defaultBooleand ? defaultImagen : perfil.imagen"
                                         class="img-fluid img-thumbnail cicle" alt="..." />
+                                    <img v-else :src="data.imagen == null ? defaultImagen : 'storage/imagenes/'+data.imagen" class="img-fluid img-thumbnail cicle">
                                 </picture>
                             </div>
                             <div class="p-4">
                                 <div class="form-group">
                                     <div class="form-group  my-3">
-                                        <label for="changeIMG">CAMBIAR LA IMAGEN</label>
+                                        <label for="changeIMG" v-if="data.id == 0">Agregar imagen</label>
+                                        <label for="changeIMG" v-else>Modificar imagen</label>
                                         <input type="file" class="form-control" id="changeIMG"
                                             placeholder="CAMBIAR LA IMAGEN" @change="changesDefauld" />
                                     </div>
@@ -100,7 +101,7 @@
                                     </div>
                                     <div class="row" style="margin-bottom: 2%">
                                         <div class="col-5">
-                                            <label for="nombreEmpresa">Direccion</label>
+                                            <label for="nombreEmpresa">Direcci&#243;n</label>
                                         </div>
                                         <div class="col-7">
                                             <input type="text" class="form-control" v-model="data.direccion" />
@@ -144,13 +145,13 @@ export default {
             defaultImagen:
                 "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
             defaultBooleand: true,
-            file: File,
+            file: null,
             empresas: [],
             data: {
-                imagen: File,
+                imagen: null,
                 nombre: "",
                 direccion: "",
-                id: "",
+                id: 0,
                 rubro: "",
                 fecha: "",
             },
@@ -176,9 +177,15 @@ export default {
         },
         async dataGuardarEmpresa() {
 
+            this.$swal.fire({
+                title: 'Cargando...',
+                html: '<div class="my-5 d-flex flex-row justify-content-center"><div class="sk-chase"><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div></div></div>',
+                showCancelButton: false,
+                showConfirmButton: false
+            });
 
             const formData = new FormData();
-            formData.append('imagen', this.file, this.file.name);
+            formData.append('imagen', this.file);
             formData.append('nombre', this.data.nombre);
             formData.append('direccion', this.data.direccion);
             formData.append('rubro', this.data.rubro);
@@ -190,17 +197,23 @@ export default {
             });
 
             if (response.status === 200) {
-                this.$toast.success('Empresa creada con exito');
+                this.$swal.close();
+                this.$swal.fire({
+                    title: '¡Hecho!',
+                    icon: 'success',
+                    text: 'Empresa creada con éxito',
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    timer: 2000
+                })
                 this.cerrarModalAgregarEmpresa();
-
                 this.fetchEmpresas();
             }
             this.data.nombre = "";
             this.data.direccion = "";
             this.data.rubro = "";
             this.file = null;
-            this.file.name = null;
-
+            this.data.imagen = null;
 
         },
 
@@ -210,44 +223,52 @@ export default {
             this.data.nombre = response.data[0].nombre;
             this.data.direccion = response.data[0].direccion;
             this.data.rubro = response.data[0].rubro;
-            this.data.id = response.data[0].id
+            this.data.id = response.data[0].id;
+            this.data.imagen = response.data[0].imagen;
             $("#modalAgregarEmpresa").modal("show");
 
         },
 
         eliminarEmpresa(id) {
             this.$swal.fire({
-                title: '¿Estas seguro que deseas eliminar?',
+                title: '¿Estás seguro que deseas eliminar?',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Eliminar'
+                confirmButtonText: 'Eliminar',
+                cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios
-                        .delete(`/empresas?id=${id}`)
-                        .then((response) => {
-                            this.$swal.fire({
-                                title: '¡Borrado!',
-                                icon: 'success',
-                                text: response.data.message,
-                                showCancelButton: false,
-                                showConfirmButton: false,
-                                timer: 2000
-                            })
-                            this.fetchEmpresas();
-                        })
-                        .catch((error) => {
-                            this.$swal.fire({
-                                title: 'Error',
-                                icon: 'error',
-                                text: response.data.message,
-                                showCancelButton: false,
-                                showConfirmButton: false,
-                                timer: 2000
-                            })
+                    this.$swal.fire({
+                        title: 'Cargando...',
+                        html: '<div class="my-5 d-flex flex-row justify-content-center"><div class="sk-chase"><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div></div></div>',
+                        showCancelButton: false,
+                        showConfirmButton: false
+                    });
+
+                    axios.delete(`/empresas?id=${id}`).then((response) => {
+                        this.$swal.close();
+                        this.$swal.fire({
+                            title: '¡Borrado!',
+                            icon: 'success',
+                            text: response.data.message,
+                            showCancelButton: false,
+                            showConfirmButton: false,
+                            timer: 2000
                         });
+                        this.fetchEmpresas();
+                    }).catch((error) => {
+                        this.$swal.close();
+                        this.$swal.fire({
+                            title: 'Error',
+                            icon: 'error',
+                            text: error.data.message,
+                            showCancelButton: false,
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
+                    });
                 }
             })
         },
@@ -257,22 +278,28 @@ export default {
         },
         cerrarModalAgregarEmpresa() {
             $("#modalAgregarEmpresa").modal("hide");
+            this.cancelar();
         },
         guardarEmpresa() {
 
-            if (this.data.id != "") {
+            if (this.data.id != 0) {
                 this.actualizarEmpresa();
             } else {
                 this.dataGuardarEmpresa();
             }
         },
         async actualizarEmpresa() {
-
+            this.$swal.fire({
+                title: 'Cargando...',
+                html: '<div class="my-5 d-flex flex-row justify-content-center"><div class="sk-chase"><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div></div></div>',
+                showCancelButton: false,
+                showConfirmButton: false
+            });
 
             const formData = new FormData();
 
             if (this.file) {
-                formData.append('imagen', this.file, this.file.name);
+                formData.append('imagen', this.file);
             }
 
             formData.append('nombre', this.data.nombre);
@@ -287,7 +314,15 @@ export default {
             });
 
             if (response.status === 200) {
-                this.$toast.success('Empresa Actualizada con exito');
+                this.$swal.close();
+                this.$swal.fire({
+                    title: '¡Hecho!',
+                    icon: 'success',
+                    text: 'Empresa actualizada con éxito',
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    timer: 2000
+                })
                 this.cerrarModalAgregarEmpresa();
 
                 this.fetchEmpresas();
@@ -296,8 +331,8 @@ export default {
             this.data.direccion = "";
             this.data.rubro = "";
             this.file = null;
-            this.file.name = null;
-
+            this.data.id = 0;
+            this.data.imagen = null;
 
         },
         formatFecha(date) {
@@ -327,6 +362,14 @@ export default {
             this.currentPage = page;
             this.fetchEmpresas();
         },
+        cancelar() {
+            this.data.nombre = "";
+            this.data.direccion = "";
+            this.data.rubro = "";
+            this.file = null;
+            this.data.id = 0;
+            this.data.imagen = null;
+        }
     },
 };
 </script>

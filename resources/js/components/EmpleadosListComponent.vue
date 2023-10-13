@@ -63,7 +63,7 @@
         </div>
 
         <div class="container">
-            <h2 class="h1 text-center mt-5"  style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">LISTADO DE EMPLEADOS</h2>
+            <h2 class="h1 text-center mt-5" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">LISTADO DE EMPLEADOS</h2>
             <table class="table table-hover table-bordered mt-4">
                 <thead class="table-primary bg-primary">
                     <tr class="text-center">
@@ -87,8 +87,11 @@
                         <td>{{ empleado.area.nombre }}</td>
                         <td>{{ empleado.area.empresa.nombre }}</td>
                         <td class="actions-cell">
-                            <button @click="seleccionar(empleado.id)" class="btn btn-primary" type="button">
+                            <button @click="seleccionar(empleado.id)" class="btn btn-primary my-2" type="button">
                                 <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button @click="eliminarEmpresa(empleado.id)" class="btn btn-danger custom-btn" type="button">
+                                <i class="fas fa-trash-alt text-white"></i>
                             </button>
                         </td>
                     </tr>
@@ -118,17 +121,31 @@
                     </li>
                 </ul>
             </nav>
+            <div class="row">
+                <div class="col-9">
+                </div>
+                <div class="col-2">
+                </div>
+                <div class="col-1">
+                    <div>
+                        <button @click="exportar()" class="btn btn-custom btn-3d">Planilla</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 import axios from "axios";
+
+import ExcelJS from "exceljs";
 export default {
     data() {
         return {
             empleados: [],
             empresas: [],
+            calculosHoras: [],
             filtros: {
                 nombre: "",
                 apellido: "",
@@ -196,8 +213,11 @@ export default {
                 .get("/empleados_area?page=" + this.currentPage)
                 .then((response) => {
                     this.empleados = "";
+                    console.log(response.data.data);
+                    // const  condicion = (object) => object.eliminar;
+                    // const dataFiltros = response.data.data.filter(condicion)
+                    // this.empleados = dataFilter
                     this.empleados = response.data.data;
-
                     this.lastPage = response.data.last_page;
                 })
                 .catch((error) => {
@@ -212,6 +232,83 @@ export default {
             this.currentPage = page;
             this.fetchEmpleados();
         },
+
+        async exportar() {
+            const response = await axios.post("planilla/quincenal");
+            this.calculosHoras = response.data.object;
+
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet("Reporte de Horas Extras");
+
+            // Define un estilo para centrar los datos y otro estilo para el formato de moneda
+            const centeredStyle = {
+                alignment: { horizontal: "center" },
+            };
+            const currencyStyle = {
+                numFmt: "$ #,##0.00",
+            };
+
+            // Aplica los estilos a las columnas
+            worksheet.columns = [
+                { header: "ID Empleado", key: "id_empleado", width: 15, style: centeredStyle },
+                { header: "Sueldo Mensual", key: "sueldo", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
+                { header: "Horas Extra", key: "horasExtra", width: 15, style: centeredStyle },
+                { header: "Total Ganado", key: "TotalGanado", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
+                { header: "AFP", key: "afp", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
+                { header: "ISSS", key: "isss", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
+                { header: "Total a Pagar", key: "TotalPagar", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
+            ];
+
+            this.calculosHoras.forEach((registro) => {
+                // Agrega cada fila y aplica los estilos
+                worksheet.addRow({
+                    id_empleado: registro.dui,
+                    nombre: registro.nombre,
+                    sueldo: registro.sueldoMesual,
+                    horasExtra: registro.totalHorasExtras,
+                    TotalGanado: registro.horasExtra,
+                    afp: registro.afp,
+                    isss: registro.isss,
+                    TotalPagar: registro.TotalPagar,
+                }).eachCell({ includeEmpty: true }, (cell) => {
+                    cell.style = centeredStyle;
+                });
+            });
+
+            // Escribe el archivo y genera la descarga
+            workbook.xlsx.writeBuffer().then((data) => {
+                const blob = new Blob([data], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                });
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", "Reporte de Horas Extras.xlsx");
+                document.body.appendChild(link);
+                link.click();
+            });
+        },
+
+        eliminarEmpresa(id) {
+
+            this.$swal({
+                title: 'Estas seguro de eliminar el registro?',
+                text: "¡No podrás revertir esto!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '¡Sí, bórralo!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.$swal(
+                        'Deleted!',
+                        'Su registro ha sido eliminado.',
+                        'success'
+                    )
+                }
+            })
+        }
     },
 };
 </script>
@@ -224,6 +321,27 @@ export default {
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
+}
+
+.btn-custom {
+    background-image: linear-gradient(to bottom, #06495a, #05333f);
+    color: #fff;
+    border-color: #2a7484;
+}
+
+.btn-custom:hover {
+    background-image: linear-gradient(to bottom, #06495a, #05333f);
+}
+
+/* Ajustar el color del texto para que resalte más */
+.btn-custom.btn-3d {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+    font-weight: bold;
+}
+
+.btn-custom.btn-3d:hover {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+    transform: translateY(-1px);
 }
 
 .textbox,
@@ -363,4 +481,5 @@ th.col-1:nth-child(1) {
 thead th:nth-child(3),
 tr td:nth-child(3) {
     width: 10%;
-}</style>
+}
+</style>

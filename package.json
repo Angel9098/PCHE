@@ -27,6 +27,7 @@
     },
     "dependencies": {
         "@popperjs/core": "^2.11.8",
+        "animate.css": "^4.1.1",
         "apexcharts": "^3.43.0",
         "chart.js": "^3.0.0",
         "exceljs": "^4.3.0",
@@ -41,7 +42,7 @@
         "vue-chartjs": "^4.1.2",
         "vue-router": "^3.6.5",
         "vue-simple-alert": "^1.1.1",
-        "vue-sweetalert2": "^5.0.2",
+        "vue-sweetalert2": "^5.0.5",
         "vue-toastification": "^1.7.14",
         "vuelidate": "^0.7.7",
         "vuex": "^2.5.0"

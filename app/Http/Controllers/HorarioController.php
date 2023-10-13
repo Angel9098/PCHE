@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Horario;
+use App\CustomResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,56 +14,6 @@ class HorarioController extends Controller
     {
         $horarios = Horario::all();
         return response()->json($horarios);
-    }
-
-    public function create()
-    {
-
-    }
-
-
-    public function store(Request $request)
-    {
-        $horario = new Horario([
-            'turno' => $request->input('turno'),
-            'descripcion' => $request->input('descripcion'),
-            'horas_semana' => $request->input('horas_semana')
-
-        ]);
-
-        $horario->save();
-
-        return response()->json(['message' => 'Post creado exitosamente'], 201);
-    }
-
-
-    public function show(Horario $horario)
-    {
-
-    }
-
-
-    public function edit(Horario $horario)
-    {
-
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Horario  $horario
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Horario $horario)
-    {
-
-    }
-
-
-    public function destroy(Horario $horario)
-    {
-
     }
 
     public function consultaDehorarioPorEmpleado(Request $request){
@@ -76,11 +27,10 @@ class HorarioController extends Controller
             ->where('empleados.nombres', 'LIKE', "%$nombreEmpleado%")
             ->get();
            // $horario = Horario::all();
-
-            return response()->json($horario);
+           return CustomResponse::make($horario, '', 200, null);
 
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error al crear registro',$e], 500);
+            return CustomResponse::make(null, 'Error al crear registro', 500, $e->getMessage());
         }
 
     }

@@ -12,6 +12,7 @@ import FloatingVue from 'floating-vue';
 import 'floating-vue/dist/style.css';
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import 'animate.css';
 
 import store from './store'; // Agregando estados 
 import VueSimpleAlert from "vue-simple-alert";
