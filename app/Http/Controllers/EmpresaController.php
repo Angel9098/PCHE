@@ -61,7 +61,7 @@ class EmpresaController extends Controller
     {
         try {
             $nombreImagen = null;
-            if($request->hasFile('imagen')){
+            if ($request->hasFile('imagen')) {
                 $imagen = $request->file('imagen');
                 $nombreImagen = uniqid() . '.' . $imagen->getClientOriginalExtension();
                 $rutaImagen = $imagen->storeAs('public/imagenes', $nombreImagen);
@@ -104,7 +104,7 @@ class EmpresaController extends Controller
 
             $empresa->save();
 
-            return CustomResponse::make($empresa, 'Empresa actualizada exitosamente', 201, null);
+            return CustomResponse::make($empresa, 'Empresa actualizada exitosamente', 200, null);
         } catch (ModelNotFoundException $ex) {
             return CustomResponse::make(null, 'Empresa no encontrada', 404, null);
         } catch (QueryException $ex) {
@@ -115,20 +115,20 @@ class EmpresaController extends Controller
     public function getAreasEmpresa(Request $request)
     {
 
-        $id = $request->input('id');
+        try {
+            $id = $request->input('id');
 
-        if (!$id) {
-            return CustomResponse::make(null, 'Falta el parámetro "id" en la consulta', 400, null);
+            $empresas = Empresa::find($id);
+
+            if (!$empresas) {
+                return CustomResponse::make(null, 'Empresa no encontrada', 404, null);
+            }
+
+            $areas = $empresas->areas;
+
+            return CustomResponse::make($areas, '', 200, null);
+        } catch (\Exception $e) {
+            return CustomResponse::make(null, '', 500, $e->getMessage());
         }
-
-        $empresas = Empresa::find($id);
-
-        if (!$empresas) {
-            return CustomResponse::make(null, 'Empresa no encontrada', 404, null);
-        }
-
-        $areas = $empresas->areas;
-
-        return CustomResponse::make($areas, '', 200, null);
     }
 }

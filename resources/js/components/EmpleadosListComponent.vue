@@ -177,7 +177,8 @@ export default {
                     this.filtros.apellido === "" &&
                     this.filtros.cargo === "" &&
                     this.filtros.dui === "" &&
-                    this.filtros.email === ""
+                    this.filtros.email === "" &&
+                    this.filtros.selectedOption != ""
                 ) {
                     this.fetchEmpleados();
                 } else {
@@ -185,7 +186,7 @@ export default {
                         "/empleados/filtro/busqueda",
                         this.filtros
                     );
-                    this.empleados = response.data;
+                    this.empleados = response.data.object;
                 }
             } catch (error) {
                 console.error(
@@ -209,15 +210,9 @@ export default {
                 });
         },
         fetchEmpleados() {
-            axios
-                .get("/empleados_area?page=" + this.currentPage)
+            axios.get("/empleados_area?page=" + this.currentPage)
                 .then((response) => {
-                    this.empleados = "";
-                    console.log(response.data.data);
-                    // const  condicion = (object) => object.eliminar;
-                    // const dataFiltros = response.data.data.filter(condicion)
-                    // this.empleados = dataFilter
-                    this.empleados = response.data.data;
+                    this.empleados = response.data.object.data;
                     this.lastPage = response.data.last_page;
                 })
                 .catch((error) => {

@@ -6,23 +6,14 @@
                 <div class="col-12 col-sm-12 col-lg-6">
                     <div class="floatCenter my-4">
                         <picture class="mb-3">
-                            <source
-                                :srcset="
-                                    defaultBooleand
-                                        ? defaultImagen
-                                        : perfil.imagen
-                                "
-                                type="image"
-                            />
-                            <img
-                                :src="
-                                    defaultBooleand
-                                        ? defaultImagen
-                                        : perfil.imagen
-                                "
-                                class="img-fluid img-thumbnail cicle"
-                                alt="SRC"
-                            />
+                            <source :srcset="defaultBooleand
+                                    ? defaultImagen
+                                    : perfil.imagen
+                                " type="image" />
+                            <img :src="defaultBooleand
+                                    ? defaultImagen
+                                    : perfil.imagen
+                                " class="img-fluid img-thumbnail cicle" alt="SRC" />
                         </picture>
 
                         <div class="d-flex flex-row">
@@ -42,83 +33,41 @@
                     <div class="container">
                         <form class="formContent">
                             <div class="mb-3">
-                                <label for="changeIMG" class="form-label"
-                                    >Cambiar Imagen</label
-                                >
-                                <input
-                                    type="file"
-                                    class="form-control"
-                                    id="changeIMG"
-                                    @change="changesDefauld"
-                                />
+                                <label for="changeIMG" class="form-label">Cambiar Imagen</label>
+                                <input type="file" class="form-control" id="changeIMG" @change="changesDefauld" />
                             </div>
                             <div class="mb-3">
-                                <label for="changeNombre" class="form-label"
-                                    >Correo electrónico</label
-                                >
-                                <input
-                                    type="email"
-                                    class="form-control"
-                                    id="changeNombre"
-                                    v-model="perfil.email"
-                                    readonly
-                                />
+                                <label for="changeNombre" class="form-label">Correo electrónico</label>
+                                <input type="email" class="form-control" id="changeNombre" v-model="perfil.email"
+                                    readonly />
                             </div>
                             <div class="row mb-3">
                                 <div class="col-12 col-sm-12 col-lg-6">
-                                    <label
-                                        for="contactoEmergencia"
-                                        class="form-label"
-                                        >Contácto de Emergencia</label
-                                    >
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        id="contactoEmergencia"
-                                        placeholder="Contacto de emergencia"
-                                        v-model="perfil.avisar_contacto"
-                                        readonly
-                                    />
+                                    <label for="contactoEmergencia" class="form-label">Contácto de Emergencia</label>
+                                    <input type="text" class="form-control" id="contactoEmergencia"
+                                        placeholder="Contacto de emergencia" v-model="perfil.avisar_contacto" readonly />
                                 </div>
                                 <div class="col-12 col-sm-12 col-lg-6">
-                                    <label for="changePuesto" class="form-label"
-                                        >Número de Emergencia
+                                    <label for="changePuesto" class="form-label">Número de Emergencia
                                     </label>
-                                    <input
-                                        type="tel"
-                                        class="form-control"
-                                        id="changePuesto"
-                                        placeholder="(503) 7854 6985"
-                                        v-model="perfil.numero_emergencia"
-                                        readonly
-                                    />
+                                    <input type="tel" class="form-control" id="changePuesto" placeholder="(503) 7854 6985"
+                                        v-model="perfil.numero_emergencia" readonly />
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="col my-2">
-                                    <button
-                                        @click="sendInfromation()"
-                                        type="button"
-                                        class="btn btn-dark"
-                                        style="width: 100%"
-                                    >
+                                    <button @click="sendInfromation()" type="button" class="btn btn-dark"
+                                        style="width: 100%">
                                         Guardar
                                         <i class="fa-solid fa-circle-plus"></i>
                                     </button>
                                 </div>
                                 <div class="col my-2">
-                                    <button
-                                        type="button"
-                                        class="btn btn-primary"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal"
-                                        style="width: 100%"
-                                    >
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal" style="width: 100%">
                                         Contraseña
-                                        <i
-                                            class="fa-solid fa-pen-to-square"
-                                        ></i>
+                                        <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
                                 </div>
                             </div>
@@ -129,25 +78,14 @@
         </article>
         <!-- ****** -->
 
-        <div
-            class="modal fade"
-            id="exampleModal"
-            tabindex="-1"
-            aria-labelledby="exampleModalLabel"
-            aria-hidden="true"
-        >
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">
                             Nombre de persona
                         </h5>
-                        <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"
-                        ></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <modal-change-password></modal-change-password>
@@ -165,6 +103,7 @@
     height: 200px;
     border-radius: 50%;
 }
+
 .floatCenter {
     display: flex;
     flex-direction: column;
@@ -172,6 +111,7 @@
     align-items: center;
     border-right: 3px solid rgba(0, 0, 0, 0.726);
 }
+
 .formContent {
     margin: 10%;
 }
@@ -229,17 +169,12 @@ export default {
                 axios
                     .get(`empleadobyid?idEmpleado=${empleado_id}`)
                     .then((result) => {
-                        if (imagen !== null) {
-                            this.defaultImagen = `storage/imagenes/${imagen}`;
-                            //this.defaultBooleand = false;
-                            this.perfil.imagen = `storage/imagenes/${imagen}`;
-                        }
 
-                        this.perfil = result.data[0];
-                        this.perfil.nombres = `${result.data[0].nombres} ${result.data[0].apellidos}`;
+                        this.perfil = result.data.object[0];
+                        this.perfil.nombres = `${result.data.object[0].nombres} ${result.data.object[0].apellidos}`;
                         document.title = `PCHE - Perfil usuario - ${this.perfil.nombres}`;
                     })
-                    .catch((error) => {});
+                    .catch((error) => { });
             }
         },
         changesDefauld(event) {

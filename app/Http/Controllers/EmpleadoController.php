@@ -384,9 +384,12 @@ class EmpleadoController extends Controller
 
     public function allEmpleadosAreaEmpresa()
     {
-        $empleados = Empleado::with("area.empresa")->paginate(5);
-
-        return response()->json($empleados);
+        try {
+            $empleados = Empleado::with("area.empresa")->paginate(5);
+            return CustomResponse::make($empleados, '', 200, null);
+        } catch (\Exception $e) {
+            return CustomResponse::make(null, 'Ocurrio un error al generar la busqueada', 500, $e->getMessage());
+        }
     }
 
     public function bEmpleadoF(Request $request)

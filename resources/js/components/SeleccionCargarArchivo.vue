@@ -2,11 +2,12 @@
     <div class="bg-white d-flex flex-column justify-content-center align-items-center col-12 col-xs-12">
 
 
-            <h2 class="h1 text-center mt-5" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); margin-bottom: 1%;">HISTORIAL DE HORAS EXTRAS
-            </h2>
+        <h2 class="h1 text-center mt-5" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); margin-bottom: 1%;">HISTORIAL DE
+            HORAS EXTRAS
+        </h2>
 
         <div class="container mt-4">
-            <h2 style="text-align: left;" class="mt-5">FILTROS DE BUSQUEDA</h2>
+            <h2 style="text-align: left;" class="mt-5">FILTROS DE BÚSQUEDA</h2>
         </div>
         <div class="container mt-4">
             <div class="row" style="margin-bottom: 2%;">
@@ -25,7 +26,7 @@
                 <div class="col-3">
                     <div class="form-group d-flex" style="width: 100%;">
                         <select v-model="filtros.selectArea" @input="debounceSearchEmpleado" class="form-select">
-                            <option value="" disabled selected>Seleccionar Area</option>
+                            <option value="" disabled selected>Seleccionar Área</option>
                             <option value="no">No seleccionar</option>
                             <option v-for="area in areas" :key="area.id" :value="area.id">
                                 {{ area.id }} - {{ area.nombre }}
@@ -60,15 +61,15 @@
             <div class="row">
 
                 <div class="col-2">
-                    <input v-model="duiJefe" type="text" @input="debouncefiltros" placeholder="Dui jefe"
+                    <input v-model="duiJefe" type="text" @input="debouncefiltros" placeholder="DUI JEFE"
                         class="form-control mb-2" disabled />
                 </div>
                 <div class="col-4">
-                    <input v-model="nombreJefe" type="text" @input="debouncefiltros" placeholder="Nombre jefe"
+                    <input v-model="nombreJefe" type="text" @input="debouncefiltros" placeholder="NOMBRE JEFE"
                         class="form-control mb-2" disabled />
                 </div>
                 <div class="col-3">
-                    <input v-model="email" type="text" @input="debouncefiltros" placeholder="Email"
+                    <input v-model="email" type="text" @input="debouncefiltros" placeholder="EMAIL"
                         class="form-control mb-2" disabled />
                 </div>
                 <div class="col-3">
@@ -321,11 +322,6 @@ export default {
     created() {
         this.fetchEmpresas();
         this.buscarRegistrosByEmpresa()
-        if (localStorage.getItem("userInfo") != null) {
-            this.user = JSON.parse(localStorage.getItem("userInfo"));
-            this.nombre = this.user.nombres + " " + this.user.apellidos;
-
-        }
     },
     methods: {
         debounceSearchArea: _.debounce(function () {
@@ -366,7 +362,7 @@ export default {
             axios
                 .get("/empresa/areas?id=" + areaId)
                 .then((response) => {
-                    this.areas = response.data.map((area) => ({
+                    this.areas = response.data.object.map((area) => ({
                         id: area.id,
                         nombre: area.nombre,
                     }));
@@ -381,10 +377,10 @@ export default {
         async searchAreaById(areaId) {
             const response = await axios.get("areabyid?id=" + areaId);
             if (response.data != null) {
-                const response2 = await axios.get("findempleadobyid?id=" + response.data.jefe_area);
-                this.duiJefe = response2.data.dui;
-                this.nombreJefe = response2.data.nombres + " " + response2.data.apellidos;
-                this.email = response2.data.email;
+                const response2 = await axios.get("findempleadobyid?id=" + response.data.object.jefe_area);
+                this.duiJefe = response2.data.object.dui;
+                this.nombreJefe = response2.data.object.nombres + " " + response2.data.apellidos;
+                this.email = response2.data.object.email;
             }
         },
 
@@ -431,12 +427,11 @@ export default {
 
         async fetchHorasExtras() {
             const response = await axios.post("horas_extra");
-            this.horasExtras = response.data;
+            this.horasExtras = response.data.object;
         },
         async buscarRegistrosByEmpresa() {
             const response = await axios.post("horas_extra", this.filtros);
-            this.horasExtras = response.data;
-            // Calcular los totales
+            this.horasExtras = response.data.object;
             this.totalsueldo = 0;
             this.totalDiurnas = 0;
             this.totalNocturnas = 0;
