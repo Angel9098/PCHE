@@ -240,7 +240,6 @@ export default {
             const workbook = new ExcelJS.Workbook();
             const worksheet = workbook.addWorksheet("Reporte de Horas Extras");
 
-            // Define un estilo para centrar los datos y otro estilo para el formato de moneda
             const centeredStyle = {
                 alignment: { horizontal: "center" },
             };
@@ -252,7 +251,6 @@ export default {
             worksheet.columns = [
                 { header: "ID Empleado", key: "id_empleado", width: 15, style: centeredStyle },
                 { header: "Sueldo Mensual", key: "sueldo", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
-                { header: "Horas Extra", key: "horasExtra", width: 15, style: centeredStyle },
                 { header: "Total Ganado", key: "TotalGanado", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
                 { header: "AFP", key: "afp", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
                 { header: "ISSS", key: "isss", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
@@ -263,15 +261,18 @@ export default {
                 // Agrega cada fila y aplica los estilos
                 worksheet.addRow({
                     id_empleado: registro.dui,
-                    nombre: registro.nombre,
                     sueldo: registro.sueldoMesual,
-                    horasExtra: registro.totalHorasExtras,
                     TotalGanado: registro.horasExtra,
                     afp: registro.afp,
                     isss: registro.isss,
                     TotalPagar: registro.TotalPagar,
-                }).eachCell({ includeEmpty: true }, (cell) => {
+                }).eachCell({ includeEmpty: true }, (cell, colNumber) => {
                     cell.style = centeredStyle;
+
+                    // Aplica formato de moneda solo a las columnas que deseas
+                    if ([2, 4, 5, 6, 7].includes(colNumber)) {
+                        cell.numFmt = "$ #,##0.00";
+                    }
                 });
             });
 
