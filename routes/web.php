@@ -39,13 +39,15 @@ Route::group(['middleware' => 'auth'], function () {
 
     //Rutas para area
     Route::get('areas', 'AreaController@listaDetalleAreas')->name('areasdetalle');
-    //Route::get('areabyid', 'AreaController@areaById');
+    Route::get('areabyid', 'AreaController@areaById');
     //Route::get('horarios/area', 'AreaController@horariosArea')->name('areasbyempresa');
     Route::get('empresa/areas', 'EmpresaController@getAreasEmpresa');
     Route::post('areas/create', 'AreaController@createArea');
     Route::put('areas/update', 'AreaController@updateArea');
     Route::delete('areas/delete', 'AreaController@deleteArea');
     Route::get('areas/jefes', 'AreaController@listaJefeEmpleado');
+
+
 
     //rutas para horarios
     Route::get('horarios/consulta', 'HorarioController@consultaDehorarioPorEmpleado')->name('horariobypersona');
@@ -68,12 +70,16 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('findempleadobyid', 'EmpleadoController@findEmpleadoById');
     Route::get('empleados/existeEmail', 'EmpleadoController@validarEmail');
     Route::get('empleados/existeDui', 'EmpleadoController@validarDui');
+    Route::post('planilla/quincenal', 'EmpleadoController@planillaQuincenal');
+
 
     //rutas para los calculos
     Route::post('/calculo_horas', 'CalculosHorasController@createCalculo');
     Route::post('/calculos', 'CalculosHorasController@allCalculos');
     Route::get('/calculo_horas/graficasPorEmpresa', 'CalculosHorasController@graficaCalculoDeHorasPorMesEmpresa');
     Route::get('/calculo_horas/graficaDeTresMeses', 'CalculosHorasController@graficaCalculoDeHorasDeTresMeses');
+    Route::get('/datos_export', 'CalculosHorasController@datosExport');
+
 
     Route::post('horas_extra/crear', 'HoraExtraCotroller@createHoraExtra')->name('horas_extra');
     Route::post('horas_extra', 'HoraExtraCotroller@allHoras')->name('horas_extra.all');

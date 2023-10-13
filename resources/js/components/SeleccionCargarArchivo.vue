@@ -125,8 +125,8 @@
                             <tr>
                                 <td></td>
                                 <td></td>
+                                <td></td>
                                 <td>Total</td>
-                                <td>{{ totalsueldo | toCurrency }}</td>
                                 <td class="centered">{{ totalDiurnas !== 0 ? totalDiurnas : '-' }}</td>
                                 <td class="centered">{{ totalNocturnas !== 0 ? totalNocturnas : '-' }}</td>
                                 <td class="centered">{{ totalDiurnasDescanso !== 0 ? totalDiurnasDescanso : '-' }}</td>

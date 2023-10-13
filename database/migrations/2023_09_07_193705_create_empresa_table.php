@@ -18,7 +18,7 @@ class CreateEmpresaTable extends Migration
             $table->string('nombre');
             $table->string('direccion');
             $table->string('rubro');
-            $table->string('imagen');
+            $table->string('imagen')->nullable();
             $table->timestamps();
         });
     }

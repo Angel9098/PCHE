@@ -23,14 +23,14 @@ class AreaController extends Controller
         return CustomResponse::make($areas, 'Áreas de la empresa recuperadas con éxito', 200, null);
     }
 
-    /*public function areaById(Request $request)
+    public function areaById(Request $request)
     {
         $idArea = $request->input('id');
 
         $area = Area::find($idArea);
 
         return response()->json($area);
-    }*/
+    }
 
     /*public function horariosArea(Request $request)
     {

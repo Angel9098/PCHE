@@ -20,8 +20,6 @@ class CalculosHorasController extends Controller
 
         try {
             $registros = json_decode($request->getContent(), true);
-            $isss = 7.5;
-            $afp = 8.5;
 
             foreach ($registros as $registro) {
                 $id_empleado = $registro['empleado_id'];
@@ -52,15 +50,8 @@ class CalculosHorasController extends Controller
 
                     $sumatoria = $diurnas + $nocturnas + $diurnas_descanso + $nocturnas_descanso + $diurnas_asueto + $nocturnas_asueto;
 
-                    $salarioTotal = $salarioGanado + $salarioMensual;
-
-                    $descuentoAfp = $salarioTotal * ($afp / 100);
-                    $descuentoIsss = $salarioTotal * ($isss / 100);
                     $idCorte = Corte::where('vigente', 1)
                         ->first();
-
-                    $salarioTotal = $salarioTotal - ($descuentoAfp + $descuentoIsss);
-
 
                     $CalculoHora = new CalculosExtra([
                         'empleado_id' => $empleado->id,
@@ -68,11 +59,11 @@ class CalculosHorasController extends Controller
                         'id_corte' => $idCorte->id,
                         'fecha_calculo' => $fechaFormateada,
                         'salario_mensual' => $salarioMensual,
-                        'descuento_AFP' => $descuentoAfp,
-                        'descuento_ISSS' => $descuentoIsss,
+                        'descuento_AFP' => null,
+                        'descuento_ISSS' => null,
                         'total_horas' => $sumatoria,
                         'salario_neto' => $salarioGanado,
-                        'salario_total' => $salarioTotal,
+                        'salario_total' => null,
                     ]);
                     $CalculoHora->save();
 
@@ -92,13 +83,243 @@ class CalculosHorasController extends Controller
     {
         $idArea = $request->input('selectArea');
         $idEmpresa = $request->input('selectEmpresa');
-        $fechaDesde = $request->input('fechaDesde');
-        $fechaHasta = $request->input('fechaHasta');
+        $mes = $request->input('mes');
+        $anio =  $request->input('anio');
+        $dui = $request->input('dui');
+        $nombre = $request->input('nombre');
+        $email = $request->input('email');
+        if ($anio === null || $anio === "") {
+            $anio = date('Y');
+        }
+        if ($mes === null || $mes === "") {
+            $mes = date('m') - 1;
+        }
+
+        $horasExtrasQuery = CalculosExtra::query()
+            ->select(
+                'calculos_horas.empleado_id',
+                DB::raw("CONCAT(empleados.nombres, ' ', empleados.apellidos) as nombres"),
+                'empleados.dui as dui',
+                'areas.nombre as nombre_area',
+                'empresas.nombre as nombre_empresa',
+                'calculos_horas.jefe_area',
+                'calculos_horas.fecha_calculo',
+                'calculos_horas.descuento_AFP',
+                'calculos_horas.descuento_ISSS',
+                'calculos_horas.salario_neto',
+                'calculos_horas.total_horas',
+                'calculos_horas.salario_mensual',
+                'calculos_horas.salario_total'
+
+            )
+            ->addSelect(DB::raw('CASE WHEN calculos_horas.fecha_calculo = MAX_DATE.fecha_calculo THEN subquery.total_salario_neto ELSE NULL END AS total_salario_neto'))
+            ->join(
+                DB::raw('(SELECT empleado_id, SUM(salario_neto) AS total_salario_neto FROM calculos_horas GROUP BY empleado_id) AS subquery'),
+                'calculos_horas.empleado_id',
+                '=',
+                'subquery.empleado_id'
+            )
+            ->join(
+                DB::raw('(SELECT empleado_id, MAX(fecha_calculo) AS fecha_calculo FROM calculos_horas GROUP BY empleado_id) AS MAX_DATE'),
+                'calculos_horas.empleado_id',
+                '=',
+                'MAX_DATE.empleado_id'
+            )
+            ->join('empleados', 'calculos_horas.empleado_id', '=', 'empleados.id')
+            ->join('areas', 'empleados.area_id', '=', 'areas.id')
+            ->join('empresas', 'areas.empresa_id', '=', 'empresas.id')
+            ->whereRaw('MONTH(calculos_horas.fecha_calculo) = ?', [$mes])
+            ->whereRaw('YEAR(calculos_horas.fecha_calculo) = ?', [$anio])
+            ->orderBy('calculos_horas.empleado_id', 'asc')
+            ->orderBy('calculos_horas.fecha_calculo', 'asc');
+
+
+
+        if ($idEmpresa !== "NA" && $idEmpresa !== null) {
+            $horasExtrasQuery->whereHas('empleado.area', function ($query) use ($idEmpresa) {
+                $query->where('empresa_id', $idEmpresa);
+            });
+        }
+
+        /*  if ($fechaDesde !== null && $fechaDesde !== '') {
+            $horasExtrasQuery->where('calculos_horas.fecha_calculo', '>=', $fechaDesde);
+        }*/
+
+        if ($dui !== null && $dui !== '') {
+            $horasExtrasQuery->whereHas('empleado', function ($query) use ($dui) {
+                if (!empty($dui)) {
+                    $query->where('dui', 'LIKE', "%$dui%");
+                }
+            });
+        }
+
+        if ($nombre !== null && $nombre !== '') {
+            $horasExtrasQuery->whereHas('empleado', function ($query) use ($nombre) {
+                if (!empty($nombre)) {
+                    $query->where('nombres', 'LIKE', "%$nombre%");
+                }
+            });
+        }
+
+        if ($email !== null && $email !== '') {
+            $horasExtrasQuery->whereHas('empleado', function ($query) use ($email) {
+                if (!empty($email)) {
+                    $query->where('email', 'LIKE', "%$email%");
+                }
+            });
+        }
+
+        /*if ($fechaHasta !== null && $fechaHasta !== '') {
+            $horasExtrasQuery->where('calculos_horas.fecha_calculo', '<=', $fechaHasta);
+        }*/
+
+        if ($idArea !== "NA" && $idArea !== null) {
+            $horasExtrasQuery->whereHas('empleado', function ($query) use ($idArea) {
+                $query->where('area_id', $idArea);
+            });
+        }
+
+        $empleadosConCalculos = $horasExtrasQuery->get();
+
+        foreach ($empleadosConCalculos as $horasMensual) {
+            if ($horasMensual->total_salario_neto !== null) {
+                $sueldoGanadoMensual = $horasMensual->total_salario_neto;
+                $sueldoBaseMensual = $horasMensual->salario_mensual;
+                $afpMensual = ($sueldoGanadoMensual + $sueldoBaseMensual) * 0.0825;
+                $isssMensual = (($sueldoGanadoMensual + $sueldoBaseMensual) * 0.035) > 30 ? 30 : (($sueldoGanadoMensual + $sueldoGanadoMensual) * 0.035);
+
+                $aplicableRenta = $sueldoBaseMensual + $sueldoGanadoMensual - ($afpMensual + $isssMensual);
+
+                $rentaTotal = 0;
+                if ($aplicableRenta >= 487.61 && $aplicableRenta <= 642.85) {
+                    if ($aplicableRenta > 487.60) {
+                        $exceso = $aplicableRenta - 487.60;
+                        $excesoRenta = $exceso * 0.1;
+                        $cuotaFija = 17.48;
+                        $rentaTotal = $excesoRenta + $cuotaFija;
+                    }
+                } else if ($aplicableRenta >= 642.86 && $aplicableRenta <= 915.81) {
+                    if ($aplicableRenta > 642.85) {
+                        $exceso = $aplicableRenta - 642.85;
+                        $excesoRenta = $exceso * 0.1;
+                        $cuotaFija = 32.70;
+                        $rentaTotal = $excesoRenta + $cuotaFija;
+                    }
+                } else if ($aplicableRenta >= 915.82 && $aplicableRenta <= 2058.67) {
+                    if ($aplicableRenta > 915.82) {
+                        $exceso = $aplicableRenta - 915.82;
+                        $excesoRenta = $exceso * 0.1;
+                        $cuotaFija = 60;
+                        $rentaTotal = $excesoRenta + $cuotaFija;
+                    }
+                } else if ($aplicableRenta >= 2058.68) {
+                    if ($aplicableRenta > 2038.11) {
+                        $exceso = $aplicableRenta - 2058.67;
+                        $excesoRenta = $exceso * 0.3;
+                        $cuotaFija = 288.57;
+                        $rentaTotal = $excesoRenta + $cuotaFija;
+                    }
+                }
+                $horasMensual->descuento_AFP = $afpMensual;
+                $horasMensual->descuento_ISSS = $isssMensual;
+                $horasMensual->salario_total = $aplicableRenta - $rentaTotal;
+            } else {
+                $horasMensual->salario_total = null;
+            }
+        }
+
+
+        return CustomResponse::make($empleadosConCalculos, '', 200, null);
+    }
+
+    public function datosExport(Request $request)
+    {
+        $idArea = $request->input('selectArea');
+        $idEmpresa = $request->input('selectEmpresa');
+        $mes = 9; //$request->input('mes');
+        $anio = 2023; //$request->input('anio');
         $dui = $request->input('dui');
         $nombre = $request->input('nombre');
         $email = $request->input('email');
 
-        $horasExtrasQuery = CalculosExtra::query()
+        $horasExtrasMensual = CalculosExtra::query()
+            ->select(
+                'calculos_horas.empleado_id',
+                DB::raw("CONCAT(empleados.nombres, ' ', empleados.apellidos) as nombres"),
+                'empleados.dui as dui',
+                'areas.nombre as nombre_area',
+                'empresas.nombre as nombre_empresa',
+                'calculos_horas.jefe_area',
+                'calculos_horas.fecha_calculo',
+                'calculos_horas.descuento_AFP',
+                'calculos_horas.descuento_ISSS',
+                'calculos_horas.salario_neto',
+                'calculos_horas.total_horas',
+                'calculos_horas.salario_mensual',
+                'calculos_horas.salario_total'
+
+            )
+            ->addSelect(DB::raw('CASE WHEN calculos_horas.fecha_calculo = MAX_DATE.fecha_calculo THEN subquery.total_salario_neto ELSE NULL END AS total_salario_neto'))
+            ->join(
+                DB::raw('(SELECT empleado_id, SUM(salario_neto) AS total_salario_neto FROM calculos_horas GROUP BY empleado_id) AS subquery'),
+                'calculos_horas.empleado_id',
+                '=',
+                'subquery.empleado_id'
+            )
+            ->join(
+                DB::raw('(SELECT empleado_id, MAX(fecha_calculo) AS fecha_calculo FROM calculos_horas GROUP BY empleado_id) AS MAX_DATE'),
+                'calculos_horas.empleado_id',
+                '=',
+                'MAX_DATE.empleado_id'
+            )
+            ->join('empleados', 'calculos_horas.empleado_id', '=', 'empleados.id')
+            ->join('areas', 'empleados.area_id', '=', 'areas.id')
+            ->join('empresas', 'areas.empresa_id', '=', 'empresas.id')
+            ->whereRaw('MONTH(calculos_horas.fecha_calculo) = ?', [$mes])
+            ->whereRaw('YEAR(calculos_horas.fecha_calculo) = ?', [$anio])
+            ->orderBy('calculos_horas.empleado_id', 'asc')
+            ->orderBy('calculos_horas.fecha_calculo', 'asc');
+
+
+
+        $horasExtrasPrimerQuincena = CalculosExtra::query()
+            ->select(
+                'calculos_horas.empleado_id',
+                DB::raw("CONCAT(empleados.nombres, ' ', empleados.apellidos) as nombres"),
+                'empleados.dui as dui',
+                'areas.nombre as nombre_area',
+                'empresas.nombre as nombre_empresa',
+                'calculos_horas.jefe_area',
+                'calculos_horas.fecha_calculo',
+                'calculos_horas.descuento_AFP',
+                'calculos_horas.descuento_ISSS',
+                'calculos_horas.salario_neto',
+                'calculos_horas.total_horas',
+                'calculos_horas.salario_mensual'
+            )
+            ->addSelect(DB::raw('CASE WHEN calculos_horas.fecha_calculo = MAX_DATE.fecha_calculo THEN subquery.total_salario_neto ELSE NULL END AS total_salario_neto'))
+            ->join(
+                DB::raw('(SELECT empleado_id, SUM(salario_neto) AS total_salario_neto FROM calculos_horas GROUP BY empleado_id) AS subquery'),
+                'calculos_horas.empleado_id',
+                '=',
+                'subquery.empleado_id'
+            )
+            ->join(
+                DB::raw('(SELECT empleado_id, MAX(fecha_calculo) AS fecha_calculo FROM calculos_horas GROUP BY empleado_id) AS MAX_DATE'),
+                'calculos_horas.empleado_id',
+                '=',
+                'MAX_DATE.empleado_id'
+            )
+            ->join('empleados', 'calculos_horas.empleado_id', '=', 'empleados.id')
+            ->join('areas', 'empleados.area_id', '=', 'areas.id')
+            ->join('empresas', 'areas.empresa_id', '=', 'empresas.id')
+            ->whereRaw('MONTH(calculos_horas.fecha_calculo) = ?', [$mes])
+            ->whereRaw('YEAR(calculos_horas.fecha_calculo) = ?', [$anio])
+            ->whereRaw('DAY(calculos_horas.fecha_calculo) <= 15')
+            ->orderBy('calculos_horas.empleado_id', 'asc')
+            ->orderBy('calculos_horas.fecha_calculo', 'asc');
+
+        $horasExtrasSegundaQuincena = CalculosExtra::query()
             ->select(
                 'calculos_horas.empleado_id',
                 DB::raw("CONCAT(empleados.nombres, ' ', empleados.apellidos) as nombres"),
@@ -127,57 +348,137 @@ class CalculosHorasController extends Controller
             ->join('empleados', 'calculos_horas.empleado_id', '=', 'empleados.id')
             ->join('areas', 'empleados.area_id', '=', 'areas.id')
             ->join('empresas', 'areas.empresa_id', '=', 'empresas.id')
+            ->whereRaw('MONTH(calculos_horas.fecha_calculo) = ?', [$mes])
+            ->whereRaw('YEAR(calculos_horas.fecha_calculo) = ?', [$anio])
+            ->whereRaw('DAY(calculos_horas.fecha_calculo) > 15')
             ->orderBy('calculos_horas.empleado_id', 'asc')
             ->orderBy('calculos_horas.fecha_calculo', 'asc');
 
 
-        if ($idEmpresa !== "NA" && $idEmpresa !== null) {
-            $horasExtrasQuery->whereHas('empleado.area', function ($query) use ($idEmpresa) {
-                $query->where('empresa_id', $idEmpresa);
-            });
-        }
+        $empleadosConCalculos = [
+            'primer_quincena' => $horasExtrasPrimerQuincena->get(),
+            'segunda_quincena' => $horasExtrasSegundaQuincena->get(),
+            'horasExtrasMensual' => $horasExtrasMensual->get(),
+        ];
 
-        if ($fechaDesde !== null && $fechaDesde !== '') {
-            $horasExtrasQuery->where('calculos_horas.fecha_calculo', '>=', $fechaDesde);
-        }
 
-        if ($dui !== null && $dui !== '') {
-            $horasExtrasQuery->whereHas('empleado', function ($query) use ($dui) {
-                if (!empty($dui)) {
-                    $query->where('dui', 'LIKE', "%$dui%");
+        foreach ($empleadosConCalculos['primer_quincena'] as $registroQuincena) {
+            if ($registroQuincena->total_salario_neto !== null) {
+                $sueldoGanadoQuincena1 = $registroQuincena->total_salario_neto;
+                $sueldoBaseQuincena1 = $registroQuincena->salario_mensual / 2;
+                $afpQuincena1 = ($sueldoGanadoQuincena1 + $sueldoBaseQuincena1) * 0.0825;
+                $isssQuincena1 = (($sueldoGanadoQuincena1 + $sueldoBaseQuincena1) * 0.035) > 30 ? 30 : (($sueldoGanadoQuincena1 + $sueldoBaseQuincena1) * 0.035);
+
+                $aplicableRenta = $sueldoBaseQuincena1 + $sueldoGanadoQuincena1 - ($afpQuincena1 + $isssQuincena1);
+
+                $rentaTotal = 0;
+                if ($aplicableRenta > 236 && $aplicableRenta < 447) {
+                    if ($aplicableRenta > 236) {
+                        $exceso = $aplicableRenta - 236;
+                        $excesoRenta = $exceso * 0.1;
+                        $cuotaFija = 9;
+                        $rentaTotal = $excesoRenta + $cuotaFija;
+                    }
+                } else if ($aplicableRenta >= 448 && $aplicableRenta <= 1019) {
+                    if ($aplicableRenta > 448) {
+                        $exceso = $aplicableRenta - 448;
+                        $excesoRenta = $exceso * 0.2;
+                        $cuotaFija = 30;
+                        $rentaTotal = $excesoRenta + $cuotaFija;
+                    }
+                } else if ($aplicableRenta >= 1020) {
+                    if ($aplicableRenta > 1020) {
+                        $exceso = $aplicableRenta - 1020;
+                        $excesoRenta = $exceso * 0.3;
+                        $cuotaFija = 144;
+                        $rentaTotal = $excesoRenta + $cuotaFija;
+                    }
                 }
-            });
+                $registroQuincena->descuento_AFP = $afpQuincena1;
+                $registroQuincena->descuento_ISSS = $isssQuincena1;
+                $registroQuincena->total_horas = $aplicableRenta - $rentaTotal;
+            }
         }
 
-        if ($nombre !== null && $nombre !== '') {
-            $horasExtrasQuery->whereHas('empleado', function ($query) use ($nombre) {
-                if (!empty($nombre)) {
-                    $query->where('nombres', 'LIKE', "%$nombre%");
+        foreach ($empleadosConCalculos['segunda_quincena'] as $registroQuincena2) {
+            if ($registroQuincena->total_salario_neto !== null) {
+                $sueldoGanadoQuincena1 = $registroQuincena->total_salario_neto;
+                $sueldoBaseQuincena1 = $registroQuincena->salario_mensual / 2;
+                $afpQuincena1 = ($sueldoGanadoQuincena1 + $sueldoBaseQuincena1) * 0.0825;
+                $isssQuincena1 = (($sueldoGanadoQuincena1 + $sueldoBaseQuincena1) * 0.035) > 30 ? 30 : (($sueldoGanadoQuincena1 + $sueldoBaseQuincena1) * 0.035);
+
+                $aplicableRenta = $sueldoBaseQuincena1 + $sueldoGanadoQuincena1 - ($afpQuincena1 + $isssQuincena1);
+
+                $rentaTotal = 0;
+                if ($aplicableRenta > 236 && $aplicableRenta < 447) {
+                    if ($aplicableRenta > 236) {
+                        $exceso = $aplicableRenta - 236;
+                        $excesoRenta = $exceso * 0.1;
+                        $cuotaFija = 9;
+                        $rentaTotal = $excesoRenta + $cuotaFija;
+                    }
+                } else if ($aplicableRenta >= 448 && $aplicableRenta <= 1019) {
+                    if ($aplicableRenta > 448) {
+                        $exceso = $aplicableRenta - 448;
+                        $excesoRenta = $exceso * 0.2;
+                        $cuotaFija = 30;
+                        $rentaTotal = $excesoRenta + $cuotaFija;
+                    }
+                } else if ($aplicableRenta >= 1020) {
+                    if ($aplicableRenta > 1020) {
+                        $exceso = $aplicableRenta - 1020;
+                        $excesoRenta = $exceso * 0.3;
+                        $cuotaFija = 144;
+                        $rentaTotal = $excesoRenta + $cuotaFija;
+                    }
                 }
-            });
+                $registroQuincena->descuento_AFP = $afpQuincena1;
+                $registroQuincena->descuento_ISSS = $isssQuincena1;
+                $registroQuincena->total_horas = $aplicableRenta - $rentaTotal;
+            }
         }
 
-        if ($email !== null && $email !== '') {
-            $horasExtrasQuery->whereHas('empleado', function ($query) use ($email) {
-                if (!empty($email)) {
-                    $query->where('email', 'LIKE', "%$email%");
+        foreach ($empleadosConCalculos['horasExtrasMensual'] as $horasMensual) {
+            if ($horasMensual->total_salario_neto !== null) {
+                $sueldoGanadoMensual = $horasMensual->total_salario_neto;
+                $sueldoBaseMensual = $horasMensual->salario_mensual;
+                $afpMensual = ($sueldoGanadoMensual + $sueldoBaseMensual) * 0.0825;
+                $isssMensual = (($sueldoGanadoMensual + $sueldoBaseMensual) * 0.035) > 30 ? 30 : (($sueldoGanadoMensual + $sueldoGanadoMensual) * 0.035);
+
+                $aplicableRenta = $sueldoBaseMensual + $sueldoGanadoMensual - ($afpMensual + $isssMensual);
+
+                $rentaTotal = 0;
+                if ($aplicableRenta >= 472.01 && $aplicableRenta <= 895.24) {
+                    if ($aplicableRenta > 472.00) {
+                        $exceso = $aplicableRenta - 472.00;
+                        $excesoRenta = $exceso * 0.1;
+                        $cuotaFija = 17.67;
+                        $rentaTotal = $excesoRenta + $cuotaFija;
+                    }
+                } else if ($aplicableRenta >= 895.25 && $aplicableRenta <= 2038.10) {
+                    if ($aplicableRenta > 895.24) {
+                        $exceso = $aplicableRenta - 896.24;
+                        $excesoRenta = $exceso * 0.2;
+                        $cuotaFija = 60;
+                        $rentaTotal = $excesoRenta + $cuotaFija;
+                    }
+                } else if ($aplicableRenta >= 2038.11) {
+                    if ($aplicableRenta > 2038.10) {
+                        $exceso = $aplicableRenta - 2038.10;
+                        $excesoRenta = $exceso * 0.3;
+                        $cuotaFija = 288.57;
+                        $rentaTotal = $excesoRenta + $cuotaFija;
+                    }
                 }
-            });
+                $horasMensual->descuento_AFP = $afpMensual;
+                $horasMensual->descuento_ISSS = $isssMensual;
+                $horasMensual->salario_total = $aplicableRenta - $rentaTotal;
+            }
         }
 
-        if ($fechaHasta !== null && $fechaHasta !== '') {
-            $horasExtrasQuery->where('calculos_horas.fecha_calculo', '<=', $fechaHasta);
-        }
-
-        if ($idArea !== "NA" && $idArea !== null) {
-            $horasExtrasQuery->whereHas('empleado', function ($query) use ($idArea) {
-                $query->where('area_id', $idArea);
-            });
-        }
-
-        $empleadosConCalculos = $horasExtrasQuery->get();
         return CustomResponse::make($empleadosConCalculos, '', 200, null);
     }
+
 
     public function graficaCalculoDeHorasPorMesEmpresa(Request $request)
     {

@@ -57,25 +57,45 @@
                             </div>
                             <div class="row">
                                 <div class="col-3">
-                                    <div class="row">
-                                        <div class="col-3">
-                                            <label for="fechaDesde">Desde:</label>
-                                        </div>
-                                        <div class="col-9">
-                                            <input v-model="filtros.fechaDesde" @change="buscarRegistrosByEmpresa"
-                                                type="date" id="fechaDesde" class="form-control mb-2">
-                                        </div>
+                                    <div class="form-group d-flex" style="width: 100%;">
+                                        <select v-model="filtros.mes" @input="debounceSearchEmpleado" class="form-select">
+                                            <option value="" disabled selected>Mes</option>
+                                            <option value="">No seleccionar</option>
+                                            <option value="1">Enero</option>
+                                            <option value="2">Febrero</option>
+                                            <option value="3">Marzo</option>
+                                            <option value="4">Abril</option>
+                                            <option value="5">Mayo</option>
+                                            <option value="6">Junio</option>
+                                            <option value="7">Julio</option>
+                                            <option value="8">Agosto</option>
+                                            <option value="9">Septiembre</option>
+                                            <option value="10">Octubre</option>
+                                            <option value="11">Noviembre</option>
+                                            <option value="12">Diciembre</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-3">
-                                    <div class="row">
-                                        <div class="col-3">
-                                            <label for="fechaHasta">Hasta:</label>
-                                        </div>
-                                        <div class="col-9">
-                                            <input v-model="filtros.fechaHasta" @change="buscarRegistrosByEmpresa"
-                                                type="date" id="fechaHasta" class="form-control mb-2">
-                                        </div>
+                                    <div class="form-group d-flex" style="width: 100%;">
+                                        <select v-model="filtros.anio" @input="debounceSearchEmpleado" class="form-select">
+                                            <option value="" disabled selected>Año</option>
+                                            <option value="">No seleccionar</option>
+                                            <option value="2010">2010</option>
+                                            <option value="2011">2011</option>
+                                            <option value="2012">2012</option>
+                                            <option value="2013">2013</option>
+                                            <option value="2014">2014</option>
+                                            <option value="2015">2015</option>
+                                            <option value="2016">2016</option>
+                                            <option value="2017">2017</option>
+                                            <option value="2018">2018</option>
+                                            <option value="2019">2019</option>
+                                            <option value="2020">2020</option>
+                                            <option value="2021">2021</option>
+                                            <option value="2022">2022</option>
+                                            <option value="2023">2023</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-3">
@@ -104,7 +124,10 @@
                             <th scope="col" class="col-1">Area</th>
                             <th scope="col" class="col-1">Total horas</th>
                             <th scope="col" class="col-1">Salario ganado</th>
-                            <th scope="col" class="col-1">Salario total</th>
+                            <th scope="col" class="col-1">Sal. Total Ganado</th>
+                            <th scope="col" class="col-1">AFP</th>
+                            <th scope="col" class="col-1">ISSS</th>
+                            <th scope="col" class="col-1">Salario Mensual</th>
                         </thead>
                         <tbody class="text-center" v-if="calculosHoras.length > 0">
                             <tr v-for="registro in calculosHoras" :key="registro.id">
@@ -115,8 +138,11 @@
                                 <td>{{ registro.nombre_empresa }}</td>
                                 <td>{{ registro.nombre_area }}</td>
                                 <td>{{ registro.total_horas }}</td>
-                                <td>{{ registro.salario_neto }}</td>
-                                <td>{{ registro.total_salario_neto }}</td>
+                                <td>{{ registro.salario_neto | toCurrency }}</td>
+                                <td>{{ registro.total_salario_neto | toCurrency }}</td>
+                                <td>{{ registro.descuento_AFP | toCurrency }}</td>
+                                <td>{{ registro.descuento_ISSS | toCurrency }}</td>
+                                <td>{{ registro.salario_total | toCurrency }}</td>
                             </tr>
                         </tbody>
                         <tbody v-else>
@@ -202,7 +228,10 @@
                                     <th scope="col" class="col-1">Area</th>
                                     <th scope="col" class="col-1">Total horas</th>
                                     <th scope="col" class="col-1">Salario ganado</th>
-                                    <th scope="col" class="col-1">Salario total</th>
+                                    <th scope="col" class="col-1">Sal. Total Ganado</th>
+                                    <th scope="col" class="col-1">AFP</th>
+                                    <th scope="col" class="col-1">ISSS</th>
+                                    <th scope="col" class="col-1">Salario Mensual</th>
                                 </thead>
                                 <tbody class="text-center" v-if="calculosHoras.length > 0">
                                     <tr v-for="registro in calculosHoras" :key="registro.id">
@@ -213,8 +242,11 @@
                                         <td>{{ registro.nombre_empresa }}</td>
                                         <td>{{ registro.nombre_area }}</td>
                                         <td>{{ registro.total_horas }}</td>
-                                        <td>{{ registro.salario_neto }}</td>
-                                        <td>{{ registro.total_salario_neto }}</td>
+                                        <td>{{ registro.salario_neto | toCurrency }}</td>
+                                        <td>{{ registro.total_salario_neto | toCurrency }}</td>
+                                        <td>{{ registro.descuento_AFP | toCurrency }}</td>
+                                        <td>{{ registro.descuento_ISSS | toCurrency }}</td>
+                                        <td>{{ registro.salario_total | toCurrency }}</td>
                                     </tr>
                                 </tbody>
                                 <tbody v-else>
@@ -273,8 +305,8 @@ export default {
                 dui: "",
                 nombre: "",
                 email: "",
-                fechaDesde: "",
-                fechaHasta: "",
+                mes: "",
+                anio: "",
             },
             currentDate: new Date().toLocaleDateString(),
             showPdfTemplate: false,
@@ -335,6 +367,8 @@ export default {
         }, 300),
 
         exportar() {
+
+
             const workbook = new ExcelJS.Workbook();
             const worksheet = workbook.addWorksheet("Reporte de Horas Extras");
             worksheet.columns = [
@@ -346,21 +380,57 @@ export default {
                 { header: "Area", key: "area", width: 15 },
                 { header: "Total Horas", key: "total_horas", width: 15 },
                 { header: "Salario Ganado", key: "salario_ganado", width: 15 },
-                { header: "Salario Total", key: "salario_total", width: 15 },
+                { header: "Total Ganado", key: "salario_total", width: 15 },
+                { header: "AFP", key: "afp", width: 15 },
+                { header: "ISSS", key: "isss", width: 15 },
+                { header: "Salario Mensual", key: "salario_mensual", width: 15 },
+
+
+            ];
+            worksheet.filename = [
+                { header: "ID Empleado", key: "id_empleado", width: 10 },
+                { header: "Nombre", key: "nombre", width: 32 },
+                { header: "Fecha", key: "fecha", width: 15 },
+                { header: "Sueldo", key: "sueldo", width: 15 },
+                { header: "Empresa", key: "empresa", width: 15 },
+                { header: "Area", key: "area", width: 15 },
+                { header: "Total Horas", key: "total_horas", width: 15 },
+                { header: "Salario Ganado", key: "salario_ganado", width: 15 },
+                { header: "Sal Total ganado", key: "salario_total", width: 15 },
+                { header: "AFP", key: "afp", width: 15 },
+                { header: "ISSS", key: "isss", width: 15 },
+                { header: "Salario Mensual", key: "salario_mensual", width: 15 },
+
+
             ];
             this.calculosHoras.forEach((registro) => {
                 worksheet.addRow({
-                    id_empleado: registro.empleado.dui,
-                    nombre: registro.empleado.nombres + " " + registro.empleado.apellidos,
+                    id_empleado: registro.dui,
+                    nombre: registro.nombres,
                     fecha: this.formatFecha(registro.fecha_calculo),
-                    sueldo: registro.empleado.salario,
-                    empresa: registro.empleado.area.empresa.nombre,
-                    area: registro.empleado.area.nombre,
+                    sueldo: registro.salario_mensual,
+                    empresa: registro.nombre_empresa,
+                    area: registro.nombre_area,
                     total_horas: registro.total_horas,
                     salario_ganado: registro.salario_neto,
-                    salario_total: registro.salario_total,
+                    salario_total: registro.total_salario_neto,
+                    afp: registro.descuento_AFP,
+                    isss: registro.descuento_ISSS,
+                    salario_mensual: registro.salario_total,
                 });
             });
+
+            worksheet.eachRow((row, rowNumber) => {
+                if (rowNumber > 1) {  // Ignorar la fila de encabezado
+                    for (const cell of row._cells) {
+                        if (['sueldo', 'salario_ganado', 'salario_total', 'afp', 'isss', 'salario_mensual'].includes(cell.value)) {
+                            cell.value = toCurrency(cell.value);
+                        }
+                    }
+                }
+            });
+
+
             workbook.xlsx.writeBuffer().then((data) => {
                 const blob = new Blob([data], {
                     type:

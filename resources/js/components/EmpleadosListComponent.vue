@@ -121,17 +121,31 @@
                     </li>
                 </ul>
             </nav>
+            <div class="row">
+                <div class="col-9">
+                </div>
+                <div class="col-2">
+                </div>
+                <div class="col-1">
+                    <div>
+                        <button @click="exportar()" class="btn btn-custom btn-3d">Planilla</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 import axios from "axios";
+
+import ExcelJS from "exceljs";
 export default {
     data() {
         return {
             empleados: [],
             empresas: [],
+            calculosHoras: [],
             filtros: {
                 nombre: "",
                 apellido: "",
@@ -218,6 +232,63 @@ export default {
             this.currentPage = page;
             this.fetchEmpleados();
         },
+
+        async exportar() {
+            const response = await axios.post("planilla/quincenal");
+            this.calculosHoras = response.data.object;
+
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet("Reporte de Horas Extras");
+
+            // Define un estilo para centrar los datos y otro estilo para el formato de moneda
+            const centeredStyle = {
+                alignment: { horizontal: "center" },
+            };
+            const currencyStyle = {
+                numFmt: "$ #,##0.00",
+            };
+
+            // Aplica los estilos a las columnas
+            worksheet.columns = [
+                { header: "ID Empleado", key: "id_empleado", width: 15, style: centeredStyle },
+                { header: "Sueldo Mensual", key: "sueldo", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
+                { header: "Horas Extra", key: "horasExtra", width: 15, style: centeredStyle },
+                { header: "Total Ganado", key: "TotalGanado", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
+                { header: "AFP", key: "afp", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
+                { header: "ISSS", key: "isss", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
+                { header: "Total a Pagar", key: "TotalPagar", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
+            ];
+
+            this.calculosHoras.forEach((registro) => {
+                // Agrega cada fila y aplica los estilos
+                worksheet.addRow({
+                    id_empleado: registro.dui,
+                    nombre: registro.nombre,
+                    sueldo: registro.sueldoMesual,
+                    horasExtra: registro.totalHorasExtras,
+                    TotalGanado: registro.horasExtra,
+                    afp: registro.afp,
+                    isss: registro.isss,
+                    TotalPagar: registro.TotalPagar,
+                }).eachCell({ includeEmpty: true }, (cell) => {
+                    cell.style = centeredStyle;
+                });
+            });
+
+            // Escribe el archivo y genera la descarga
+            workbook.xlsx.writeBuffer().then((data) => {
+                const blob = new Blob([data], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                });
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", "Reporte de Horas Extras.xlsx");
+                document.body.appendChild(link);
+                link.click();
+            });
+        },
+
         eliminarEmpresa(id) {
 
             this.$swal({
@@ -250,6 +321,27 @@ export default {
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
+}
+
+.btn-custom {
+    background-image: linear-gradient(to bottom, #06495a, #05333f);
+    color: #fff;
+    border-color: #2a7484;
+}
+
+.btn-custom:hover {
+    background-image: linear-gradient(to bottom, #06495a, #05333f);
+}
+
+/* Ajustar el color del texto para que resalte más */
+.btn-custom.btn-3d {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+    font-weight: bold;
+}
+
+.btn-custom.btn-3d:hover {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+    transform: translateY(-1px);
 }
 
 .textbox,
