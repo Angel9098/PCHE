@@ -336,10 +336,8 @@ export default {
     methods: {
         //empleadobyid
         leerData() {
-            if (JSON.parse(localStorage.getItem("user")) !== null) {
-                const { empleado_id, imagen } = JSON.parse(
-                    localStorage.getItem("user")
-                );
+            if (localStorage.getItem("user") !== null) {
+                const { empleado_id, imagen } = JSON.parse(JSON.stringify(localStorage.getItem("user")));
                 if (imagen !== null) {
                     this.defaultBooleand = false;
                     this.imagen = `storage/imagenes/${imagen}`;

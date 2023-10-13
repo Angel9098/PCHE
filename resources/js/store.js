@@ -16,7 +16,7 @@ const store = new Vuex.Store({
             state.user = user;
             state.userRol = user.rol;
             localStorage.setItem("session", state.loggedIn);
-            localStorage.setItem("userAdmin", `${state.userRol}`);
+            //localStorage.setItem("userAdmin", `${state.userRol}`);
         },
         setLoggedOut(state) {
             state.loggedIn = false;

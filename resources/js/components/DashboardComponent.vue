@@ -287,16 +287,16 @@ export default {
         },
         getHorasExtraComparativo() {
             axios.get('dashboard/horasExtraTotal', { headers: { 'Content-type': 'application/json' } }).then(resp => {
-                resp.data.forEach(element => {
+                resp.data.object.forEach(element => {
                     if (this.comparativoBars.length == 0) {
-                        this.comparativoBars.push({ name: element.nombre_empresa, data: [element.total_horas] });
+                        this.comparativoBars.push({ name: element.nombre_empresa, data: [element.total_horas.toFixed(2)] });
                         this.comparativoCategories.push(element.periodo);
                     } else {
                         if (this.comparativoBars.findIndex(item => item.name == element.nombre_empresa) != -1) {
                             let index = this.comparativoBars.findIndex(item => item.name == element.nombre_empresa);
-                            this.comparativoBars[index].data.push(element.total_horas);
+                            this.comparativoBars[index].data.push(element.total_horas.toFixed(2));
                         } else {
-                            this.comparativoBars.push({ name: element.nombre_empresa, data: [element.total_horas] });
+                            this.comparativoBars.push({ name: element.nombre_empresa, data: [element.total_horas.toFixed(2)] });
                         }
 
                         if (this.comparativoCategories.findIndex(item => item == element.periodo) == -1) {
