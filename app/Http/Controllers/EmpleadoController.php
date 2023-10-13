@@ -53,7 +53,7 @@ class EmpleadoController extends Controller
 
                 $sueldoMensual = $sueldoGanadoQuincena1 != null ? (($empleado->salario / 2) + $sueldoGanadoQuincena1->total_salario_neto) : ($empleado->salario / 2);
                 $sueldoQuincenal = $sueldoMensual / 2;
-                $isssQuincenal = ($sueldoQuincenal * 0.035) > 30  ? ($sueldoQuincenal * 0.035) : 30;
+                $isssQuincenal = ($sueldoQuincenal * 0.035) <= 30  ? ($sueldoQuincenal * 0.035) : 30;
                 $afpQuincenal = $sueldoQuincenal  * 0.0825;
 
                 $aplicableRenta = $sueldoQuincenal  - ($isssQuincenal + $afpQuincenal);
@@ -321,12 +321,12 @@ class EmpleadoController extends Controller
 
     public function findEmpleadoById(Request $request)
     {
-        try{
+        try {
             $id = $request->input('id');
             $empleado = Empleado::find($id);
 
             return CustomResponse::make($empleado, '', 200, null);
-        }catch(Exception $ex){
+        } catch (Exception $ex) {
             return CustomResponse::make(null, 'ocurrio un error al obtener el empleado', 500, null);
         }
     }
@@ -432,7 +432,7 @@ class EmpleadoController extends Controller
                     }
                 })
                 ->get();
-                return CustomResponse::make($empleados, '', 200, null);
+            return CustomResponse::make($empleados, '', 200, null);
         } catch (\Exception $e) {
             return CustomResponse::make(null, 'Ocurrio un error al generar la busqueda', 500, $e->getMessage());
         }
