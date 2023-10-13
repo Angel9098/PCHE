@@ -1,22 +1,21 @@
 <template>
     <div class="container">
         <br />
-        <h2 class="h1 text-center">SELECCIÓN DE FECHA DE CORTE</h2>
+        <h2 class="h1 text-center" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">SELECCIÓN DE FECHA DE CORTE</h2>
         <br />
         <div class="content-container">
-            <v-date-picker
-                is-expanded
-                v-model="selectedDate"
-                class="vdp-datepicker">
+            <v-date-picker is-expanded v-model="selectedDate" class="vdp-datepicker">
             </v-date-picker>
-            <div class="border border-2 rounded-3 d-flex flex-row justify-content-center align-items-center" style="height: 280px; min-width: 180px;">
+            <div class="border border-2 rounded-3 d-flex flex-row justify-content-center align-items-center"
+                style="height: 280px; min-width: 180px;">
                 <p class="text-center text-black">
                     Próxima fecha de corte: {{ descripcionVigente }}
                 </p>
             </div>
         </div>
 
-        <h2 class="h1 text-center mt-5">HISTORIAL DE FECHAS DE CORTE</h2>
+        <h2 class="h1 text-center mt-5" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">HISTORIAL DE FECHAS DE CORTE
+        </h2>
         <table class="table table-hover table-bordered mt-4">
             <thead class="table-primary bg-primary">
                 <tr class="text-center">
@@ -26,7 +25,8 @@
                 </tr>
             </thead>
             <tbody v-if="cortes.length > 0">
-                <tr class="text-center" v-for="corte in cortes" :key="corte.id" :class="corte.vigente == 1?'table-success':'table-light'">
+                <tr class="text-center" v-for="corte in cortes" :key="corte.id"
+                    :class="corte.vigente == 1 ? 'table-success' : 'table-light'">
                     <td>{{ corte.descripcion }}</td>
                     <td>{{ formatFecha(corte.fecha_corte) }}</td>
                     <td>{{ formatFecha(corte.created_at) }}</td>
@@ -44,38 +44,15 @@
         <nav aria-label="Page navigation example">
             <ul class="pagination">
                 <li class="page-item" :class="{ disabled: currentPage === 1 }">
-                    <a
-                        class="page-link"
-                        href="#"
-                        @click.prevent="changePage(currentPage - 1)"
-                        aria-label="Previous"
-                    >
+                    <a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <li
-                    class="page-item"
-                    v-for="page in lastPage"
-                    :key="page"
-                    :class="{ active: page === currentPage }"
-                >
-                    <a
-                        class="page-link"
-                        href="#"
-                        @click.prevent="changePage(page)"
-                        >{{ page }}</a
-                    >
+                <li class="page-item" v-for="page in lastPage" :key="page" :class="{ active: page === currentPage }">
+                    <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
                 </li>
-                <li
-                    class="page-item"
-                    :class="{ disabled: currentPage === lastPage }"
-                >
-                    <a
-                        class="page-link"
-                        href="#"
-                        @click.prevent="changePage(currentPage + 1)"
-                        aria-label="Next"
-                    >
+                <li class="page-item" :class="{ disabled: currentPage === lastPage }">
+                    <a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
@@ -83,37 +60,21 @@
         </nav>
 
         <!-- Modal -->
-        <div
-            class="modal fade"
-            id="corteModal"
-            tabindex="-1"
-            aria-labelledby="corteModalLabel"
-            aria-hidden="true"
-        >
+        <div class="modal fade" id="corteModal" tabindex="-1" aria-labelledby="corteModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="corteModalLabel">
                             Agregar fecha de corte
                         </h5>
-                        <button
-                            type="button"
-                            class="close"
-                            @click="cerrarModal"
-                            aria-label="Close"
-                        >
+                        <button type="button" class="close" @click="cerrarModal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="descripcion">Descripción</label>
-                            <input
-                                type="text"
-                                class="form-control"
-                                id="descripcion"
-                                v-model="descripcionCorte"
-                            />
+                            <input type="text" class="form-control" id="descripcion" v-model="descripcionCorte" />
                         </div>
                         <p v-if="errorDescripcion" class="text-danger">
                             La descripción no puede estar vacía.
@@ -126,11 +87,7 @@
                         </p>
                     </div>
                     <div class="modal-footer">
-                        <button
-                            type="button"
-                            class="btn btn-primary"
-                            @click="enviarCorte"
-                        >
+                        <button type="button" class="btn btn-primary" @click="enviarCorte">
                             Agregar fecha de corte
                         </button>
                     </div>

@@ -80,7 +80,9 @@
                                     <source :srcset="defaultBooleand ? defaultImagen : perfil.imagen" type="image" />
                                     <img v-if="data.id == 0" :src="defaultBooleand ? defaultImagen : perfil.imagen"
                                         class="img-fluid img-thumbnail cicle" alt="..." />
-                                    <img v-else :src="data.imagen == null ? defaultImagen : 'storage/imagenes/'+data.imagen" class="img-fluid img-thumbnail cicle">
+                                    <img v-else
+                                        :src="data.imagen == null ? defaultImagen : 'storage/imagenes/' + data.imagen"
+                                        class="img-fluid img-thumbnail cicle">
                                 </picture>
                             </div>
                             <div class="p-4">
@@ -217,17 +219,47 @@ export default {
 
         },
 
-        async editarEmpresa(empresaId) {
-            const response = await axios.get(`/empresabyid?id=${empresaId}`);
+        editarEmpresa(empresaId) {
+            axios.get(`/empresabyid?id=${empresaId}`)
+                .then((response) => {
+                    console.log(response);
+                    if (response && response.data) {
+                        const responseData = response.data;
 
-            this.data.nombre = response.data[0].nombre;
-            this.data.direccion = response.data[0].direccion;
-            this.data.rubro = response.data[0].rubro;
-            this.data.id = response.data[0].id;
-            this.data.imagen = response.data[0].imagen;
-            $("#modalAgregarEmpresa").modal("show");
-
+                        if (responseData.status === 200 && responseData.object) {
+                            const empresa = responseData.object;
+                            console.log(empresa);
+                            this.data.nombre = empresa.nombre;
+                            this.data.direccion = empresa.direccion;
+                            this.data.rubro = empresa.rubro;
+                            this.data.id = empresa.id;
+                            this.data.imagen = empresa.imagen;
+                            this.abrirModalAgregarEmpresa();
+                        } else {
+                            this.$swal.fire({
+                                title: 'Error',
+                                icon: 'error',
+                                text: responseData.message || 'Error desconocido',
+                                showCancelButton: false,
+                                showConfirmButton: false,
+                                timer: 2000
+                            });
+                        }
+                    } else {
+                        this.$swal.fire({
+                            title: 'Error',
+                            icon: 'error',
+                            text: 'Error desconocido: respuesta no válida',
+                            showCancelButton: false,
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    }
+                })
+                .catch((error) => {
+                });
         },
+
 
         eliminarEmpresa(id) {
             this.$swal.fire({

@@ -394,7 +394,7 @@ export default {
           headers: { "Content-type": "application/json" },
         })
         .then((resp) => {
-          this.areas = resp.data;
+          this.areas = resp.data.object;
         });
     },
     getHorarios() {
@@ -412,27 +412,26 @@ export default {
         axios
           .get(`empleadobyid?idEmpleado=${id}`)
           .then((result) => {
-            console.log(result.data[0].area.empresa.nombre);
             if (result.data && result.data.length > 0) {
-              this.usuario.nombres = result.data[0].nombres;
-              this.usuario.empresa = result.data[0].area.empresa.id;
-              this.usuario.area_id = result.data[0].area.id;
-              this.usuario.apellidos = result.data[0].apellidos;
-              this.usuario.email = result.data[0].email;
-              this.usuario.cargo = result.data[0].cargo;
-              this.usuario.dui = result.data[0].dui;
-              this.usuario.horario_id = result.data[0].horario_id;
-              this.usuario.avisar_contacto = result.data[0].avisar_contacto;
-              this.usuario.numero_emergencia = result.data[0].numero_emergencia;
-              this.usuario.salario = result.data[0].salario;
-              this.usuario.id = result.data[0].id;
+              this.usuario.nombres = result.data.object[0].nombres;
+              this.usuario.empresa = result.data.object[0].area.empresa.id;
+              this.usuario.area_id = result.data.object[0].area.id;
+              this.usuario.apellidos = result.data.object[0].apellidos;
+              this.usuario.email = result.data.object[0].email;
+              this.usuario.cargo = result.data.object[0].cargo;
+              this.usuario.dui = result.data.object[0].dui;
+              this.usuario.horario_id = result.data.object[0].horario_id;
+              this.usuario.avisar_contacto = result.data.object[0].avisar_contacto;
+              this.usuario.numero_emergencia = result.data.object[0].numero_emergencia;
+              this.usuario.salario = result.data.object[0].salario;
+              this.usuario.id = result.data.object[0].id;
               axios
                 .get(`empresa/areas?id=${this.usuario.empresa}`, {
                   headers: { "Content-type": "application/json" },
                 })
                 .then((resp) => {
                     console.log(resp)
-                  this.areas = resp.data;
+                  this.areas = resp.data.object;
                 });
             } else {
               console.error(

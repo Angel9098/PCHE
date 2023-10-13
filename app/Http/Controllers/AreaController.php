@@ -29,7 +29,7 @@ class AreaController extends Controller
 
         $area = Area::find($idArea);
 
-        return response()->json($area);
+        return CustomResponse::make($area, 'Area de empresa creada con éxito', 200, null);
     }
 
     /*public function horariosArea(Request $request)
@@ -128,14 +128,14 @@ class AreaController extends Controller
 
     public function listaDetalleAreas(Request $request)
     {
-        try{
+        try {
             $idEmpresa = $request->input('id_empresa');
 
             // Realizar la consulta utilizando Eloquent
             $query = DB::table('areas as a')
-            ->join('empresas as e', 'a.empresa_id', '=', 'e.id')
-            ->leftJoin('empleados as em', 'em.id', '=', 'a.jefe_area')
-            ->select('a.id as area_id', 'a.nombre as nombre_area', 'e.nombre as nombre_empresa', DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe_area'), 'a.jefe_area as id_jefe', 'e.id as id_empresa');
+                ->join('empresas as e', 'a.empresa_id', '=', 'e.id')
+                ->leftJoin('empleados as em', 'em.id', '=', 'a.jefe_area')
+                ->select('a.id as area_id', 'a.nombre as nombre_area', 'e.nombre as nombre_empresa', DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe_area'), 'a.jefe_area as id_jefe', 'e.id as id_empresa');
 
             if (!empty($idEmpresa)) {
                 $query->where('e.id', $idEmpresa);
@@ -143,39 +143,36 @@ class AreaController extends Controller
 
             $resultados = $query->get();
 
-            if($resultados == null){
+            if ($resultados == null) {
                 return CustomResponse::make(null, 'No hay elementos disponibles', 400, null);
             }
 
             // Devolver los resultados en formato JSON
             return CustomResponse::make($resultados, '', 200, null);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return CustomResponse::make(null, 'Hubo un problema en el servidor', 500, $e->getMessage());
         }
     }
 
     public function listaJefeEmpleado()
     {
-        try{
+        try {
             $usuarioJefe = DB::table('empleados as em')
-            ->join('areas as a', 'a.id', '=', 'em.area_id')
-            ->join('empresas as e', 'a.empresa_id', '=', 'e.id')
-            ->join('usuarios as u', 'u.empleado_id', '=', 'em.id')
-            ->select('u.id', DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe'))
-            ->where('u.rol', '=', 'jefe')
-            ->whereNull('a.jefe_area')
-            ->get();
+                ->join('areas as a', 'a.id', '=', 'em.area_id')
+                ->join('empresas as e', 'a.empresa_id', '=', 'e.id')
+                ->join('usuarios as u', 'u.empleado_id', '=', 'em.id')
+                ->select('u.id', DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe'))
+                ->where('u.rol', '=', 'jefe')
+                ->whereNull('a.jefe_area')
+                ->get();
 
-            if($usuarioJefe == null){
+            if ($usuarioJefe == null) {
                 return CustomResponse::make(null, 'No hay elementos disponibles', 400, null);
             }
 
             return CustomResponse::make($usuarioJefe, '', 200, null);
-
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return CustomResponse::make(null, 'Hubo un error en el servidor', 500, $e->getMessage());
         }
-
     }
-
 }

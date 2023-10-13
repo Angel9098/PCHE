@@ -7,7 +7,7 @@
         </div>
         <form class="col-8 col-sm-12 col-md-12 d-flex flex-column justify-content-center">
             <div class="col-12 d-flex flex-column justify-content-center">
-                <h2 class="text-center" style="margin-bottom: 3%;">ACTIVACIÓN DE USUARIO</h2>
+                <h2 class="text-center" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); margin-bottom: 3%;">ACTIVACIÓN DE USUARIO</h2>
 
                 <!-- Campo para ingresar el DUI del empleado -->
                 <div class="d-flex flex-row justify-content-center align-items-center" style="margin-bottom: 5%;">

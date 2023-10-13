@@ -355,7 +355,6 @@ export default {
 
             }
             const areaId = this.filtros.selectArea;
-            this.searchAreaById(areaId);
             this.buscarRegistrosByEmpresa(this.filtros);
             this.AreaSelect = this.areas.find(
                 (area) => area.id === this.filtros.selectArea
@@ -450,7 +449,7 @@ export default {
             axios
                 .get("/empresa/areas?id=" + areaId)
                 .then((response) => {
-                    this.areas = response.data.map((area) => ({
+                    this.areas = response.data.object.map((area) => ({
                         id: area.id,
                         nombre: area.nombre,
                     }));
@@ -459,33 +458,11 @@ export default {
                     console.error("Error al cargar areas:", error);
                 });
         },
-        async searchAreaById(areaId) {
-            $.ajax({
-                url: '/areabyid?id=' + areaId,
-                method: 'GET',
-                success: (data) => {
-                    $.ajax({
-                        url: '/findempleadobyid?id=' + data.jefe_area,
-                        method: 'GET',
-                        success: (data2) => {
-                            this.duiJefe = data2.dui;
-                            this.nombreJefe = data2.nombres;
-                            this.email = data2.email;
-                        },
-                        error: (error) => {
 
-                        }
-                    });
-                },
-                error: (error) => {
-                    console.error('Error al obtener los datos de la empresa:', error);
-                }
-            });
-        },
 
         fetchEmpresas() {
-            const { nombres, apellidos } = JSON.parse(localStorage.getItem('userInfo'));
-            this.nombreJefe = `${nombres} ${apellidos}`;
+            /* const nombre = JSON.parse(localStorage.getItem('nombreUser'));
+             this.nombreJefe = `${nombres} ${apellidos}`;*/
             axios
                 .get("/empresas")
                 .then((response) => {
