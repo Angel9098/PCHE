@@ -75,7 +75,7 @@ class AreaController extends Controller
             $area->jefe_area = $request->input('jefe_area');
             $area->save();
 
-            return CustomResponse::make($area, 'Area de empresa creada con éxito', 200, null);
+            return CustomResponse::make($area, 'Area de empresa creada con éxito', 201, null);
         } catch (\Exception $e) {
 
             return CustomResponse::make($area, 'No se pudo crear el área', 500, $e->getMessage());
@@ -105,7 +105,7 @@ class AreaController extends Controller
             $area->jefe_area = $request->input('jefe_area');
             $area->save();
 
-            return CustomResponse::make($area, 'Area de empresa actualizada con éxito', 201, null);
+            return CustomResponse::make($area, 'Area de empresa actualizada con éxito', 200, null);
         } catch (\Exception $e) {
             // Manejar cualquier error y devolver una respuesta de error adecuada
             return CustomResponse::make(null, 'No se pudo editar el área. Detalles:', 500, $e->getMessage());
@@ -120,7 +120,7 @@ class AreaController extends Controller
 
             $area = Area::findOrFail($id);
             $area->delete();
-            return CustomResponse::make($area, 'Area eliminada con éxito', 201, null);
+            return CustomResponse::make($area, 'Area eliminada con éxito', 200, null);
         } catch (\Exception $e) {
             return CustomResponse::make(null, 'Error al eliminar el area', 500, $e->getMessage());
         }

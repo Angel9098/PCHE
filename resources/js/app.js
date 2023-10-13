@@ -57,12 +57,12 @@ const options = {
 };
 
 Vue.use(Toast, options);
-localStorage.setItem("userAdmin", "jefe");
+//localStorage.setItem("userAdmin", "jefe");
 
-if (JSON.parse(localStorage.getItem("user")) !== null) {
-    const empleadoId = JSON.parse(localStorage.getItem("user"));
+/* if (localStorage.getItem("user") !== null) {
+    const empleadoId = JSON.parse(JSON.stringify(localStorage.getItem("user")));
     localStorage.setItem("userAdmin", `${empleadoId.rol}`);
-}
+} */
 //
 const routes = [
     {

@@ -45,6 +45,7 @@ export default {
             axios.post(`/login`, this.objLogin).then((response) => {
                 const user = response.data.object;
                 localStorage.setItem('user', JSON.stringify(user));
+                localStorage.setItem("userAdmin", user.rol);
                 this.$store.dispatch('logins', user);
                 this.$router.push('/business');
 

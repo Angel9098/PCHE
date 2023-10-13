@@ -145,7 +145,7 @@ export default {
         },
         getAreasByEmpresa() {
             axios.get(`/areas?id_empresa=${this.selected}`, { headers: { 'Content-type': 'application/json' } }).then(resp => {
-                this.areas = resp.data;
+                this.areas = resp.data.object;
             });
         },
         showCrearArea() {
@@ -167,29 +167,35 @@ export default {
             }
         },
         crearArea() {
+            this.$swal.fire({
+                title: 'Cargando...',
+                html: '<div class="my-5 d-flex flex-row justify-content-center"><div class="sk-chase"><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div></div></div>',
+                showCancelButton: false,
+                showConfirmButton: false
+            });
             Vue.set(this.areaCrear, 'nombre', this.area.nombre_area);
             Vue.set(this.areaCrear, 'empresa_id', this.selected);
-            Vue.set(this.areaCrear, 'jefe_area', this.area.jefe_area);
+            Vue.set(this.areaCrear, 'jefe_area', this.area.id_jefe);
 
-            axios.post('areas/create', this.areaCrear, { headers: { 'Content-type': 'application/json' } }).then(resp => {
-                if (resp.data.status == 200) {
-                    this.$swal.fire({
-                        title: '¡Hecho!',
-                        icon: 'success',
-                        text: response.data.message,
-                        showCancelButton: false,
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                    this.getAreasByEmpresa();
-                    $('#modalCrear').modal('hide');
-                }
+            axios.post('areas/create', this.areaCrear, { headers: { 'Content-type': 'application/json' } }).then(response => {
+                this.$swal.close();
+                this.$swal.fire({
+                    title: '¡Hecho!',
+                    icon: 'success',
+                    text: response.data.message,
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+                this.getAreasByEmpresa();
+                $('#modalCrear').modal('hide');
+                
             }).catch(error => {
-                if (error.resp.data.status) {
+                if (error.response) {
                     this.$swal.fire({
                         title: 'Error',
                         icon: 'error',
-                        text: response.data.message,
+                        text: error.response.data.message,
                         showCancelButton: false,
                         showConfirmButton: false,
                         timer: 2000
@@ -208,10 +214,10 @@ export default {
             });
         },
         rellenarCampos(idArea, idEmpresa) {
-            let registroSeleccionado = this.areas.find(element => element.id === idArea);
+            let registroSeleccionado = this.areas.find(element => element.area_id === idArea);
             this.area.nombre_area = registroSeleccionado.nombre_area;
             this.area.jefe_area = registroSeleccionado.id_jefe;
-            this.area.id = registroSeleccionado.id;
+            this.area.area_id = registroSeleccionado.area_id;
             this.area.empresa_id = idEmpresa;
         },
         showModificarArea(idArea, idEmpresa) {
@@ -222,9 +228,18 @@ export default {
             this.rellenarCampos(idArea, idEmpresa);
         },
         modificarArea() {
-            Vue.set(this.area, 'nombre', this.area.nombre_area);
-            axios.put(`areas/update?id=${this.area.id}`, this.area, { headers: { 'Content-type': 'application/json' } }).then(resp => {
-                if (resp.status == 200) {
+            this.$swal.fire({
+                title: 'Cargando...',
+                html: '<div class="my-5 d-flex flex-row justify-content-center"><div class="sk-chase"><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div></div></div>',
+                showCancelButton: false,
+                showConfirmButton: false
+            });
+            Vue.set(this.areaCrear, 'nombre', this.area.nombre_area);
+            Vue.set(this.areaCrear, 'empresa_id', this.area.empresa_id);
+            Vue.set(this.areaCrear, 'jefe_area', this.area.id_jefe);
+            axios.put(`areas/update?id=${this.area.area_id}`, this.areaCrear, { headers: { 'Content-type': 'application/json' } }).then(resp => {
+                this.$swal.close();
+                if (resp.data.status == 200) {
                     this.$swal.fire({
                         title: '¡Hecho!',
                         icon: 'success',
