@@ -4,8 +4,7 @@
             <nav class="w-100 navbar navbar-primary bg-primary" style="padding-top: 0px; padding-bottom: 0px;"
                 :hidden="currentPath == '/' || currentPath == '/business' || currentPath == '/access-denied'">
                 <div class="container-fluid" style="padding-left: 0px; padding-right: 0px;">
-                    <a class="toggle-btn" role="button" data-bs-toggle="offcanvas" href="#offcanvasDarkNavbar"
-                        aria-controls="offcanvasDarkNavbar" @click="toggleSideBar">
+                    <a :class="expandSideBar ? 'toggle-btn-extend' : 'toggle-btn'" role="button" @click="toggleSideBar">
                         <i class="fa-solid fa-bars text-white" style="font-size: 25px; margin-top: 15px;"></i>
                     </a>
                     <a class="navbar-brand" href="#">
@@ -104,77 +103,75 @@
             </nav>
         </div>
 
-        <nav class="flexMenu bg-primary"
-            :hidden="currentPath == '/' || currentPath == '/business' || expandSideBar == true">
+        <nav :class="expandSideBar ? 'flexMenu-extend bg-primary' :'flexMenu bg-primary'" :hidden="currentPath == '/' || currentPath == '/business'">
             <ul class="ul">
-                <router-link class="my-1 text-uppercase item" to="/dashboard"
-                    v-tooltip="{ theme: 'info-tooltip', content: 'Dashboard' }">
-                    <i class="fa-solid fa-house text-white iconItem"></i>
+                <router-link :class="expandSideBar ? 'my-1 text-uppercase item-extend' :'my-1 text-uppercase item'" to="/dashboard" v-tooltip="{ theme: 'info-tooltip', content: 'Dashboard', disabled: expandSideBar }">
+                    <i :class="expandSideBar ? 'fa-solid fa-house text-white iconItem-extend' : 'fa-solid fa-house text-white iconItem'"></i>
+                    <span class="text-white" style="width:145px;text-align: center;" v-if="expandSideBar ==true">Dashboard</span>
                 </router-link>
-                <router-link v-if="userRoles === 'jefe'" class="my-1 text-uppercase item" to="/importacionhoras"
-                    v-tooltip="{ theme: 'info-tooltip', content: 'Importar Horas' }">
-                    <i class="fa-solid fa-file-arrow-up text-white iconItem"></i>
+                <router-link v-if="userRoles === 'jefe'" :class="expandSideBar ? 'my-1 text-uppercase item-extend' : 'my-1 text-uppercase item'" to="/importacionhoras" v-tooltip="{ theme: 'info-tooltip', content: 'Importar Horas', disabled: expandSideBar }">
+                    <i :class="expandSideBar ? 'fa-solid fa-file-arrow-up text-white iconItem-extend' : 'fa-solid fa-file-arrow-up text-white iconItem'"></i>
+                    <span class="text-white" style="width:145px;text-align: center;" v-if="expandSideBar">Importar Horas</span>
                 </router-link>
-                <a class="item" role="button" id="dropdownMenu2" data-bs-toggle="collapse" href="#subMenu"
-                    aria-expanded="false" @click="toggleSubMenu" aria-controls="subMenu"
-                    v-tooltip="{ theme: 'info-tooltip', content: 'Empleados' }">
-                    <i class="fa-solid fa-users-gear text-white iconItem"></i><i
-                        class="fa-solid fa-caret-down text-white iconItem animate__animated animate__bounce"></i>
+                <a :class="expandSideBar ?'item-extend' : 'item'" role="button" id="dropdownMenu2" data-bs-toggle="collapse" href="#subMenu" aria-expanded="false" @click="toggleSubMenu" aria-controls="subMenu" v-tooltip="{ theme: 'info-tooltip', content: 'Empleados', disabled: expandSideBar }">
+                    <i :class="expandSideBar ? 'fa-solid fa-users-gear text-white iconItem-extend' : 'fa-solid fa-users-gear text-white iconItem'"></i>
+                    <div class="expandible" v-if="expandSideBar" style="width:145px;text-align: center;">
+                        <span class="text-white text-uppercase">Empleados</span>
+                        <i class="fa-solid fa-caret-down text-white animate__animated animate__bounce"></i>
+                    </div>
                 </a>
                 <transition name="expand">
                     <div class="submenu" id="subMenu" v-if="isSubMenuOpen">
-                        <router-link v-if="userRoles === 'administrador'" class="text-uppercase item" to="/registro/0"
-                            v-tooltip="{ theme: 'info-tooltip-sub', content: 'Registrar Empleados' }">
-                            <i class="fa-solid fa-circle-plus text-white iconItem"></i>
+                        <router-link v-if="userRoles === 'administrador'" :class="expandSideBar ? 'text-uppercase item-extend' : 'text-uppercase item'" to="/registro/0" v-tooltip="{ theme: 'info-tooltip-sub', content: 'Registrar Empleados', disabled: expandSideBar }">
+                            <i :class="expandSideBar ? 'fa-solid fa-circle-plus text-white' : 'fa-solid fa-circle-plus text-white iconItem'"></i>
+                            <span class="text-white" style="width:145px;text-align: center;" v-if="expandSideBar">Registrar Empleados</span>
                             <!-- Registrar empleados -->
                         </router-link>
-                        <router-link v-if="userRoles === 'jefe' || userRoles === 'administrador'"
-                            class="my-1 text-uppercase item" to="/editarperfilusuario"
-                            v-tooltip="{ theme: 'info-tooltip-sub', content: 'Perfil' }">
-                            <i class="fa-solid fa-user text-white iconItem"></i>
+                        <router-link v-if="userRoles === 'jefe' || userRoles === 'administrador'" :class="expandSideBar ? 'text-uppercase item-extend' : 'text-uppercase item'" to="/editarperfilusuario" v-tooltip="{ theme: 'info-tooltip-sub', content: 'Perfil', disabled: expandSideBar }">
+                            <i :class="expandSideBar ? 'fa-solid fa-user text-white' : 'fa-solid fa-user text-white iconItem'"></i>
+                            <span class="text-white" style="width:145px;text-align: center;" v-if="expandSideBar">Perfil</span>
                             <!-- Perfil usuario -->
                         </router-link>
-                        <router-link v-if="userRoles === 'administrador'" class="my-1 text-uppercase item"
-                            to="/activacionusuario" v-tooltip="{ theme: 'info-tooltip-sub', content: 'Activar Usuario' }">
-                            <i class="fa-solid fa-user-check text-white iconItem"></i>
+                        <router-link v-if="userRoles === 'administrador'" :class="expandSideBar ? 'text-uppercase item-extend' : 'text-uppercase item'" to="/activacionusuario" v-tooltip="{ theme: 'info-tooltip-sub', content: 'Activar Usuario', disabled: expandSideBar }">
+                            <i :class="expandSideBar ? 'fa-solid fa-user-check text-white' : 'fa-solid fa-user-check text-white iconItem'"></i>
+                            <span class="text-white" style="width:145px;text-align: center;" v-if="expandSideBar">Activar Usuario</span>
                             <!-- Activar Usuario -->
                         </router-link>
-                        <router-link v-if="userRoles === 'administrador'" class="my-1 text-uppercase item" to="/empleados"
-                            v-tooltip="{ theme: 'info-tooltip-sub', content: 'Listado Empleados' }">
-                            <i class="fa-solid fa-users text-white iconItem"></i>
+                        <router-link v-if="userRoles === 'administrador'" :class="expandSideBar ? 'text-uppercase item-extend' : 'text-uppercase item'" to="/empleados" v-tooltip="{ theme: 'info-tooltip-sub', content: 'Listado Empleados', disabled: expandSideBar }">
+                            <i :class="expandSideBar ? 'fa-solid fa-users text-white' : 'fa-solid fa-users text-white iconItem'"></i>
+                            <span class="text-white" style="width:145px;text-align: center;" v-if="expandSideBar">Listado Empleados</span>
                             <!-- Empleados -->
                         </router-link>
                     </div>
                 </transition>
-                <router-link v-if="userRoles === 'administrador'" class="text-uppercase item" to="/empresas"
-                    v-tooltip="{ theme: 'info-tooltip', content: 'Empresas' }">
-                    <i class="fa-solid fa-building text-white iconItem"></i>
+                <router-link v-if="userRoles === 'administrador'" :class="expandSideBar ? 'text-uppercase item-extend' : 'text-uppercase item'" to="/empresas" v-tooltip="{ theme: 'info-tooltip', content: 'Empresas', disabled: expandSideBar }">
+                    <i :class="expandSideBar ? 'fa-solid fa-building text-white' : 'fa-solid fa-building text-white iconItem'"></i>
+                    <span class="text-white" style="width:145px;text-align: center;" v-if="expandSideBar">Empresas</span>
                 </router-link>
-                <router-link v-if="userRoles === 'administrador'" class="my-1 text-uppercase item" to="/areas"
-                    v-tooltip="{ theme: 'info-tooltip', content: 'Áreas' }">
-                    <i class="fa-solid fa-network-wired text-white iconItem"></i>
+                <router-link v-if="userRoles === 'administrador'" :class="expandSideBar ? 'text-uppercase item-extend' : 'text-uppercase item'" to="/areas" v-tooltip="{ theme: 'info-tooltip', content: 'Áreas', disabled: expandSideBar }">
+                    <i :class="expandSideBar ? 'fa-solid fa-network-wired text-white' : 'fa-solid fa-network-wired text-white iconItem'"></i>
+                    <span class="text-white" style="width:145px;text-align: center;" v-if="expandSideBar">Áreas</span>
                 </router-link>
-                <router-link v-if="userRoles === 'administrador'" class="my-1 text-uppercase item" to="/calendarios"
-                    v-tooltip="{ theme: 'info-tooltip', content: 'Calendario' }">
-                    <i class="fa-solid fa-calendar text-white iconItem"></i>
+                <router-link v-if="userRoles === 'administrador'" :class="expandSideBar ? 'text-uppercase item-extend' : 'text-uppercase item'" to="/calendarios" v-tooltip="{ theme: 'info-tooltip', content: 'Calendario', disabled: expandSideBar }">
+                    <i :class="expandSideBar ? 'fa-solid fa-calendar text-white' : 'fa-solid fa-calendar text-white iconItem'"></i>
+                    <span class="text-white" style="width:145px;text-align: center;" v-if="expandSideBar">Calendario</span>
                 </router-link>
-                <router-link v-if="userRoles === 'administrador'" class="my-1 text-uppercase item" to="/historialhoras"
-                    v-tooltip="{ theme: 'info-tooltip', content: 'Procesar Horas' }">
-                    <i class="fa-brands fa-searchengin text-white iconItem"></i>
+                <router-link v-if="userRoles === 'administrador'" :class="expandSideBar ? 'text-uppercase item-extend' : 'text-uppercase item'" to="/historialhoras" v-tooltip="{ theme: 'info-tooltip', content: 'Procesar Horas', disabled: expandSideBar }">
+                    <i :class="expandSideBar ? 'fa-brands fa-searchengin text-white' : 'fa-brands fa-searchengin text-white iconItem'"></i>
+                    <span class="text-white" style="width:145px;text-align: center;" v-if="expandSideBar">Procesar Horas</span>
                 </router-link>
-                <router-link v-if="userRoles === 'administrador'" class="my-1 text-uppercase item" to="/seleccionararchivo"
-                    v-tooltip="{ theme: 'info-tooltip', content: 'Cálculo Horas' }">
-                    <i class="fa-solid fa-file-circle-check text-white iconItem"></i>
+                <router-link v-if="userRoles === 'administrador'" :class="expandSideBar ? 'text-uppercase item-extend' : 'text-uppercase item'" to="/seleccionararchivo" v-tooltip="{ theme: 'info-tooltip', content: 'Cálculo Horas', disabled: expandSideBar }">
+                    <i :class="expandSideBar ? 'fa-solid fa-file-circle-check text-white' : 'fa-solid fa-file-circle-check text-white iconItem'"></i>
+                    <span class="text-white" style="width:145px;text-align: center;" v-if="expandSideBar">Cálculo Horas</span>
                 </router-link>
-                <a class="my-1 text-uppercase item" href="" v-tooltip="{ theme: 'info-tooltip', content: 'Cerrar Sesión' }">
-                    <i class="fa-solid fa-right-from-bracket text-white iconItem" @click="cerrarSesion"></i>
+                <a :class="expandSideBar ? 'text-uppercase item-extend' : 'text-uppercase item'" href="" v-tooltip="{ theme: 'info-tooltip', content: 'Cerrar Sesión', disabled: expandSideBar }">
+                    <i :class="expandSideBar ? 'fa-solid fa-right-from-bracket text-white' : 'fa-solid fa-right-from-bracket text-white iconItem'" @click="cerrarSesion"></i>
+                    <span class="text-white" style="width:145px;text-align: center;" v-if="expandSideBar">Cerrar Sesión</span>
                 </a>
             </ul>
         </nav>
-        <div
-            :class="currentPath == '/' || currentPath == '/business' || currentPath == '/access-denied' ? 'd-flex flex-row justify-content-center' : 'd-flex flex-row justify-content-end'">
-            <main class="d-flex flex-row justify-content-center h-100"
-                :style="currentPath == '/' || currentPath == '/business' || currentPath == '/access-denied' ? 'width:100%' : 'width:97%'">
+        <div :class="currentPath == '/' || currentPath == '/business' || currentPath == '/access-denied' ? 'd-flex flex-row justify-content-center' : 'd-flex flex-row justify-content-end'">
+            <main class="d-flex flex-row justify-content-center h-100" :style="currentPath == '/' || currentPath == '/business' || currentPath == '/access-denied' ? 'width:100%' : currentMenu">
                 <router-view></router-view>
             </main>
         </div>
@@ -196,6 +193,17 @@
     position: fixed;
 }
 
+.flexMenu-extend {
+    margin: 0%;
+    width: 200px;
+    height: 100vh;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    z-index: 1026;
+    position: fixed;
+}
+
 .item {
     display: list-item;
     height: 40px;
@@ -204,17 +212,42 @@
     list-style: none;
 }
 
+.item-extend {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    text-decoration: none;
+    height: 40px;
+    text-align: center;
+    width: 200px;
+    list-style: none;
+}
+
 .iconItem {
     margin-top: 13px;
 }
 
+.iconItem-extend {
+    margin-top: 0px;
+}
+
 .toggle-btn:hover,
-.item:hover {
+.item:hover, .toggle-btn-extend:hover, .item-extend:hover {
     background-color: #7DCADC;
 }
 
 .submenu {
     background-color: #102E47;
+}
+
+.expandible{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
 }
 
 ol,
@@ -265,6 +298,15 @@ a:hover {
     text-align: center;
     width: 55px;
     list-style: none;
+}
+
+.toggle-btn-extend {
+    display: list-item;
+    height: 60px;
+    text-align: right;
+    width: 200px;
+    list-style: none;
+    padding-right: 5px;
 }
 
 .v-popper--theme-info-tooltip .v-popper__inner {
@@ -332,6 +374,10 @@ export default {
                 return localStorage.getItem("userAdmin");
             }
         },
+        currentMenu() {
+            if (this.expandSideBar == true) return 'width:84%';
+            else return 'width:97%';
+        }
     },
     methods: {
         //empleadobyid

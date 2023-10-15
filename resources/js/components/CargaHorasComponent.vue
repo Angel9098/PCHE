@@ -1,7 +1,7 @@
 <template>
     <div class="w-100 d-flex flex-column justify-content-center align-items-center">
         <div class="w-75 d-flex flex-column justify-content-center align-items-center">
-            <h1>Registro de Horas Extras</h1>
+            <h1 class="h1 text-center text-uppercase my-3" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">Registro de Horas Extras</h1>
             <div id="drop-zone" class="col-11 d-flex flex-column justify-content-center align-items-center bg-light rounded-3 dropdrag-zone mt-5" @dragover="dragOver" @dragleave="dragLeave" @drop="drop">
                 <input id="archivo" type="file" ref="file" class="input-file" @change="importarExcel">
                 <transition name="slide-fade">
