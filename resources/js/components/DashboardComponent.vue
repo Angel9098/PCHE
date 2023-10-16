@@ -318,6 +318,9 @@ export default {
                 this.$forceUpdate();
                 console.log(this.optionsLines.xaxis.categories)
             })
+        },
+        getRecuentoHorasExtras() {
+            
         }
     }
 }

@@ -86,13 +86,13 @@ export default {
     methods: {
         importarExcel() {
             if (moment().isAfter(this.fechaVigente)) {
-                this.$toast.error(`Tiempo de entrega expirado. Fecha máxima: ${moment(this.fechaVigente).format('DD/MM/YYYY')}`, {
-                    position: "top-right",
-                    timeout: 3000,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    closeButton: "button",
-                    icon: true
+                this.$swal.fire({
+                    title: 'Error',
+                    icon: 'error',
+                    text: `Tiempo de entrega expirado. Fecha máxima: ${moment(this.fechaVigente).format('DD/MM/YYYY')}`,
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    timer: 2000
                 });
             }
             else {
@@ -100,24 +100,24 @@ export default {
                 let extension = this.fileExcel.name.slice(this.fileExcel.name.lastIndexOf('.'), this.fileExcel.name.length);
                 this.items = [];
                 if (this.$refs.file.files.length > 1) {
-                    this.$toast.error("Seleccione únicamente un archivo", {
-                        position: "top-right",
-                        timeout: 3000,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        closeButton: "button",
-                        icon: true
+                    this.$swal.fire({
+                        title: 'Error',
+                        icon: 'error',
+                        text: 'Seleccione únicamente un archivo',
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        timer: 2000
                     });
                 } else {
                     if (extension != '.xlsm') {
                         this.loaded = false;
-                        this.$toast.error("Archivo Excel requerido", {
-                            position: "top-right",
-                            timeout: 3000,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            closeButton: "button",
-                            icon: true
+                        this.$swal.fire({
+                            title: 'Error',
+                            icon: 'error',
+                            text: 'Archivo Excel requerido',
+                            showCancelButton: false,
+                            showConfirmButton: false,
+                            timer: 2000
                         });
                     }
                     else {
@@ -136,7 +136,7 @@ export default {
                                         nocturnasDescanso: element[6] == null ? 0 : element[6],
                                         diurnasAsueto: element[7] == null ? 0 : element[7],
                                         nocturnasAsueto: element[8] == null ? 0 : element[8],
-                                        validFecha: this.validarFecha(element[2])
+                                        validFecha: this.validarFecha(moment(element[2]).locale('es-mx').add(1, 'days'))
                                     }
                                     this.items.push(registroHora);
                                 }
@@ -146,13 +146,13 @@ export default {
                             }
                             else {
                                 this.fechasArchivoValid = false;
-                                this.$toast.error('Registros con fecha inválida', {
-                                    position: "top-right",
-                                    timeout: 3000,
-                                    closeOnClick: true,
-                                    pauseOnHover: true,
-                                    closeButton: "button",
-                                    icon: true
+                                this.$swal.fire({
+                                    title: 'Error',
+                                    icon: 'error',
+                                    text: 'Registros con fecha inválida',
+                                    showCancelButton: false,
+                                    showConfirmButton: false,
+                                    timer: 2000
                                 });
                             }
                         });
@@ -185,22 +185,22 @@ export default {
             axios.post('horas_extra/crear', this.items, {
                 headers: { 'Content-type': 'application/json' }
             }).then(() => {
-                this.$toast.success('Horas extra ingresadas', {
-                    position: "top-right",
-                    timeout: 3000,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    closeButton: "button",
-                    icon: true
+                this.$swal.fire({
+                    title: '¡Hecho!',
+                    icon: 'success',
+                    text: 'Horas extra ingresadas',
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    timer: 2000
                 });
             }).catch((error) => {
-                this.$toast.error('Error. Horas extra no ingresadas', {
-                    position: "top-right",
-                    timeout: 3000,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    closeButton: "button",
-                    icon: true
+                this.$swal.fire({
+                    title: 'Error',
+                    icon: 'error',
+                    text: 'Horas extra no ingresadas',
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    timer: 2000
                 });
             });            
         },

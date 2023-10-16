@@ -204,7 +204,8 @@ export default {
         fetchEmpleados() {
             axios.get("/empleados_area?page=" + this.currentPage)
                 .then((response) => {
-                    this.empleados = response.data.object.data;
+                    console.log(response.data.object.data)
+                    this.empleados = response.data.object.data.filter(result => result.eliminar === 1);
                     this.lastPage = response.data.last_page;
                 })
                 .catch((error) => {
@@ -241,6 +242,7 @@ export default {
                 { header: "Total Ganado", key: "TotalGanado", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
                 { header: "AFP", key: "afp", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
                 { header: "ISSS", key: "isss", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
+                { header: "Renta", key: "renta", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
                 { header: "Total a Pagar", key: "TotalPagar", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
             ];
 
@@ -252,6 +254,7 @@ export default {
                     TotalGanado: registro.horasExtra,
                     afp: registro.afp,
                     isss: registro.isss,
+                    renta: registro.renta,
                     TotalPagar: registro.TotalPagar,
                 }).eachCell({ includeEmpty: true }, (cell, colNumber) => {
                     cell.style = centeredStyle;
@@ -288,8 +291,9 @@ export default {
                 confirmButtonText: "¡Sí, bórralo!",
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    let url = `empleados/eleminar?id=${id}`;
-                    const response = await fetch(url, { method: "DELETE" });
+                    let url = `empleados/eliminar?id=${id}`;
+                    //const response = await fetch(url, { method: "DELETE" });
+                    const response = await axios.delete(`empleados/eliminar?id=${id}`);
                     if (!response.ok) {
                         this.$swal(
                             "Deleted!",
