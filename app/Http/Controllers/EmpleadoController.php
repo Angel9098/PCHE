@@ -263,14 +263,12 @@ class EmpleadoController extends Controller
             $id = $request->input('id');
 
             $empleados = Empleado::findOrFail($id);
-            // $empleados->delete();
 
             if (!$empleados) {
                 return CustomResponse::make(null, 'Usuario no encontrado', 400, null);
             }
 
             $empleados->eliminar = 0;
-
             $empleados->save();
             return CustomResponse::make($empleados, 'Empleado eliminado con éxito', 200, null);
         } catch (\Exception $e) {

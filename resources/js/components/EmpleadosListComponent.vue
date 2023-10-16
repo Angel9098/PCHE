@@ -1,7 +1,5 @@
 <template>
-    <div
-        class="bg-white d-flex flex-column justify-content-center align-items-center col-12 col-xs-12"
-    >
+    <div class="bg-white d-flex flex-column justify-content-center align-items-center col-12 col-xs-12">
         <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
 
         <!-- Acordeón de filtros -->
@@ -10,91 +8,47 @@
                 <div class="accordion-item">
                     <!-- Cabecera del acordeón con estilos personalizados -->
                     <h2 class="accordion-header" id="filters-headingOne">
-                        <button
-                            class="accordion-button bg-gradient border-0 rounded-3"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#filters-collapseOne"
-                            aria-expanded="true"
-                            aria-controls="filters-collapseOne"
-                        >
+                        <button class="accordion-button bg-gradient border-0 rounded-3" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#filters-collapseOne" aria-expanded="true"
+                            aria-controls="filters-collapseOne">
                             FILTROS DE BÚSQUEDA
                         </button>
                     </h2>
                     <!-- Cuerpo del acordeón (filtros) con estilos personalizados -->
-                    <div
-                        id="filters-collapseOne"
-                        class="accordion-collapse collapse"
-                        aria-labelledby="filters-headingOne"
-                    >
+                    <div id="filters-collapseOne" class="accordion-collapse collapse" aria-labelledby="filters-headingOne">
                         <div class="accordion-body p-4 border-3d">
                             <div class="row">
                                 <div class="col-2">
-                                    <input
-                                        v-model="filtros.nombre"
-                                        @input="debounceSearchEmpleado"
-                                        type="text"
-                                        placeholder="Nombres"
-                                        class="form-control mb-2"
-                                    />
+                                    <input v-model="filtros.nombre" @input="debounceSearchEmpleado" type="text"
+                                        placeholder="Nombres" class="form-control mb-2" />
                                 </div>
                                 <div class="col-2">
-                                    <input
-                                        v-model="filtros.apellido"
-                                        @input="debounceSearchEmpleado"
-                                        type="text"
-                                        placeholder="Apellidos"
-                                        class="form-control mb-2"
-                                    />
+                                    <input v-model="filtros.apellido" @input="debounceSearchEmpleado" type="text"
+                                        placeholder="Apellidos" class="form-control mb-2" />
                                 </div>
                                 <div class="col-2">
-                                    <input
-                                        v-model="filtros.dui"
-                                        @input="debounceSearchEmpleado"
-                                        type="text"
-                                        placeholder="DUI"
-                                        class="form-control mb-2"
-                                    />
+                                    <input v-model="filtros.dui" @input="debounceSearchEmpleado" type="text"
+                                        placeholder="DUI" class="form-control mb-2" />
                                 </div>
                                 <div class="col-2">
-                                    <input
-                                        v-model="filtros.cargo"
-                                        @input="debounceSearchEmpleado"
-                                        type="text"
-                                        placeholder="Cargo"
-                                        class="form-control mb-2"
-                                    />
+                                    <input v-model="filtros.cargo" @input="debounceSearchEmpleado" type="text"
+                                        placeholder="Cargo" class="form-control mb-2" />
                                 </div>
                                 <div class="col-2">
-                                    <input
-                                        v-model="filtros.email"
-                                        @input="debounceSearchEmpleado"
-                                        type="text"
-                                        placeholder="Email"
-                                        class="form-control mb-2"
-                                    />
+                                    <input v-model="filtros.email" @input="debounceSearchEmpleado" type="text"
+                                        placeholder="Email" class="form-control mb-2" />
                                 </div>
                                 <div class="col-2">
-                                    <div
-                                        class="form-group d-flex"
-                                        style="width: 100%"
-                                    >
-                                        <select
-                                            v-model="filtros.selectedOption"
-                                            @input="debounceSearchEmpleado"
-                                            class="form-select"
-                                        >
+                                    <div class="form-group d-flex" style="width: 100%">
+                                        <select v-model="filtros.selectedOption" @input="debounceSearchEmpleado"
+                                            class="form-select">
                                             <option value="" disabled selected>
                                                 Empresa
                                             </option>
                                             <option value="NA">
                                                 No seleccionar
                                             </option>
-                                            <option
-                                                v-for="empresa in empresas"
-                                                :key="empresa.id"
-                                                :value="empresa.id"
-                                            >
+                                            <option v-for="empresa in empresas" :key="empresa.id" :value="empresa.id">
                                                 {{ empresa.id }} -
                                                 {{ empresa.nombre }}
                                             </option>
@@ -109,10 +63,7 @@
         </div>
 
         <div class="container">
-            <h2
-                class="h1 text-center mt-5"
-                style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5)"
-            >
+            <h2 class="h1 text-center mt-5" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5)">
                 LISTADO DE EMPLEADOS
             </h2>
             <table class="table table-hover table-bordered mt-4">
@@ -129,11 +80,7 @@
                     </tr>
                 </thead>
                 <tbody v-if="empleados.length > 0">
-                    <tr
-                        class="text-center"
-                        v-for="empleado in empleados"
-                        :key="empleado.id"
-                    >
+                    <tr class="text-center" v-for="empleado in empleados" :key="empleado.id">
                         <td>{{ empleado.dui }}</td>
                         <td>{{ empleado.nombres }}</td>
                         <td>{{ empleado.apellidos }}</td>
@@ -142,18 +89,10 @@
                         <td>{{ empleado.area.nombre }}</td>
                         <td>{{ empleado.area.empresa.nombre }}</td>
                         <td class="actions-cell">
-                            <button
-                                @click="seleccionar(empleado.id)"
-                                class="btn btn-primary my-2"
-                                type="button"
-                            >
+                            <button @click="seleccionar(empleado.id)" class="btn btn-primary my-2" type="button">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </button>
-                            <button
-                                @click="eliminarEmpresa(empleado.id)"
-                                class="btn btn-danger custom-btn"
-                                type="button"
-                            >
+                            <button @click="eliminarEmpresa(empleado.id)" class="btn btn-danger custom-btn" type="button">
                                 <i class="fas fa-trash-alt text-white"></i>
                             </button>
                         </td>
@@ -169,42 +108,16 @@
             </table>
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
-                    <li
-                        class="page-item"
-                        :class="{ disabled: currentPage === 1 }"
-                    >
-                        <a
-                            class="page-link"
-                            href="#"
-                            @click.prevent="changePage(currentPage - 1)"
-                            aria-label="Previous"
-                        >
+                    <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                        <a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <li
-                        class="page-item"
-                        v-for="page in lastPage"
-                        :key="page"
-                        :class="{ active: page === currentPage }"
-                    >
-                        <a
-                            class="page-link"
-                            href="#"
-                            @click.prevent="changePage(page)"
-                            >{{ page }}</a
-                        >
+                    <li class="page-item" v-for="page in lastPage" :key="page" :class="{ active: page === currentPage }">
+                        <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
                     </li>
-                    <li
-                        class="page-item"
-                        :class="{ disabled: currentPage === lastPage }"
-                    >
-                        <a
-                            class="page-link"
-                            href="#"
-                            @click.prevent="changePage(currentPage + 1)"
-                            aria-label="Next"
-                        >
+                    <li class="page-item" :class="{ disabled: currentPage === lastPage }">
+                        <a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
@@ -341,7 +254,7 @@ export default {
                     TotalGanado: registro.horasExtra,
                     afp: registro.afp,
                     isss: registro.isss,
-                    renta:registro.renta,
+                    renta: registro.renta,
                     TotalPagar: registro.TotalPagar,
                 }).eachCell({ includeEmpty: true }, (cell, colNumber) => {
                     cell.style = centeredStyle;
@@ -378,8 +291,9 @@ export default {
                 confirmButtonText: "¡Sí, bórralo!",
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    let url = `empleados/eleminar?id=${id}`;
-                    const response = await fetch(url, { method: "DELETE" });
+                    let url = `empleados/eliminar?id=${id}`;
+                    //const response = await fetch(url, { method: "DELETE" });
+                    const response = await axios.delete(`empleados/eliminar?id=${id}`);
                     if (!response.ok) {
                         this.$swal(
                             "Deleted!",
@@ -554,7 +468,7 @@ td {
     height: 50px;
 }
 
-thead.text-center > th:nth-child(3) {
+thead.text-center>th:nth-child(3) {
     width: 10%;
 }
 
