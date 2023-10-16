@@ -87,7 +87,7 @@
                                     required
                                     @change="verifyDomain"
                                 />
-                                
+
                                 <span
                                     v-if="verifyEmailorDuiBoolean"
                                     class="text-danger"
@@ -439,11 +439,6 @@ export default {
                                 showConfirmButton: false,
                                 timer: 2000,
                             });
-                            await this.$toast.success(response.data.message, {
-                                timeout: 3000,
-                                position: "top-right",
-                                icon: true,
-                            });
 
                             await this.$router.push("/empleados");
                         });
@@ -457,7 +452,7 @@ export default {
         verifyDomain() {
             if ((this.usuario.email === "")) {
                 this.verifyEmailBoolean = false;
-              
+
                this.verifyEmailorDuiBoolean = false;
             } else {
                 const dominio = this.usuario.email.split("@")[1];
