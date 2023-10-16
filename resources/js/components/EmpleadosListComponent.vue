@@ -332,7 +332,7 @@ export default {
             ];
 
             this.calculosHoras.forEach((registro) => {
-                // Agrega cada fila y aplica los estilos
+
                 worksheet.addRow({
                     id_empleado: registro.dui,
                     sueldo: registro.sueldoMesual,

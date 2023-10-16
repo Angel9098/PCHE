@@ -47,14 +47,12 @@ class EmpleadoController extends Controller
                     ->where('calculos_horas.empleado_id', $empleado->id)
                     ->whereMonth('calculos_horas.fecha_calculo', $mes)
                     ->whereYear('calculos_horas.fecha_calculo', $anio)
-                    ->whereDay('calculos_horas.fecha_calculo', '<=', 15)
                     ->groupBy('calculos_horas.empleado_id')
                     ->first();
 
-                $sueldoMensual = $sueldoGanadoQuincena1 != null ? (($empleado->salario / 2) + $sueldoGanadoQuincena1->total_salario_neto) : ($empleado->salario / 2);
-                $sueldoQuincenal = $sueldoMensual / 2;
-                $isssQuincenal = ($sueldoQuincenal * 0.035) <= 30  ? ($sueldoQuincenal * 0.035) : 30;
-                $afpQuincenal = $sueldoQuincenal  * 0.0825;
+                $sueldoQuincenal = $sueldoGanadoQuincena1 != null ? (($empleado->salario / 2) + $sueldoGanadoQuincena1->total_salario_neto) : ($empleado->salario / 2);
+                $isssQuincenal = ($sueldoQuincenal * 0.030) <= 30  ? ($sueldoQuincenal * 0.030) : 30;
+                $afpQuincenal = $sueldoQuincenal  * 0.0725;
 
                 $aplicableRenta = $sueldoQuincenal  - ($isssQuincenal + $afpQuincenal);
                 $rentaTotal = 0;
@@ -80,7 +78,7 @@ class EmpleadoController extends Controller
                         $rentaTotal = $excesoRenta + $cuotaFija;
                     }
                 }
-                $resultados["sueldoMesual"] = $sueldoMensual;
+                $resultados["sueldoMesual"] = $sueldoQuincenal;
                 $resultados["imponibleRenta"] = $aplicableRenta;
                 $resultados["afp"] = $afpQuincenal;
                 $resultados["isss"] = $isssQuincenal;
@@ -92,7 +90,7 @@ class EmpleadoController extends Controller
 
                 array_push($datos, $resultados);
             } elseif ($dia > 15 && $dia <= cal_days_in_month(CAL_GREGORIAN, $mes, $anio)) {
-                $sueldoGanadoQuincena2 = CalculosExtra::query()
+                /* $sueldoGanadoQuincena2 = CalculosExtra::query()
                     ->select('calculos_horas.empleado_id')
                     ->selectRaw("SUM(calculos_horas.salario_neto) as total_salario_neto")
                     ->join('empleados', 'calculos_horas.empleado_id', '=', 'empleados.id')
@@ -101,12 +99,12 @@ class EmpleadoController extends Controller
                     ->whereYear('calculos_horas.fecha_calculo', $anio)
                     ->whereDay('calculos_horas.fecha_calculo', '>', 15)
                     ->groupBy('calculos_horas.empleado_id')
-                    ->first();
+                    ->first();*/
 
-                $sueldoMensual = $sueldoGanadoQuincena2 != null ? (($empleado->salario) + $sueldoGanadoQuincena2->total_salario_neto) : ($empleado->salario);
-                $isssMensual = ($sueldoMensual * 0.035) > 30  ? ($sueldoMensual * 0.035) : 30;
+                $sueldoMensual = $empleado->salario;
+                $isssMensual = ($sueldoMensual * 0.030);
 
-                $afpMensual = $sueldoMensual  * 0.0825;
+                $afpMensual = $sueldoMensual  * 0.0725;
 
                 $aplicableRentaMensual = $sueldoMensual - ($isssMensual + $afpMensual);
                 $rentaTotalMensual = 0;
@@ -132,58 +130,47 @@ class EmpleadoController extends Controller
                         $rentaTotalMensual = $excesoRenta + $cuotaFija;
                     }
                 }
-                /**---------------------calculo quincenal para diferencia---------------- */
-                $sueldoGanadoQuincena1 = CalculosExtra::query()
-                    ->select('calculos_horas.empleado_id')
-                    ->selectRaw("SUM(calculos_horas.salario_neto) as total_salario_neto")
-                    ->selectRaw("SUM(calculos_horas.total_horas) as total_horas_extras")
-                    ->join('empleados', 'calculos_horas.empleado_id', '=', 'empleados.id')
-                    ->where('calculos_horas.empleado_id', $empleado->id)
-                    ->whereMonth('calculos_horas.fecha_calculo', $mes)
-                    ->whereYear('calculos_horas.fecha_calculo', $anio)
-                    ->whereDay('calculos_horas.fecha_calculo', '<=', 15)
-                    ->groupBy('calculos_horas.empleado_id')
-                    ->first();
 
-                $sueldoMensual = $sueldoGanadoQuincena1 != null ? (($empleado->salario / 2) + $sueldoGanadoQuincena1->total_salario_neto) : ($empleado->salario / 2);
-                $sueldoQuincenal = $sueldoMensual / 2;
-                $isssQuincenal = ($sueldoQuincenal * 0.035) > 30  ? ($sueldoQuincenal * 0.035) : 30;
-                $afpQuincenal = $sueldoQuincenal  * 0.0825;
+                /**---------------------calculo quincenal para diferencia---------------- */
+                $sueldoQuincenal = $empleado->salario / 2;
+                $isssQuincenal = ($sueldoQuincenal * 0.030);
+                $afpQuincenal = $sueldoQuincenal  * 0.0725;
 
                 $aplicableRenta = $sueldoQuincenal  - ($isssQuincenal + $afpQuincenal);
-                $rentaTotal = 0;
+                $rentaTotalQuincela = 0;
                 if ($aplicableRenta > 236.01 && $aplicableRenta < 447.62) {
                     if ($aplicableRenta > 236.00) {
                         $exceso = $aplicableRenta - 236.00;
                         $excesoRenta = $exceso * 0.1;
                         $cuotaFija = 8.83;
-                        $rentaTotal = $excesoRenta + $cuotaFija;
+                        $rentaTotalQuincela = $excesoRenta + $cuotaFija;
                     }
                 } else if ($aplicableRenta >= 447.63 && $aplicableRenta <= 1019.05) {
                     if ($aplicableRenta > 447.62) {
                         $exceso = $aplicableRenta - 447.62;
                         $excesoRenta = $exceso * 0.2;
                         $cuotaFija = 30;
-                        $rentaTotal = $excesoRenta + $cuotaFija;
+                        $rentaTotalQuincela = $excesoRenta + $cuotaFija;
                     }
                 } else if ($aplicableRenta >= 1019.06) {
                     if ($aplicableRenta > 1019.05) {
                         $exceso = $aplicableRenta - 1020;
                         $excesoRenta = $exceso * 0.3;
                         $cuotaFija = 144.28;
-                        $rentaTotal = $excesoRenta + $cuotaFija;
+                        $rentaTotalQuincela = $excesoRenta + $cuotaFija;
                     }
                 }
-
                 $resultados["sueldoMesual"] = $sueldoMensual;
-                $resultados["imponibleRenta"] = $aplicableRentaMensual;
+                $resultados["imponibleRenta"] = $aplicableRentaMensual - $aplicableRenta;
                 $resultados["afp"] = $afpMensual - $afpQuincenal;
-                $resultados["isss"] = $isssMensual - $isssQuincenal;
-                $resultados["TotalPagar"] = $aplicableRenta - $rentaTotal;
+                $resultados["isss"] = ($isssMensual - $isssQuincenal) <= 30 ? ($isssMensual - $isssQuincenal) : 30;
+                $resultados["TotalPagar"] = ($aplicableRentaMensual - $rentaTotalMensual) - ($aplicableRenta - $rentaTotalQuincela);
                 $resultados["idEmpleado"] = $empleado->id;
-                $resultados["horasExtra"] = $sueldoGanadoQuincena1 != null ? $sueldoGanadoQuincena1->total_salario_neto : 0;
-                $resultados["totalHorasExtras"] = $sueldoGanadoQuincena1 != null ? $sueldoGanadoQuincena1->total_horas_extras : 0;
+                $resultados["horasExtra"] = 0;
+                $resultados["totalHorasExtras"] =  0;
                 $resultados["dui"] = $empleado->dui;
+
+                array_push($datos, $resultados);
             }
         }
 
@@ -342,7 +329,6 @@ class EmpleadoController extends Controller
 
             // Retrieve the employee
             $empleado = Usuario::find($idUsuario);
-            //dd($empleado);
             if (!$empleado) {
                 return CustomResponse::make(null, 'Usuario no encontrado', 400, null);
             }
@@ -359,7 +345,6 @@ class EmpleadoController extends Controller
                 'password' => bcrypt($newPassword)
             ]);
 
-            // Password updated successfully
             return CustomResponse::make($empleado, 'Contraseña actualizada exitosamente', 201, null);
         } catch (\Exception $e) {
             return CustomResponse::make(null, 'Ocurrio un error al obtener el usuario', 500, $e->getMessage());
