@@ -96,6 +96,7 @@ Route::group(['middleware' => 'auth'], function () {
     //Ruta Dashboard
     Route::get('dashboard/horasExtraEmpresa', 'DashboardController@obtenerHorasExtraPorEmpresa');
     Route::get('dashboard/horasExtraTotal', 'DashboardController@obtenerTotalSalarioHorasExtra');
+    Route::get('dashboard/fechaReciente', 'DashboardController@obtenerFechaReciente');
 });
 
 

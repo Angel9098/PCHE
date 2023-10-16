@@ -378,8 +378,13 @@ export default {
             const response = await axios.get("areabyid?id=" + areaId);
             if (response.data != null) {
                 const response2 = await axios.get("findempleadobyid?id=" + response.data.object.jefe_area);
+                if (response2.data.object == null) {
+                    this.duiJefe = "";
+                    this.email = "";
+                    this.nombreJefe = "";
+                }
                 this.duiJefe = response2.data.object.dui;
-                this.nombreJefe = response2.data.object.nombres + " " + response2.data.apellidos;
+                this.nombreJefe = response2.data.object.nombres + " " + response2.data.object.apellidos;
                 this.email = response2.data.object.email;
             }
         },

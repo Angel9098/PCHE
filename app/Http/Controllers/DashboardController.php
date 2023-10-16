@@ -44,4 +44,14 @@ class DashboardController extends Controller
 
         return CustomResponse::make($result, '', 200, '');
     }
+
+    public function obtenerFechaReciente(){
+        $fechaReciente = DB::table('calculos_horas')
+            ->where('created_at', '>=', now()->subMonth())
+            ->max('created_at');
+
+        $formattedDate = date('m-Y', strtotime($fechaReciente));
+
+        return response()->json(['fecha_reciente' => $formattedDate]);
+    }
 }

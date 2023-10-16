@@ -10,102 +10,102 @@
                 <div class="accordion-item">
                     <!-- Cabecera del acordeón con estilos personalizados -->
                     <h2 class="accordion-header" id="filters-headingOne">
-                        <button class="accordion-button bg-gradient border-0 rounded-3" type="button"
-                            data-bs-toggle="collapse" data-bs-target="#filters-collapseOne" aria-expanded="true"
-                            aria-controls="filters-collapseOne">
-                            FILTROS DE BÚSQUEDA
+                        <button class="accordion-button bg-gradient border-0 rounded-3" type="button" @click="toggleFiltros">
+                            FILTROS DE BÚSQUEDA <i :class="expandFiltros ? 'fa-solid fa-chevron-down arrow' : 'fa-solid fa-chevron-up arrow'"></i>
                         </button>
                     </h2>
                     <!-- Cuerpo del acordeón (filtros) con estilos personalizados -->
-                    <div id="filters-collapseOne" class="accordion-collapse collapse" aria-labelledby="filters-headingOne">
-                        <div class="accordion-body p-4 border-3d">
-                            <!-- Contenido de los filtros aquí -->
-                            <div class="row" style="margin-bottom: 2%;">
-                                <div class="col-3">
-                                    <div class="form-group d-flex" style="width: 100%;">
-                                        <select v-model="filtros.selectEmpresa" @input="debounceSearchArea"
-                                            class="form-select">
-                                            <option value="" disabled selected>Seleccionar Empresa</option>
-                                            <option value="no">No seleccionar</option>
-                                            <option v-for="empresa in empresas" :key="empresa.id" :value="empresa.id">
-                                                {{ empresa.id }} - {{ empresa.nombre }}
-                                            </option>
-                                        </select>
+                    <transition :name="expandFiltros==false?'expand-fade':'fade'">
+                        <div id="filters-collapseOne" class="accordion-collapse" v-if="expandFiltros">
+                            <div class="accordion-body p-4 border-3d">
+                                <!-- Contenido de los filtros aquí -->
+                                <div class="row" style="margin-bottom: 2%;">
+                                    <div class="col-3">
+                                        <div class="form-group d-flex" style="width: 100%;">
+                                            <select v-model="filtros.selectEmpresa" @input="debounceSearchArea"
+                                                class="form-select">
+                                                <option value="" disabled selected>Seleccionar Empresa</option>
+                                                <option value="no">No seleccionar</option>
+                                                <option v-for="empresa in empresas" :key="empresa.id" :value="empresa.id">
+                                                    {{ empresa.id }} - {{ empresa.nombre }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-3">
+                                        <div class="form-group d-flex" style="width: 100%;">
+                                            <select v-model="filtros.selectArea" @input="debounceSearchEmpleado"
+                                                class="form-select">
+                                                <option value="" disabled selected>Seleccionar Área</option>
+                                                <option value="no">No seleccionar</option>
+                                                <option v-for="area in areas" :key="area.id" :value="area.id">
+                                                    {{ area.id }} - {{ area.nombre }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <input v-model="filtros.dui" @input="debounceSearchEmpleadoByinput" type="text"
+                                            placeholder="DUI" class="form-control mb-2" />
+                                    </div>
+                                    <div class="col-4">
+                                        <input v-model="filtros.nombre" @input="debounceSearchEmpleadoByinput" type="text"
+                                            placeholder="Nombre" class="form-control mb-2" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <div class="form-group d-flex" style="width: 100%;">
+                                            <select v-model="filtros.mes" @input="debounceSearchEmpleado" class="form-select">
+                                                <option value="" disabled selected>Mes</option>
+                                                <option value="">No seleccionar</option>
+                                                <option value="1">Enero</option>
+                                                <option value="2">Febrero</option>
+                                                <option value="3">Marzo</option>
+                                                <option value="4">Abril</option>
+                                                <option value="5">Mayo</option>
+                                                <option value="6">Junio</option>
+                                                <option value="7">Julio</option>
+                                                <option value="8">Agosto</option>
+                                                <option value="9">Septiembre</option>
+                                                <option value="10">Octubre</option>
+                                                <option value="11">Noviembre</option>
+                                                <option value="12">Diciembre</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="form-group d-flex" style="width: 100%;">
+                                            <select v-model="filtros.anio" @input="debounceSearchEmpleado" class="form-select">
+                                                <option value="" disabled selected>Año</option>
+                                                <option value="">No seleccionar</option>
+                                                <option value="2010">2010</option>
+                                                <option value="2011">2011</option>
+                                                <option value="2012">2012</option>
+                                                <option value="2013">2013</option>
+                                                <option value="2014">2014</option>
+                                                <option value="2015">2015</option>
+                                                <option value="2016">2016</option>
+                                                <option value="2017">2017</option>
+                                                <option value="2018">2018</option>
+                                                <option value="2019">2019</option>
+                                                <option value="2020">2020</option>
+                                                <option value="2021">2021</option>
+                                                <option value="2022">2022</option>
+                                                <option value="2023">2023</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <input v-model="filtros.email" @input="debounceSearchEmpleadoByinput" type="text"
+                                            placeholder="Email" class="form-control mb-2" />
                                     </div>
                                 </div>
 
-                                <div class="col-3">
-                                    <div class="form-group d-flex" style="width: 100%;">
-                                        <select v-model="filtros.selectArea" @input="debounceSearchEmpleado"
-                                            class="form-select">
-                                            <option value="" disabled selected>Seleccionar Área</option>
-                                            <option value="no">No seleccionar</option>
-                                            <option v-for="area in areas" :key="area.id" :value="area.id">
-                                                {{ area.id }} - {{ area.nombre }}
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-2">
-                                    <input v-model="filtros.dui" @input="debounceSearchEmpleadoByinput" type="text"
-                                        placeholder="DUI" class="form-control mb-2" />
-                                </div>
-                                <div class="col-4">
-                                    <input v-model="filtros.nombre" @input="debounceSearchEmpleadoByinput" type="text"
-                                        placeholder="Nombre" class="form-control mb-2" />
-                                </div>
                             </div>
-                            <div class="row">
-                                <div class="col-3">
-                                    <div class="form-group d-flex" style="width: 100%;">
-                                        <select v-model="filtros.mes" @input="debounceSearchEmpleado" class="form-select">
-                                            <option value="" disabled selected>Mes</option>
-                                            <option value="">No seleccionar</option>
-                                            <option value="1">Enero</option>
-                                            <option value="2">Febrero</option>
-                                            <option value="3">Marzo</option>
-                                            <option value="4">Abril</option>
-                                            <option value="5">Mayo</option>
-                                            <option value="6">Junio</option>
-                                            <option value="7">Julio</option>
-                                            <option value="8">Agosto</option>
-                                            <option value="9">Septiembre</option>
-                                            <option value="10">Octubre</option>
-                                            <option value="11">Noviembre</option>
-                                            <option value="12">Diciembre</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-3">
-                                    <div class="form-group d-flex" style="width: 100%;">
-                                        <select v-model="filtros.anio" @input="debounceSearchEmpleado" class="form-select">
-                                            <option value="" disabled selected>Año</option>
-                                            <option value="">No seleccionar</option>
-                                            <option value="2010">2010</option>
-                                            <option value="2011">2011</option>
-                                            <option value="2012">2012</option>
-                                            <option value="2013">2013</option>
-                                            <option value="2014">2014</option>
-                                            <option value="2015">2015</option>
-                                            <option value="2016">2016</option>
-                                            <option value="2017">2017</option>
-                                            <option value="2018">2018</option>
-                                            <option value="2019">2019</option>
-                                            <option value="2020">2020</option>
-                                            <option value="2021">2021</option>
-                                            <option value="2022">2022</option>
-                                            <option value="2023">2023</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-3">
-                                    <input v-model="filtros.email" @input="debounceSearchEmpleadoByinput" type="text"
-                                        placeholder="Email" class="form-control mb-2" />
-                                </div>
-                            </div>
-
                         </div>
-                    </div>
+                    </transition>
                 </div>
             </div>
 
@@ -121,8 +121,6 @@
                             <th scope="col">Fecha</th>
                             <th scope="col">Sueldo</th>
                             <th scope="col" class="col-1">Empresa</th>
-                            <th scope="col" class="col-1">Area</th>
-                            <th scope="col" class="col-1">Total horas</th>
                             <th scope="col" class="col-1">Salario ganado</th>
                             <th scope="col" class="col-1">Sal. Total Ganado</th>
                             <th scope="col" class="col-1">AFP</th>
@@ -136,8 +134,6 @@
                                 <td>{{ formatFecha(registro.fecha_calculo) }}</td>
                                 <td>{{ registro.salario_mensual | toCurrency }}</td>
                                 <td>{{ registro.nombre_empresa }}</td>
-                                <td>{{ registro.nombre_area }}</td>
-                                <td>{{ registro.total_horas }}</td>
                                 <td>{{ registro.salario_neto | toCurrency }}</td>
                                 <td>{{ registro.total_salario_neto | toCurrency }}</td>
                                 <td>{{ registro.descuento_AFP | toCurrency }}</td>
@@ -292,6 +288,7 @@ import ExcelJS from "exceljs";
 export default {
     data() {
         return {
+            expandFiltros: false,
             empleados: [],
             empresas: [],
             calculosHoras: [],
@@ -323,6 +320,9 @@ export default {
         this.buscarRegistrosByEmpresa()
     },
     methods: {
+        toggleFiltros() {
+            this.expandFiltros = !this.expandFiltros;
+        },
         debounceSearchArea: _.debounce(function () {
             if (this.filtros.selectEmpresa === "no") {
                 this.filtros.selectEmpresa = "NA";
@@ -583,17 +583,10 @@ export default {
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
-.accordion-button::after {
-    content: "\f078";
-    /* Código Unicode para una flecha hacia abajo */
-    font-family: "Font Awesome 5 Free";
+.arrow {
     font-weight: 900;
     float: right;
     margin-left: 10px;
-}
-
-.accordion-button[aria-expanded="true"]::after {
-    content: "\f077";
 }
 
 .accordion-body {
@@ -670,5 +663,24 @@ th.col-1:nth-child(5) {
 
 .centered {
     text-align: center;
+}
+
+.fade-enter-active, .fade-leave-active{
+    transition: max-height 0.5s opacity 0.5s;
+}
+
+.fade-enter, .fade-leave-to{
+    opacity: 0;
+    max-height: 0;
+}
+
+.expand-fade-enter-active, .expand-fade-leave-active{
+    transition: max-height 0.5s, opacity 0.5s;
+}
+
+.expand-fade-enter, .expand-fade-leave-to{
+    opacity: 0;
+    max-height: 0;
+    display: none;
 }
 </style>

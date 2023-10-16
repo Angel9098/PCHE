@@ -1,6 +1,6 @@
 <template>
     <main class="container m-auto">
-        <h1 class="text-center my-4 text-uppercase">Preferencia de cuenta</h1>
+        <h1 class="text-center my-4 text-uppercase h1" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">Preferencia de cuenta</h1>
         <article class="card">
             <div class="row">
                 <div class="col-12 col-sm-12 col-lg-6">

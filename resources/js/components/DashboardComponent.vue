@@ -1,7 +1,7 @@
 <template>
     <div class="col-11">
         <h1 class="text-center my-4">Bienvenido  {{ nombre }}</h1>
-        <div class="w-100 d-flex flex-row justify-content-center align-items-center gap-4">       
+<!--         <div v-if="rol == 'administrador'" class="w-100 d-flex flex-row justify-content-center align-items-center gap-4">       
             <div class="col-6 border border-1 rounded-3">
                 <h3 class="text-center mt-2">Recuento de horas extras</h3>
                 <apexchart width="100%" type="bar" :options="optionsBar" :series="series"></apexchart>
@@ -11,7 +11,7 @@
                 <div id="radialBar1"></div>
             </div>
         </div>
-        <div class="mt-5 mb-5 w-10 d-flex flex-row justify-content-center align-items-center gap-4">
+        <div v-if="rol == 'administrador'" class="mt-5 mb-5 w-10 d-flex flex-row justify-content-center align-items-center gap-4">
             <div class="col-6 border border-1 rounded-3">
                 <h3 class="text-center mt-2">Horas extra por área</h3>
                 <div class="d-flex flex-row justify-content-start col-4">
@@ -40,7 +40,7 @@
                 <h3 class="text-center mt-2">Comparativo horas extra</h3>
                 <apexchart width="100%" type="bar" :options="optionsLines" :series="optionsLines.series" id="chartLines"></apexchart>
             </div>
-        </div>
+        </div> -->
         
     </div>
 
@@ -228,6 +228,14 @@ export default {
             }
         }
     },
+    computed: {
+        rol() {
+            if (localStorage.getItem('userAdmin') != null) {
+                return JSON.parse(JSON.stringify(localStorage.getItem('userAdmin')));
+            }
+            else return null;
+        }
+    },
     mounted() {
         var chartCircle = new ApexCharts(document.querySelector('#radialBar1'), this.optionsRadial);
         chartCircle.render();
@@ -277,7 +285,7 @@ export default {
             this.categorysDonut = [];
             this.serieDonut = [];
             axios.get(`dashboard/horasExtraEmpresa?idEmpresa=${this.empresaID}`, { headers: { 'Content-type': 'application/json' } }).then(resp => {
-                resp.data.forEach(element => {
+                resp.data.object.forEach(element => {
                     this.categorysDonut.push(element.nombre_area);
                     this.serieDonut.push(element.total_horas);
                 });

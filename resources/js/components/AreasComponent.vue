@@ -1,6 +1,6 @@
 <template>
     <div class="container d-flex flex-column justify-content-center align-items-center mt-4">
-        <h1>&#193;REAS POR EMPRESA</h1>
+        <h1 class="h1 text-center" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">&#193;REAS POR EMPRESA</h1>
         <div class="w-100 d-flex flex-row justify-content-between align-items-center mt-5">
             <button type="button" class="btn btn-primary" @click="showCrearArea">Agregar &#193;rea</button>
             <div class="col-4">

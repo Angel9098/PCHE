@@ -1,7 +1,7 @@
 <template>
     <div class="w-100 d-flex justify-content-center">
         <div class="col-9 mt-3">
-            <h1 class="text-center">Registro de Empleado</h1>
+            <h1 class="text-center h1 text-uppercase" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">Registro de Empleado</h1>
             <div class="card mt-3 mb-3 borderCircle bg-white">
                 <div class="card-body">
                     <form @submit.prevent="registrar">
@@ -180,7 +180,6 @@
     </div>
 </template>
 <style>
-.btn-primary {}
 </style>
 <script>
 import axios from "axios";
@@ -244,7 +243,6 @@ export default {
     methods: {
         registrar() {
             if (this.$v.usuario.$invalid) {
-                // Formulario no válido, no se envía.
                 return;
             } else {
                 if (this.usuario.id != "") {
@@ -253,11 +251,14 @@ export default {
                             headers: { "Content-type": "application/json" },
                         })
                         .then((response) => {
-                            this.$toast.success("Empleado actualizado con exito", {
-                                timeout: 3000,
-                                position: "top-right",
-                                icon: true,
-                            });
+                            this.$swal.fire({
+                                title: '¡Hecho!',
+                                icon: 'success',
+                                text: response.data.message,
+                                showCancelButton: false,
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
                             this.$router.push("/empleados");
                         });
                 } else {
@@ -266,11 +267,20 @@ export default {
                             headers: { "Content-type": "application/json" },
                         })
                         .then(async (response) => {
+                            await this.$swal.fire({
+                                title: '¡Hecho!',
+                                icon: 'success',
+                                text: response.data.message,
+                                showCancelButton: false,
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
                             await this.$toast.success(response.data.message, {
                                 timeout: 3000,
                                 position: "top-right",
                                 icon: true,
                             });
+
                             await this.$router.push("/empleados");
                         });
                 }
