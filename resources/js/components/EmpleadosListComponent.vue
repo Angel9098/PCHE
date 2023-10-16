@@ -291,7 +291,8 @@ export default {
         fetchEmpleados() {
             axios.get("/empleados_area?page=" + this.currentPage)
                 .then((response) => {
-                    this.empleados = response.data.object.data;
+                    console.log(response.data.object.data)
+                    this.empleados = response.data.object.data.filter(result => result.eliminar === 1);
                     this.lastPage = response.data.last_page;
                 })
                 .catch((error) => {
