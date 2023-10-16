@@ -329,6 +329,7 @@ export default {
                 { header: "Total Ganado", key: "TotalGanado", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
                 { header: "AFP", key: "afp", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
                 { header: "ISSS", key: "isss", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
+                { header: "Renta", key: "renta", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
                 { header: "Total a Pagar", key: "TotalPagar", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
             ];
 
@@ -340,6 +341,7 @@ export default {
                     TotalGanado: registro.horasExtra,
                     afp: registro.afp,
                     isss: registro.isss,
+                    renta:registro.renta,
                     TotalPagar: registro.TotalPagar,
                 }).eachCell({ includeEmpty: true }, (cell, colNumber) => {
                     cell.style = centeredStyle;

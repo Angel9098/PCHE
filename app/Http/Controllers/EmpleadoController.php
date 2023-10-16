@@ -28,18 +28,14 @@ class EmpleadoController extends Controller
 
         $empleados = Empleado::all();
         $anio = date('Y');
-
         $mes = intval(date('m')) - 1;
-
         $dia = intval(date('d'));
-
         $datos = [];
         $resultados = [];
 
         foreach ($empleados as $empleado) {
-
             if ($dia >= 1 && $dia <= 15) {
-                $sueldoGanadoQuincena1 = CalculosExtra::query()
+                $sueldoHorasExtras = CalculosExtra::query()
                     ->select('calculos_horas.empleado_id')
                     ->selectRaw("SUM(calculos_horas.salario_neto) as total_salario_neto")
                     ->selectRaw("SUM(calculos_horas.total_horas) as total_horas_extras")
@@ -50,42 +46,22 @@ class EmpleadoController extends Controller
                     ->groupBy('calculos_horas.empleado_id')
                     ->first();
 
-                $sueldoQuincenal = $sueldoGanadoQuincena1 != null ? (($empleado->salario / 2) + $sueldoGanadoQuincena1->total_salario_neto) : ($empleado->salario / 2);
-                $isssQuincenal = ($sueldoQuincenal * 0.030) <= 30  ? ($sueldoQuincenal * 0.030) : 30;
-                $afpQuincenal = $sueldoQuincenal  * 0.0725;
+                $sueldoPrimeraQuincena = $sueldoHorasExtras != null ? (($empleado->salario / 2) + $sueldoHorasExtras->total_salario_neto) : ($empleado->salario / 2);
+                $isssPrimeraQuincena = ($sueldoPrimeraQuincena * 0.030) <= 15  ? ($sueldoPrimeraQuincena * 0.030) : 15;
+                $afpPrimeraQuincena = $sueldoPrimeraQuincena  * 0.0725;
 
-                $aplicableRenta = $sueldoQuincenal  - ($isssQuincenal + $afpQuincenal);
-                $rentaTotal = 0;
-                if ($aplicableRenta > 236.01 && $aplicableRenta < 447.62) {
-                    if ($aplicableRenta > 236.00) {
-                        $exceso = $aplicableRenta - 236.00;
-                        $excesoRenta = $exceso * 0.1;
-                        $cuotaFija = 8.83;
-                        $rentaTotal = $excesoRenta + $cuotaFija;
-                    }
-                } else if ($aplicableRenta >= 447.63 && $aplicableRenta <= 1019.05) {
-                    if ($aplicableRenta > 447.62) {
-                        $exceso = $aplicableRenta - 447.62;
-                        $excesoRenta = $exceso * 0.2;
-                        $cuotaFija = 30;
-                        $rentaTotal = $excesoRenta + $cuotaFija;
-                    }
-                } else if ($aplicableRenta >= 1019.06) {
-                    if ($aplicableRenta > 1019.05) {
-                        $exceso = $aplicableRenta - 1020;
-                        $excesoRenta = $exceso * 0.3;
-                        $cuotaFija = 144.28;
-                        $rentaTotal = $excesoRenta + $cuotaFija;
-                    }
-                }
-                $resultados["sueldoMesual"] = $sueldoQuincenal;
+                $aplicableRenta = $sueldoPrimeraQuincena  - ($isssPrimeraQuincena + $afpPrimeraQuincena);
+                $rentaPrimeraQuincena =  $this->calculoRentaQuincenal($aplicableRenta);
+
+                $resultados["sueldoMesual"] = $sueldoPrimeraQuincena;
                 $resultados["imponibleRenta"] = $aplicableRenta;
-                $resultados["afp"] = $afpQuincenal;
-                $resultados["isss"] = $isssQuincenal;
-                $resultados["TotalPagar"] = $aplicableRenta - $rentaTotal;
+                $resultados["afp"] = $afpPrimeraQuincena;
+                $resultados["isss"] = $isssPrimeraQuincena;
+                $resultados["TotalPagar"] = $aplicableRenta - $rentaPrimeraQuincena;
                 $resultados["idEmpleado"] = $empleado->id;
-                $resultados["horasExtra"] = $sueldoGanadoQuincena1 != null ? $sueldoGanadoQuincena1->total_salario_neto : 0;
-                $resultados["totalHorasExtras"] = $sueldoGanadoQuincena1 != null ? $sueldoGanadoQuincena1->total_horas_extras : 0;
+                $resultados["reta"] = $rentaPrimeraQuincena;
+                $resultados["horasExtra"] = $sueldoHorasExtras != null ? $sueldoHorasExtras->total_salario_neto : 0;
+                $resultados["totalHorasExtras"] = $sueldoHorasExtras != null ? $sueldoHorasExtras->total_horas_extras : 0;
                 $resultados["dui"] = $empleado->dui;
 
                 array_push($datos, $resultados);
@@ -99,72 +75,33 @@ class EmpleadoController extends Controller
                     ->whereYear('calculos_horas.fecha_calculo', $anio)
                     ->whereDay('calculos_horas.fecha_calculo', '>', 15)
                     ->groupBy('calculos_horas.empleado_id')
-                    ->first();*/
+                    ->first();*/ //por posible distribucion de pago de horas extras
 
                 $sueldoMensual = $empleado->salario;
-                $isssMensual = ($sueldoMensual * 0.030);
-
-                $afpMensual = $sueldoMensual  * 0.0725;
+                $isssMensual = ($sueldoMensual * 0.030) <= 30 ? ($sueldoMensual * 0.030) : 30;
+                $afpMensual = ($sueldoMensual  * 0.0725);
 
                 $aplicableRentaMensual = $sueldoMensual - ($isssMensual + $afpMensual);
-                $rentaTotalMensual = 0;
-                if ($aplicableRentaMensual >= 472.01 && $aplicableRentaMensual <= 895.24) {
-                    if ($aplicableRentaMensual > 472.00) {
-                        $exceso = $aplicableRentaMensual - 472.00;
-                        $excesoRenta = $exceso * 0.1;
-                        $cuotaFija = 17.67;
-                        $rentaTotalMensual = $excesoRenta + $cuotaFija;
-                    }
-                } else if ($aplicableRentaMensual >= 895.25 && $aplicableRentaMensual <= 2038.10) {
-                    if ($aplicableRentaMensual > 895.24) {
-                        $exceso = $aplicableRentaMensual - 896.24;
-                        $excesoRenta = $exceso * 0.2;
-                        $cuotaFija = 60;
-                        $rentaTotalMensual = $excesoRenta + $cuotaFija;
-                    }
-                } else if ($aplicableRentaMensual >= 2038.11) {
-                    if ($aplicableRentaMensual > 2038.10) {
-                        $exceso = $aplicableRentaMensual - 2038.10;
-                        $excesoRenta = $exceso * 0.3;
-                        $cuotaFija = 288.57;
-                        $rentaTotalMensual = $excesoRenta + $cuotaFija;
-                    }
-                }
+                $rentaMensual = $this->calculoRentaMensual($aplicableRentaMensual);
 
                 /**---------------------calculo quincenal para diferencia---------------- */
-                $sueldoQuincenal = $empleado->salario / 2;
-                $isssQuincenal = ($sueldoQuincenal * 0.030);
-                $afpQuincenal = $sueldoQuincenal  * 0.0725;
+                $sueldoPrimeraQuincena = $empleado->salario / 2;
+                $isssPrimeraQuincena = ($sueldoPrimeraQuincena * 0.030);
+                $afpPrimeraQuincena = ($sueldoPrimeraQuincena  * 0.0725);
 
-                $aplicableRenta = $sueldoQuincenal  - ($isssQuincenal + $afpQuincenal);
-                $rentaTotalQuincela = 0;
-                if ($aplicableRenta > 236.01 && $aplicableRenta < 447.62) {
-                    if ($aplicableRenta > 236.00) {
-                        $exceso = $aplicableRenta - 236.00;
-                        $excesoRenta = $exceso * 0.1;
-                        $cuotaFija = 8.83;
-                        $rentaTotalQuincela = $excesoRenta + $cuotaFija;
-                    }
-                } else if ($aplicableRenta >= 447.63 && $aplicableRenta <= 1019.05) {
-                    if ($aplicableRenta > 447.62) {
-                        $exceso = $aplicableRenta - 447.62;
-                        $excesoRenta = $exceso * 0.2;
-                        $cuotaFija = 30;
-                        $rentaTotalQuincela = $excesoRenta + $cuotaFija;
-                    }
-                } else if ($aplicableRenta >= 1019.06) {
-                    if ($aplicableRenta > 1019.05) {
-                        $exceso = $aplicableRenta - 1020;
-                        $excesoRenta = $exceso * 0.3;
-                        $cuotaFija = 144.28;
-                        $rentaTotalQuincela = $excesoRenta + $cuotaFija;
-                    }
-                }
+                $aplicableRenta = $sueldoPrimeraQuincena  - ($isssPrimeraQuincena + $afpPrimeraQuincena);
+                $rentaPrimeraQuincena = $this->calculoRentaQuincenal($aplicableRenta);
+
+                $totalPagar = ($sueldoPrimeraQuincena - $rentaMensual) - ($aplicableRenta - $rentaPrimeraQuincena);
+
+                $rentaSegundaQuincena = $rentaMensual - $rentaPrimeraQuincena;
                 $resultados["sueldoMesual"] = $sueldoMensual;
                 $resultados["imponibleRenta"] = $aplicableRentaMensual - $aplicableRenta;
-                $resultados["afp"] = $afpMensual - $afpQuincenal;
-                $resultados["isss"] = ($isssMensual - $isssQuincenal) <= 30 ? ($isssMensual - $isssQuincenal) : 30;
-                $resultados["TotalPagar"] = ($aplicableRentaMensual - $rentaTotalMensual) - ($aplicableRenta - $rentaTotalQuincela);
+                $resultados["afp"] = $afpMensual - $afpPrimeraQuincena;
+                $resultados["isss"] = $isssPrimeraQuincena <= 15 ? $sueldoPrimeraQuincena : 15;
+                $resultados["isssMensual"] = $isssMensual;
+                $resultados["TotalPagar"] = $totalPagar;
+                $resultados["renta"] = $rentaSegundaQuincena;
                 $resultados["idEmpleado"] = $empleado->id;
                 $resultados["horasExtra"] = 0;
                 $resultados["totalHorasExtras"] =  0;
@@ -185,6 +122,62 @@ class EmpleadoController extends Controller
         } catch (\Exception $e) {
             return CustomResponse::make(null, 'Ocurrio un error al generar la busqueada', 500, $e->getMessage());
         }
+    }
+    public function calculoRentaQuincenal($aplicableRenta)
+    {
+        $rentaPrimeraQuincena = 0.0; // Inicializar la variable
+
+        if ($aplicableRenta > 236.01 && $aplicableRenta < 447.62) {
+            if ($aplicableRenta > 236.00) {
+                $exceso = $aplicableRenta - 236.00;
+                $excesoRenta = $exceso * 0.1;
+                $cuotaFija = 8.83;
+                $rentaPrimeraQuincena = $excesoRenta + $cuotaFija;
+            }
+        } else if ($aplicableRenta >= 447.63 && $aplicableRenta <= 1019.05) {
+            if ($aplicableRenta > 447.62) {
+                $exceso = $aplicableRenta - 447.62;
+                $excesoRenta = $exceso * 0.2;
+                $cuotaFija = 30;
+                $rentaPrimeraQuincena = $excesoRenta + $cuotaFija;
+            }
+        } else if ($aplicableRenta >= 1019.06) {
+            if ($aplicableRenta > 1019.05) {
+                $exceso = $aplicableRenta - 1020;
+                $excesoRenta = $exceso * 0.3;
+                $cuotaFija = 144.28;
+                $rentaPrimeraQuincena = $excesoRenta + $cuotaFija;
+            }
+        }
+
+        return (float) $rentaPrimeraQuincena;
+    }
+    public function calculoRentaMensual($aplicableRentaMensual)
+    {
+        $rentaTotalMensual = 0.0;
+        if ($aplicableRentaMensual >= 472.01 && $aplicableRentaMensual <= 895.24) {
+            if ($aplicableRentaMensual > 472.00) {
+                $exceso = $aplicableRentaMensual - 472.00;
+                $excesoRenta = $exceso * 0.1;
+                $cuotaFija = 17.67;
+                $rentaTotalMensual = $excesoRenta + $cuotaFija;
+            }
+        } else if ($aplicableRentaMensual >= 895.25 && $aplicableRentaMensual <= 2038.10) {
+            if ($aplicableRentaMensual > 895.24) {
+                $exceso = $aplicableRentaMensual - 896.24;
+                $excesoRenta = $exceso * 0.2;
+                $cuotaFija = 60;
+                $rentaTotalMensual = $excesoRenta + $cuotaFija;
+            }
+        } else if ($aplicableRentaMensual >= 2038.11) {
+            if ($aplicableRentaMensual > 2038.10) {
+                $exceso = $aplicableRentaMensual - 2038.10;
+                $excesoRenta = $exceso * 0.3;
+                $cuotaFija = 288.57;
+                $rentaTotalMensual = $excesoRenta + $cuotaFija;
+            }
+        }
+        return (float) $rentaTotalMensual;
     }
 
     public function actualizarEmpleados(Request $request)
@@ -254,6 +247,7 @@ class EmpleadoController extends Controller
                 $empleado->numero_emergencia = $request->input('numero_emergencia');
                 $empleado->avisar_contacto = $request->input('avisar_contacto');
                 $empleado->salario = $request->input('salario');
+                $empleado->eliminar = 1;
                 $empleado->save();
 
                 return CustomResponse::make($empleado, 'Empleado creado con éxito', 201, null);
