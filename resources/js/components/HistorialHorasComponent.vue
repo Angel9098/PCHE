@@ -121,8 +121,6 @@
                             <th scope="col">Fecha</th>
                             <th scope="col">Sueldo</th>
                             <th scope="col" class="col-1">Empresa</th>
-                            <th scope="col" class="col-1">Area</th>
-                            <th scope="col" class="col-1">Total horas</th>
                             <th scope="col" class="col-1">Salario ganado</th>
                             <th scope="col" class="col-1">Sal. Total Ganado</th>
                             <th scope="col" class="col-1">AFP</th>
@@ -136,8 +134,6 @@
                                 <td>{{ formatFecha(registro.fecha_calculo) }}</td>
                                 <td>{{ registro.salario_mensual | toCurrency }}</td>
                                 <td>{{ registro.nombre_empresa }}</td>
-                                <td>{{ registro.nombre_area }}</td>
-                                <td>{{ registro.total_horas }}</td>
                                 <td>{{ registro.salario_neto | toCurrency }}</td>
                                 <td>{{ registro.total_salario_neto | toCurrency }}</td>
                                 <td>{{ registro.descuento_AFP | toCurrency }}</td>

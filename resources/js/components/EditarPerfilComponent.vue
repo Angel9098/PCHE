@@ -5,19 +5,10 @@
             <div class="floatCenter">
                 <h2 class="text-center my-3">Vista previa</h2>
                 <picture class="mb-3">
-                    <source
-                        :srcset="
-                            defaultBooleand ? defaultImagen : perfilIMG.imagen
-                        "
-                        type="image"
-                    />
-                    <img
-                        :src="
-                            defaultBooleand ? defaultImagen : perfilIMG.imagen
-                        "
-                        class="img-fluid img-thumbnail cicle"
-                        alt="..."
-                    />
+                    <source :srcset="defaultBooleand ? defaultImagen : perfilIMG.imagen
+                        " type="image" />
+                    <img :src="defaultBooleand ? defaultImagen : perfilIMG.imagen
+                        " class="img-fluid img-thumbnail cicle" alt="..." />
                 </picture>
 
                 <p class="font-weight-bold">NOMBRE DE PÉRFIL :</p>
@@ -30,38 +21,23 @@
             <div>
                 <form class="formContent">
                     <div class="form-group">
-                                <label for="changeIMG">CAMBIAR LA IMAGEN</label>
-                                <input
-                                    type="file"
-                                    class="form-control"
-                                    id="changeIMG"
-                                    placeholder="CAMBIAR LA IMAGEN"
-                                    @change="changesDefauld"
-                                />
-                            </div>
+                        <label for="changeIMG">CAMBIAR LA IMAGEN</label>
+                        <input type="file" class="form-control" id="changeIMG" placeholder="CAMBIAR LA IMAGEN"
+                            @change="changesDefauld" />
+                    </div>
                     <div class="row my-3">
                         <div class="col-12 col-sm-6">
                             <div class="form-group">
                                 <label for="changeNombre">NOMBRE</label>
-                                <input
-                                    type="fiTEXTe"
-                                    class="form-control"
-                                    id="changeNombre"
-                                    placeholder="CAMBIAR EL NOMBRE"
-                                    v-model="nombres"
-                                />
+                                <input type="fiTEXTe" class="form-control" id="changeNombre" placeholder="CAMBIAR EL NOMBRE"
+                                    v-model="nombres" />
                             </div>
                         </div>
                         <div class="col-12 col-sm-6">
                             <div class="form-group">
                                 <label for="changeNombre">EMAIL</label>
-                                <input
-                                    type="fiTEXTe"
-                                    class="form-control"
-                                    id="changeNombre"
-                                    placeholder="CAMBIAR EL NOMBRE"
-                                    v-model="perfil.email"
-                                />
+                                <input type="fiTEXTe" class="form-control" id="changeNombre" placeholder="CAMBIAR EL NOMBRE"
+                                    v-model="perfil.email" />
                             </div>
                         </div>
                     </div>
@@ -73,59 +49,29 @@
                         <div class="col">
                             <div class="form-group">
                                 <label for="changePuesto">PUESTO O CARGO</label>
-                                <input
-                                    type="fiTEXTe"
-                                    class="form-control"
-                                    id="changePuesto"
-                                    placeholder="CAMBIAR PUESTO O CARGO"
-                                    v-model="perfil.cargo"
-                                />
+                                <input type="fiTEXTe" class="form-control" id="changePuesto"
+                                    placeholder="CAMBIAR PUESTO O CARGO" v-model="perfil.cargo" />
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-group">
-                                <label for="changeNombre" class="text-uppercase"
-                                    >contacto de emergencia</label
-                                >
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    id="changeNombre"
-                                    placeholder="Contacto de emergencia"
-                                    v-model="perfil.avisar_contacto"
-                                    readonly
-                                />
+                                <label for="changeNombre" class="text-uppercase">contacto de emergencia</label>
+                                <input type="text" class="form-control" id="changeNombre"
+                                    placeholder="Contacto de emergencia" v-model="perfil.avisar_contacto" readonly />
                             </div>
                         </div>
                         <div class="row my-3">
                             <div class="col">
                                 <div class="form-group">
-                                    <label
-                                        for="changePuesto"
-                                        class="text-uppercase"
-                                        >Número de emergencia</label
-                                    >
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        id="changePuesto"
-                                        placeholder="(503) 7854 6985"
-                                        v-model="perfil.numero_emergencia"
-                                        readonly
-                                    />
+                                    <label for="changePuesto" class="text-uppercase">Número de emergencia</label>
+                                    <input type="text" class="form-control" id="changePuesto" placeholder="(503) 7854 6985"
+                                        v-model="perfil.numero_emergencia" readonly />
                                 </div>
                             </div>
                             <div class="col">
-                                <label for="changePuesto" class="text-uppercase"
-                                    >Dui</label
-                                >
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    placeholder="Last name"
-                                    v-model="perfil.dui"
-                                    readonly
-                                />
+                                <label for="changePuesto" class="text-uppercase">Dui</label>
+                                <input type="text" class="form-control" placeholder="Last name" v-model="perfil.dui"
+                                    readonly />
                             </div>
                         </div>
                     </div>
@@ -135,22 +81,14 @@
 
                     <div class="row">
                         <div class="col">
-                            <button
-                                @click="sendInfromation()"
-                                type="button"
-                                class="btn btn-dark"
-                            >
+                            <button @click="sendInfromation()" type="button" class="btn btn-dark">
                                 GUARDAR CAMBIOS
                                 <i class="fa-solid fa-circle-plus"></i>
                             </button>
                         </div>
                         <div class="col">
-                            <button
-                                type="button"
-                                class="btn btn-primary"
-                                data-bs-toggle="modal"
-                                data-bs-target="#exampleModal"
-                            >
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#exampleModal">
                                 Cambiar contraseña
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </button>
@@ -161,25 +99,14 @@
         </article>
         <!-- ****** -->
 
-        <div
-            class="modal fade"
-            id="exampleModal"
-            tabindex="-1"
-            aria-labelledby="exampleModalLabel"
-            aria-hidden="true"
-        >
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">
                             Nombre de persona
                         </h5>
-                        <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"
-                        ></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <modal-change-password></modal-change-password>
@@ -196,11 +123,13 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
 }
+
 .cicle {
     width: 200px;
     height: 200px;
     border-radius: 50%;
 }
+
 .floatCenter {
     display: flex;
     flex-direction: column;
@@ -208,6 +137,7 @@
     align-items: center;
     border-right: 3px solid rgba(0, 0, 0, 0.726);
 }
+
 .formContent {
     margin: 10%;
 }
@@ -215,7 +145,7 @@
 <script>
 import axios from "axios";
 
-import ModalChangePassword from "./ModalChangePassword.vue";
+//import ModalChangePassword from "./ModalChangePassword.vue";
 
 export default {
     data() {
@@ -257,7 +187,7 @@ export default {
                         this.nombres = ` ${result.data.object[0].nombres} ${result.data.object[0].apellidos}`;
                         this.perfil = result.data.object[0];
                     })
-                    .catch((error) => {});
+                    .catch((error) => { });
             }
         },
         changesDefauld(event) {

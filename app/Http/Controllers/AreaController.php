@@ -166,7 +166,7 @@ class AreaController extends Controller
                 ->whereNull('a.jefe_area')
                 ->get();
 
-            if ($usuarioJefe == null) {
+            if ($usuarioJefe->isEmpty()) {
                 return CustomResponse::make(null, 'No hay elementos disponibles', 400, null);
             }
 

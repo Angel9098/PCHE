@@ -243,7 +243,6 @@ export default {
     methods: {
         registrar() {
             if (this.$v.usuario.$invalid) {
-                // Formulario no válido, no se envía.
                 return;
             } else {
                 if (this.usuario.id != "") {
@@ -252,11 +251,14 @@ export default {
                             headers: { "Content-type": "application/json" },
                         })
                         .then((response) => {
-                            this.$toast.success("Empleado actualizado con exito", {
-                                timeout: 3000,
-                                position: "top-right",
-                                icon: true,
-                            });
+                            this.$swal.fire({
+                                title: '¡Hecho!',
+                                icon: 'success',
+                                text: response.data.message,
+                                showCancelButton: false,
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
                             this.$router.push("/empleados");
                         });
                 } else {
@@ -265,11 +267,20 @@ export default {
                             headers: { "Content-type": "application/json" },
                         })
                         .then(async (response) => {
+                            await this.$swal.fire({
+                                title: '¡Hecho!',
+                                icon: 'success',
+                                text: response.data.message,
+                                showCancelButton: false,
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
                             await this.$toast.success(response.data.message, {
                                 timeout: 3000,
                                 position: "top-right",
                                 icon: true,
                             });
+
                             await this.$router.push("/empleados");
                         });
                 }

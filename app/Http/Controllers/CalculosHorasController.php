@@ -63,7 +63,7 @@ class CalculosHorasController extends Controller
                         'descuento_ISSS' => null,
                         'total_horas' => $sumatoria,
                         'salario_neto' => $salarioGanado,
-                        'salario_total' => null,
+                        'salario_total' => 0,
                     ]);
                     $CalculoHora->save();
 
@@ -141,10 +141,6 @@ class CalculosHorasController extends Controller
             });
         }
 
-        /*  if ($fechaDesde !== null && $fechaDesde !== '') {
-            $horasExtrasQuery->where('calculos_horas.fecha_calculo', '>=', $fechaDesde);
-        }*/
-
         if ($dui !== null && $dui !== '') {
             $horasExtrasQuery->whereHas('empleado', function ($query) use ($dui) {
                 if (!empty($dui)) {
@@ -169,10 +165,6 @@ class CalculosHorasController extends Controller
             });
         }
 
-        /*if ($fechaHasta !== null && $fechaHasta !== '') {
-            $horasExtrasQuery->where('calculos_horas.fecha_calculo', '<=', $fechaHasta);
-        }*/
-
         if ($idArea !== "NA" && $idArea !== null) {
             $horasExtrasQuery->whereHas('empleado', function ($query) use ($idArea) {
                 $query->where('area_id', $idArea);
@@ -191,30 +183,23 @@ class CalculosHorasController extends Controller
                 $aplicableRenta = $sueldoBaseMensual + $sueldoGanadoMensual - ($afpMensual + $isssMensual);
 
                 $rentaTotal = 0;
-                if ($aplicableRenta >= 487.61 && $aplicableRenta <= 642.85) {
-                    if ($aplicableRenta > 487.60) {
-                        $exceso = $aplicableRenta - 487.60;
+                if ($aplicableRenta >= 472.01 && $aplicableRenta <= 895.24) {
+                    if ($aplicableRenta > 472.00) {
+                        $exceso = $aplicableRenta - 472.00;
                         $excesoRenta = $exceso * 0.1;
-                        $cuotaFija = 17.48;
+                        $cuotaFija = 17.67;
                         $rentaTotal = $excesoRenta + $cuotaFija;
                     }
-                } else if ($aplicableRenta >= 642.86 && $aplicableRenta <= 915.81) {
-                    if ($aplicableRenta > 642.85) {
-                        $exceso = $aplicableRenta - 642.85;
-                        $excesoRenta = $exceso * 0.1;
-                        $cuotaFija = 32.70;
-                        $rentaTotal = $excesoRenta + $cuotaFija;
-                    }
-                } else if ($aplicableRenta >= 915.82 && $aplicableRenta <= 2058.67) {
-                    if ($aplicableRenta > 915.82) {
-                        $exceso = $aplicableRenta - 915.82;
-                        $excesoRenta = $exceso * 0.1;
+                } else if ($aplicableRenta >= 895.25 && $aplicableRenta <= 2038.10) {
+                    if ($aplicableRenta > 895.24) {
+                        $exceso = $aplicableRenta - 896.24;
+                        $excesoRenta = $exceso * 0.2;
                         $cuotaFija = 60;
                         $rentaTotal = $excesoRenta + $cuotaFija;
                     }
-                } else if ($aplicableRenta >= 2058.68) {
-                    if ($aplicableRenta > 2038.11) {
-                        $exceso = $aplicableRenta - 2058.67;
+                } else if ($aplicableRenta >= 2038.11) {
+                    if ($aplicableRenta > 2038.10) {
+                        $exceso = $aplicableRenta - 2038.10;
                         $excesoRenta = $exceso * 0.3;
                         $cuotaFija = 288.57;
                         $rentaTotal = $excesoRenta + $cuotaFija;
@@ -224,7 +209,7 @@ class CalculosHorasController extends Controller
                 $horasMensual->descuento_ISSS = $isssMensual;
                 $horasMensual->salario_total = $aplicableRenta - $rentaTotal;
             } else {
-                $horasMensual->salario_total = null;
+                $horasMensual->salario_total = 0;
             }
         }
 
