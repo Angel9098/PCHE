@@ -8,56 +8,85 @@
                 <div class="accordion-item">
                     <!-- Cabecera del acordeón con estilos personalizados -->
                     <h2 class="accordion-header" id="filters-headingOne">
-                        <button class="accordion-button bg-gradient border-0 rounded-3" type="button"
-                            data-bs-toggle="collapse" data-bs-target="#filters-collapseOne" aria-expanded="true"
-                            aria-controls="filters-collapseOne">
-                            FILTROS DE BÚSQUEDA
+                        <button class="accordion-button bg-gradient border-0 rounded-3" type="button" @click="toggleFiltros">
+                            FILTROS DE BÚSQUEDA <i :class="expandFiltros ? 'fa-solid fa-chevron-down arrow' : 'fa-solid fa-chevron-up arrow'"></i>
                         </button>
                     </h2>
                     <!-- Cuerpo del acordeón (filtros) con estilos personalizados -->
-                    <div id="filters-collapseOne" class="accordion-collapse collapse" aria-labelledby="filters-headingOne">
-                        <div class="accordion-body p-4 border-3d">
-                            <div class="row">
-                                <div class="col-2">
-                                    <input v-model="filtros.nombre" @input="debounceSearchEmpleado" type="text"
-                                        placeholder="Nombres" class="form-control mb-2" />
-                                </div>
-                                <div class="col-2">
-                                    <input v-model="filtros.apellido" @input="debounceSearchEmpleado" type="text"
-                                        placeholder="Apellidos" class="form-control mb-2" />
-                                </div>
-                                <div class="col-2">
-                                    <input v-model="filtros.dui" @input="debounceSearchEmpleado" type="text"
-                                        placeholder="DUI" class="form-control mb-2" />
-                                </div>
-                                <div class="col-2">
-                                    <input v-model="filtros.cargo" @input="debounceSearchEmpleado" type="text"
-                                        placeholder="Cargo" class="form-control mb-2" />
-                                </div>
-                                <div class="col-2">
-                                    <input v-model="filtros.email" @input="debounceSearchEmpleado" type="text"
-                                        placeholder="Email" class="form-control mb-2" />
-                                </div>
-                                <div class="col-2">
-                                    <div class="form-group d-flex" style="width: 100%">
-                                        <select v-model="filtros.selectedOption" @input="debounceSearchEmpleado"
-                                            class="form-select">
-                                            <option value="" disabled selected>
-                                                Empresa
-                                            </option>
-                                            <option value="NA">
-                                                No seleccionar
-                                            </option>
-                                            <option v-for="empresa in empresas" :key="empresa.id" :value="empresa.id">
-                                                {{ empresa.id }} -
-                                                {{ empresa.nombre }}
-                                            </option>
-                                        </select>
+                    <transition :name="expandFiltros==false?'expand-fade':'fade'">
+                        <div id="filters-collapseOne" class="accordion-collapse" v-if="expandFiltros">
+                            <div class="accordion-body p-4 border-3d">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <input v-model="filtros.nombre" @input="debounceSearchEmpleado" type="text" placeholder="Nombres" class="form-control mb-2">
+                                    </div>
+                                    <div class="col-2">
+                                        <input
+                                            v-model="filtros.apellido"
+                                            @input="debounceSearchEmpleado"
+                                            type="text"
+                                            placeholder="Apellidos"
+                                            class="form-control mb-2"
+                                        />
+                                    </div>
+                                    <div class="col-2">
+                                        <input
+                                            v-model="filtros.dui"
+                                            @input="debounceSearchEmpleado"
+                                            type="text"
+                                            placeholder="DUI"
+                                            class="form-control mb-2"
+                                        />
+                                    </div>
+                                    <div class="col-2">
+                                        <input
+                                            v-model="filtros.cargo"
+                                            @input="debounceSearchEmpleado"
+                                            type="text"
+                                            placeholder="Cargo"
+                                            class="form-control mb-2"
+                                        />
+                                    </div>
+                                    <div class="col-2">
+                                        <input
+                                            v-model="filtros.email"
+                                            @input="debounceSearchEmpleado"
+                                            type="text"
+                                            placeholder="Email"
+                                            class="form-control mb-2"
+                                        />
+                                    </div>
+                                    <div class="col-2">
+                                        <div
+                                            class="form-group d-flex"
+                                            style="width: 100%"
+                                        >
+                                            <select
+                                                v-model="filtros.selectedOption"
+                                                @input="debounceSearchEmpleado"
+                                                class="form-select"
+                                            >
+                                                <option value="" disabled selected>
+                                                    Empresa
+                                                </option>
+                                                <option value="NA">
+                                                    No seleccionar
+                                                </option>
+                                                <option
+                                                    v-for="empresa in empresas"
+                                                    :key="empresa.id"
+                                                    :value="empresa.id"
+                                                >
+                                                    {{ empresa.id }} -
+                                                    {{ empresa.nombre }}
+                                                </option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </transition>
                 </div>
             </div>
         </div>
@@ -145,6 +174,7 @@ import ExcelJS from "exceljs";
 export default {
     data() {
         return {
+            expandFiltros: false,
             empleados: [],
             empresas: [],
             calculosHoras: [],
@@ -166,6 +196,9 @@ export default {
         this.fetchEmpleados();
     },
     methods: {
+        toggleFiltros() {
+            this.expandFiltros = !this.expandFiltros;  
+        },
         debounceSearchEmpleado: _.debounce(function () {
             this.searchEmpleado();
         }, 300),
@@ -178,7 +211,7 @@ export default {
                     "/empleados/filtro/busqueda",
                     this.filtros
                 );
-                this.empleados = response.data.object;
+                this.empleados = response.data.object.filter(result => result.eliminar === 1);;
 
             } catch (error) {
                 console.error(
@@ -204,7 +237,6 @@ export default {
         fetchEmpleados() {
             axios.get("/empleados_area?page=" + this.currentPage)
                 .then((response) => {
-                    console.log(response.data.object.data)
                     this.empleados = response.data.object.data.filter(result => result.eliminar === 1);
                     this.lastPage = response.data.last_page;
                 })
@@ -282,29 +314,26 @@ export default {
 
         eliminarEmpresa(id) {
             this.$swal({
-                title: "Estas seguro de eliminar el registro?",
-                text: "¡No podrás revertir esto!",
+                title: "¿Estás seguro de eliminar el registro?",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
-                confirmButtonText: "¡Sí, bórralo!",
+                confirmButtonText: "Eliminar",
+                cancelButtonText: "Cancelar"
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    let url = `empleados/eliminar?id=${id}`;
                     //const response = await fetch(url, { method: "DELETE" });
                     const response = await axios.delete(`empleados/eliminar?id=${id}`);
                     if (!response.ok) {
                         this.$swal(
-                            "Deleted!",
-                            "Su registro ha sido eliminado.",
+                            "¡Hecho!",
+                            "Registro eliminado",
                             "success"
                         );
-                        this.fetchEmpresas();
-                        this.fetchEmpleados();
+                        this.searchEmpleado();
                     } else {
-                        this.fetchEmpresas();
-                        this.fetchEmpleados();
+                        this.searchEmpleado();
                     }
                 }
             });
@@ -409,18 +438,12 @@ export default {
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
-.accordion-button::after {
-    content: "\f078";
-    /* Código Unicode para una flecha hacia abajo */
-    font-family: "Font Awesome 5 Free";
+.arrow {
     font-weight: 900;
     float: right;
     margin-left: 10px;
 }
 
-.accordion-button[aria-expanded="true"]::after {
-    content: "\f077";
-}
 
 .accordion-body {
     background-color: #f9f9f9;
@@ -479,5 +502,24 @@ th.col-1:nth-child(1) {
 thead th:nth-child(3),
 tr td:nth-child(3) {
     width: 10%;
+}
+
+.fade-enter-active, .fade-leave-active{
+    transition: max-height 0.5s opacity 0.5s;
+}
+
+.fade-enter, .fade-leave-to{
+    opacity: 0;
+    max-height: 0;
+}
+
+.expand-fade-enter-active, .expand-fade-leave-active{
+    transition: max-height 0.5s, opacity 0.5s;
+}
+
+.expand-fade-enter, .expand-fade-leave-to{
+    opacity: 0;
+    max-height: 0;
+    display: none;
 }
 </style>

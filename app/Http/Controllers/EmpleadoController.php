@@ -456,7 +456,7 @@ class EmpleadoController extends Controller
 
         if ($empleado) {
             // El correo electrónico ya existe
-            return CustomResponse::make(null, 'El correo electrónico ya está en uso', 400, null);
+            return CustomResponse::make($empleado, 'El correo electrónico ya está en uso', 400, null);
         }
 
         // El correo electrónico no existe
@@ -472,7 +472,7 @@ class EmpleadoController extends Controller
 
         if ($empleado) {
             // El dui ya existe
-            return CustomResponse::make(null, 'El dui ya está en uso', 400, null);
+            return CustomResponse::make($empleado, 'El dui ya está en uso', 400, null);
         }
 
         // El dui no existe

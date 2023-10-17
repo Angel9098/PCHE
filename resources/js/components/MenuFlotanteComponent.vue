@@ -388,25 +388,26 @@ export default {
                     this.defaultBooleand = false;
                     this.imagen = `storage/imagenes/${imagen}`;
                 }
-                axios
-                    .get(`empleadobyid?idEmpleado=${empleado_id}`)
+                if (localStorage.getItem('nombreUser') != null) {
+                    this.nombre = JSON.parse(localStorage.getItem('nombreUser'));
+                }
+               /*  axios.get(`empleadobyid?idEmpleado=${empleado_id}`)
                     .then((result) => {
                         this.id = result.data.object[0].id;
                         this.nombre = `${result.data.object[0].nombres} ${result.data.object[0].apellidos}`;
-                        this.localStorage.setItem('nombreUser', JSON.stringify(this.nombre));
+                        
 
                     })
-                    .catch((error) => { });
+                    .catch((error) => { }); */
             } else if (localStorage.getItem("user") === null)
                 return this.cerrarSesion();
         },
         cerrarSesion() {
             localStorage.removeItem("user");
             localStorage.removeItem("empresaID");
-            this.$store.dispatch("logout");
             localStorage.setItem("session", false);
-            localStorage.clear();
-            this.$router.push("/");
+            localStorage.removeItem('nombreUser');
+            this.$store.dispatch("logouts");
         },
 
         changeIMG(img) {
