@@ -237,8 +237,8 @@ export default {
         }
     },
     mounted() {
-        var chartCircle = new ApexCharts(document.querySelector('#radialBar1'), this.optionsRadial);
-        chartCircle.render();
+        //var chartCircle = new ApexCharts(document.querySelector('#radialBar1'), this.optionsRadial);
+        //chartCircle.render();
 
         //var chartBar = new ApexCharts(document.querySelector("#chartLines"), this.optionsLines);
         //chartBar.render();
@@ -248,18 +248,22 @@ export default {
         if(localStorage.getItem('user') !== null){
             this.usuario = JSON.parse(localStorage.getItem('user'));
         }
-        this.getHorasExtraComparativo();
+        //this.getHorasExtraComparativo();
     },
     methods: {
         cerrarSesion(){
             localStorage.removeItem('user');
             this.$router.push('/');
         },
-        leerData(){
-            const {empleado_id} = JSON.parse(localStorage.getItem("user"));
+        leerData() {
+            if (localStorage.getItem('nombreUser') != null) {
+                this.nombre = JSON.parse(localStorage.getItem('nombreUser'));
+            }
+/*             const {empleado_id} = JSON.parse(localStorage.getItem("user"));
             axios.get(`empleadobyid?idEmpleado=${empleado_id}`).then((result) => {
-                this.nombre =result.data[0].nombres + ' '+result.data[0].apellidos
-            }).catch(error => {})
+                this.nombre = result.data.object[0].nombres + ' ' + result.data.object[0].apellidos;
+                this.localStorage.setItem('nombreUser', JSON.stringify(this.nombre));
+            }).catch(error => {}) */
         },
         getEmpresas() {
             axios.get("/empresas").then((response) => {
