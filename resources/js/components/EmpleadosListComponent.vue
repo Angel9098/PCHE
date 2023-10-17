@@ -63,7 +63,9 @@
         </div>
 
         <div class="container">
-            <h2 class="h1 text-center mt-5" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">LISTADO DE EMPLEADOS</h2>
+            <h2 class="h1 text-center mt-5" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5)">
+                LISTADO DE EMPLEADOS
+            </h2>
             <table class="table table-hover table-bordered mt-4">
                 <thead class="table-primary bg-primary">
                     <tr class="text-center">
@@ -202,7 +204,8 @@ export default {
         fetchEmpleados() {
             axios.get("/empleados_area?page=" + this.currentPage)
                 .then((response) => {
-                    this.empleados = response.data.object.data;
+                    console.log(response.data.object.data)
+                    this.empleados = response.data.object.data.filter(result => result.eliminar === 1);
                     this.lastPage = response.data.last_page;
                 })
                 .catch((error) => {
@@ -239,17 +242,19 @@ export default {
                 { header: "Total Ganado", key: "TotalGanado", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
                 { header: "AFP", key: "afp", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
                 { header: "ISSS", key: "isss", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
+                { header: "Renta", key: "renta", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
                 { header: "Total a Pagar", key: "TotalPagar", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
             ];
 
             this.calculosHoras.forEach((registro) => {
-                // Agrega cada fila y aplica los estilos
+
                 worksheet.addRow({
                     id_empleado: registro.dui,
                     sueldo: registro.sueldoMesual,
                     TotalGanado: registro.horasExtra,
                     afp: registro.afp,
                     isss: registro.isss,
+                    renta: registro.renta,
                     TotalPagar: registro.TotalPagar,
                 }).eachCell({ includeEmpty: true }, (cell, colNumber) => {
                     cell.style = centeredStyle;
@@ -276,25 +281,34 @@ export default {
         },
 
         eliminarEmpresa(id) {
-
             this.$swal({
-                title: 'Estas seguro de eliminar el registro?',
+                title: "Estas seguro de eliminar el registro?",
                 text: "¡No podrás revertir esto!",
-                icon: 'warning',
+                icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '¡Sí, bórralo!'
-            }).then((result) => {
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "¡Sí, bórralo!",
+            }).then(async (result) => {
                 if (result.isConfirmed) {
-                    this.$swal(
-                        'Deleted!',
-                        'Su registro ha sido eliminado.',
-                        'success'
-                    )
+                    let url = `empleados/eliminar?id=${id}`;
+                    //const response = await fetch(url, { method: "DELETE" });
+                    const response = await axios.delete(`empleados/eliminar?id=${id}`);
+                    if (!response.ok) {
+                        this.$swal(
+                            "Deleted!",
+                            "Su registro ha sido eliminado.",
+                            "success"
+                        );
+                        this.fetchEmpresas();
+                        this.fetchEmpleados();
+                    } else {
+                        this.fetchEmpresas();
+                        this.fetchEmpleados();
+                    }
                 }
-            })
-        }
+            });
+        },
     },
 };
 </script>
@@ -357,7 +371,6 @@ export default {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
     transform: translateY(-1px);
 }
-
 
 .textbox,
 .vdp-datepicker {
@@ -439,7 +452,6 @@ export default {
     flex: 1;
     text-align: center;
 }
-
 
 th,
 td {
