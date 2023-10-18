@@ -67,9 +67,7 @@
                         <h5 class="modal-title" id="corteModalLabel">
                             Agregar fecha de corte
                         </h5>
-                        <button type="button" class="close" @click="cerrarModal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
@@ -142,7 +140,7 @@ export default {
             try {
                 const response = await axios.get("/corte/vigente", { headers: { 'Content-type': 'application/json' } });
                 if (response.data) {
-                    this.descripcionVigente = moment(response.data.fecha_corte).format('DD/MM/YYYY');
+                    this.descripcionVigente = moment(response.data.object.fecha_corte).format('DD/MM/YYYY');
                 }
             } catch (error) {
                 console.error("Error al obtener la descripción vigente:", error.response ? error.response.data : error.message);
@@ -158,9 +156,48 @@ export default {
                 return;
             } else {
                 this.errorDescripcion = false;
+                this.$swal.fire({
+                    title: 'Cargando...',
+                    html: '<div class="my-5 d-flex flex-row justify-content-center"><div class="sk-chase"><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div></div></div>',
+                    showCancelButton: false,
+                    showConfirmButton: false
+                });
+                const formattedDate = moment(this.selectedDate).format("YYYY/MM/DD");
+                axios.post("/cortes/crear", { descripcion: this.descripcionCorte, fecha_corte: formattedDate }, { headers: { 'Content-type': 'application/json' } })
+                    .then(response => {
+                        this.$swal.close();
+                        this.$swal.fire({
+                            title: '¡Hecho!',
+                            icon: 'success',
+                            text: 'Corte creado con éxito',
+                            showCancelButton: false,
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                        this.descripcionCorte = "";
+                        this.errorSubmit = null;
+                        $("#corteModal").modal("hide");
+                        this.getCortes();
+                        this.getDescripcionVigente();
+                    }).catch((error) => {
+                        if (error.response) {
+                            $("#corteModal").modal("hide");
+                            this.selectedDate = null;
+                            this.descripcionCorte = "";
+                            this.errorSubmit = null;
+                            this.$swal.fire({
+                                title: 'Error',
+                                icon: 'error',
+                                text: 'No se pudo crear fecha de corte',
+                                showCancelButton: false,
+                                showConfirmButton: false,
+                                timer: 2000
+                            });
+                        }
+                    });
             }
 
-            try {
+            /* try {
                 const formattedDate = moment(this.selectedDate).format("YYYY/MM/DD");
                 const response = await axios.post("/cortes/crear", {
                     descripcion: this.descripcionCorte,
@@ -179,7 +216,7 @@ export default {
                     this.descripcionCorte = "";
                     this.errorSubmit = null;
                 }, 5000);
-            }
+            } */
         },
         formatFecha(date) {
             return moment(date).format("DD/MM/YYYY");
