@@ -92,13 +92,13 @@ class EmpleadoController extends Controller
                 $aplicableRenta = $sueldoPrimeraQuincena  - ($isssPrimeraQuincena + $afpPrimeraQuincena);
                 $rentaPrimeraQuincena = $this->calculoRentaQuincenal($aplicableRenta);
 
-                $totalPagar = ($sueldoPrimeraQuincena - $rentaMensual) - ($aplicableRenta - $rentaPrimeraQuincena);
+                $totalPagar = ($aplicableRentaMensual - $rentaMensual) - ($aplicableRenta - $rentaPrimeraQuincena);
 
                 $rentaSegundaQuincena = $rentaMensual - $rentaPrimeraQuincena;
                 $resultados["sueldoMesual"] = $sueldoMensual;
                 $resultados["imponibleRenta"] = $aplicableRentaMensual - $aplicableRenta;
                 $resultados["afp"] = $afpMensual - $afpPrimeraQuincena;
-                $resultados["isss"] = $isssPrimeraQuincena <= 15 ? $sueldoPrimeraQuincena : 15;
+                $resultados["isss"] = $isssPrimeraQuincena <= 15 ? $isssPrimeraQuincena : 15;
                 $resultados["isssMensual"] = $isssMensual;
                 $resultados["TotalPagar"] = $totalPagar;
                 $resultados["renta"] = $rentaSegundaQuincena;
