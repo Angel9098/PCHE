@@ -8,75 +8,48 @@
                 <div class="accordion-item">
                     <!-- Cabecera del acordeón con estilos personalizados -->
                     <h2 class="accordion-header" id="filters-headingOne">
-                        <button class="accordion-button bg-gradient border-0 rounded-3" type="button" @click="toggleFiltros">
-                            FILTROS DE BÚSQUEDA <i :class="expandFiltros ? 'fa-solid fa-chevron-down arrow' : 'fa-solid fa-chevron-up arrow'"></i>
+                        <button class="accordion-button bg-gradient border-0 rounded-3" type="button"
+                            @click="toggleFiltros">
+                            FILTROS DE BÚSQUEDA <i
+                                :class="expandFiltros ? 'fa-solid fa-chevron-down arrow' : 'fa-solid fa-chevron-up arrow'"></i>
                         </button>
                     </h2>
                     <!-- Cuerpo del acordeón (filtros) con estilos personalizados -->
-                    <transition :name="expandFiltros==false?'expand-fade':'fade'">
+                    <transition :name="expandFiltros == false ? 'expand-fade' : 'fade'">
                         <div id="filters-collapseOne" class="accordion-collapse" v-if="expandFiltros">
                             <div class="accordion-body p-4 border-3d">
                                 <div class="row">
                                     <div class="col-2">
-                                        <input v-model="filtros.nombre" @input="debounceSearchEmpleado" type="text" placeholder="Nombres" class="form-control mb-2">
+                                        <input v-model="filtros.nombre" @input="debounceSearchEmpleado" type="text"
+                                            placeholder="Nombres" class="form-control mb-2">
                                     </div>
                                     <div class="col-2">
-                                        <input
-                                            v-model="filtros.apellido"
-                                            @input="debounceSearchEmpleado"
-                                            type="text"
-                                            placeholder="Apellidos"
-                                            class="form-control mb-2"
-                                        />
+                                        <input v-model="filtros.apellido" @input="debounceSearchEmpleado" type="text"
+                                            placeholder="Apellidos" class="form-control mb-2" />
                                     </div>
                                     <div class="col-2">
-                                        <input
-                                            v-model="filtros.dui"
-                                            @input="debounceSearchEmpleado"
-                                            type="text"
-                                            placeholder="DUI"
-                                            class="form-control mb-2"
-                                        />
+                                        <input v-model="filtros.dui" @input="debounceSearchEmpleado" type="text"
+                                            placeholder="DUI" class="form-control mb-2" />
                                     </div>
                                     <div class="col-2">
-                                        <input
-                                            v-model="filtros.cargo"
-                                            @input="debounceSearchEmpleado"
-                                            type="text"
-                                            placeholder="Cargo"
-                                            class="form-control mb-2"
-                                        />
+                                        <input v-model="filtros.cargo" @input="debounceSearchEmpleado" type="text"
+                                            placeholder="Cargo" class="form-control mb-2" />
                                     </div>
                                     <div class="col-2">
-                                        <input
-                                            v-model="filtros.email"
-                                            @input="debounceSearchEmpleado"
-                                            type="text"
-                                            placeholder="Email"
-                                            class="form-control mb-2"
-                                        />
+                                        <input v-model="filtros.email" @input="debounceSearchEmpleado" type="text"
+                                            placeholder="Email" class="form-control mb-2" />
                                     </div>
                                     <div class="col-2">
-                                        <div
-                                            class="form-group d-flex"
-                                            style="width: 100%"
-                                        >
-                                            <select
-                                                v-model="filtros.selectedOption"
-                                                @input="debounceSearchEmpleado"
-                                                class="form-select"
-                                            >
+                                        <div class="form-group d-flex" style="width: 100%">
+                                            <select v-model="filtros.selectedOption" @input="debounceSearchEmpleado"
+                                                class="form-select">
                                                 <option value="" disabled selected>
                                                     Empresa
                                                 </option>
                                                 <option value="NA">
                                                     No seleccionar
                                                 </option>
-                                                <option
-                                                    v-for="empresa in empresas"
-                                                    :key="empresa.id"
-                                                    :value="empresa.id"
-                                                >
+                                                <option v-for="empresa in empresas" :key="empresa.id" :value="empresa.id">
                                                     {{ empresa.id }} -
                                                     {{ empresa.nombre }}
                                                 </option>
@@ -197,7 +170,7 @@ export default {
     },
     methods: {
         toggleFiltros() {
-            this.expandFiltros = !this.expandFiltros;  
+            this.expandFiltros = !this.expandFiltros;
         },
         debounceSearchEmpleado: _.debounce(function () {
             this.searchEmpleado();
@@ -256,7 +229,7 @@ export default {
         async exportar() {
             const response = await axios.post("planilla/quincenal");
             this.calculosHoras = response.data.object;
-
+            let maxLengthNombre = 0;
             const workbook = new ExcelJS.Workbook();
             const worksheet = workbook.addWorksheet("Reporte de Horas Extras");
 
@@ -270,6 +243,7 @@ export default {
             // Aplica los estilos a las columnas
             worksheet.columns = [
                 { header: "ID Empleado", key: "id_empleado", width: 15, style: centeredStyle },
+                { header: "Nombre", key: "nombre", width: 15, style: centeredStyle },
                 { header: "Sueldo Mensual", key: "sueldo", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
                 { header: "Total Ganado", key: "TotalGanado", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
                 { header: "AFP", key: "afp", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
@@ -278,25 +252,51 @@ export default {
                 { header: "Total a Pagar", key: "TotalPagar", width: 15, style: centeredStyle, numFmt: "$ #,##0.00" },
             ];
 
-            this.calculosHoras.forEach((registro) => {
+            this.nombres = [];
+            this.calculosHoras.forEach((empleado) => {
+                const idEmpleado = empleado.idEmpleado;
 
-                worksheet.addRow({
-                    id_empleado: registro.dui,
-                    sueldo: registro.sueldoMesual,
-                    TotalGanado: registro.horasExtra,
-                    afp: registro.afp,
-                    isss: registro.isss,
-                    renta: registro.renta,
-                    TotalPagar: registro.TotalPagar,
-                }).eachCell({ includeEmpty: true }, (cell, colNumber) => {
-                    cell.style = centeredStyle;
+                axios.get(`empleadobyid?idEmpleado=${idEmpleado}`).then((result) => {
+                    this.nombre = result.data.object[0].nombres + ' ' + result.data.object[0].apellidos;
+                    nombres
+                    //  localStorage.setItem('nombreUser', JSON.stringify(this.nombre));
+                }).catch(error => { });
 
-                    // Aplica formato de moneda solo a las columnas que deseas
-                    if ([2, 4, 5, 6, 7].includes(colNumber)) {
-                        cell.numFmt = "$ #,##0.00";
-                    }
-                });
             });
+            for (const empleado of this.calculosHoras) {
+                const idEmpleado = empleado.idEmpleado;
+                try {
+                    const result = await axios.get(`empleadobyid?idEmpleado=${idEmpleado}`);
+                    this.nombre = result.data.object[0].nombres + ' ' + result.data.object[0].apellidos;
+                    console.log(this.nombre);
+
+
+                    if (this.nombre.length > maxLengthNombre) {
+                        maxLengthNombre = this.nombre.length;
+                    }
+
+                    worksheet.addRow({
+                        id_empleado: empleado.dui,
+                        nombre: this.nombre,
+                        sueldo: empleado.sueldoMesual,
+                        TotalGanado: empleado.horasExtra,
+                        afp: empleado.afp,
+                        isss: empleado.isss,
+                        renta: empleado.renta,
+                        TotalPagar: empleado.TotalPagar,
+                    }).eachCell({ includeEmpty: true }, (cell, colNumber) => {
+                        cell.style = centeredStyle;
+
+                        // Aplica formato de moneda solo a las columnas que deseas
+                        if ([2, 4, 5, 6, 7].includes(colNumber)) {
+                            cell.numFmt = "$ #,##0.00";
+                        }
+                    });
+                } catch (error) {
+                    // Manejar el error
+                }
+            }
+            worksheet.getColumn("nombre").width = maxLengthNombre + 2; // Agregar un pequeño espacio adicional
 
             // Escribe el archivo y genera la descarga
             workbook.xlsx.writeBuffer().then((data) => {
@@ -504,20 +504,24 @@ tr td:nth-child(3) {
     width: 10%;
 }
 
-.fade-enter-active, .fade-leave-active{
+.fade-enter-active,
+.fade-leave-active {
     transition: max-height 0.5s opacity 0.5s;
 }
 
-.fade-enter, .fade-leave-to{
+.fade-enter,
+.fade-leave-to {
     opacity: 0;
     max-height: 0;
 }
 
-.expand-fade-enter-active, .expand-fade-leave-active{
+.expand-fade-enter-active,
+.expand-fade-leave-active {
     transition: max-height 0.5s, opacity 0.5s;
 }
 
-.expand-fade-enter, .expand-fade-leave-to{
+.expand-fade-enter,
+.expand-fade-leave-to {
     opacity: 0;
     max-height: 0;
     display: none;
