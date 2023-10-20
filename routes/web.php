@@ -79,6 +79,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/calculo_horas/graficasPorEmpresa', 'CalculosHorasController@graficaCalculoDeHorasPorMesEmpresa');
     Route::get('/calculo_horas/graficaDeTresMeses', 'CalculosHorasController@graficaCalculoDeHorasDeTresMeses');
     Route::get('/datos_export', 'CalculosHorasController@datosExport');
+    Route::get('/datos/procesados', 'HoraExtraCotroller@horasProcesadaNo');
+
 
 
     Route::post('horas_extra/crear', 'HoraExtraCotroller@createHoraExtra')->name('horas_extra');
