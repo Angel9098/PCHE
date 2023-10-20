@@ -473,7 +473,7 @@ class CalculosHorasController extends Controller
                 ->select('empresas.id', 'empresas.nombre', DB::raw('SUM(calculos_horas.salario_neto) as total_salario'))
                 ->join('areas', 'calculos_horas.jefe_area', '=', 'areas.id')
                 ->join('empresas', 'areas.empresa_id', '=', 'empresas.id')
-                ->where('calculos_horas.created_at', '>=', DB::raw('DATE_SUB(NOW(), INTERVAL 1 MONTH)'))
+                ->where('calculos_horas.fecha_calculo', '>=', DB::raw('DATE_SUB(NOW(), INTERVAL 1 MONTH)'))
                 ->groupBy('empresas.id', 'empresas.nombre')
                 ->get();
             // $horario = Horario::all();
@@ -490,9 +490,9 @@ class CalculosHorasController extends Controller
         try {
 
             $resultado = DB::table('calculos_horas as c')
-                ->selectRaw('MONTH(c.created_at) AS Mes, SUM(c.salario_neto) AS horas_pagadas')
-                ->where('c.created_at', '>=', DB::raw('DATE_SUB(NOW(), INTERVAL 3 MONTH)'))
-                ->groupBy(DB::raw('MONTH(c.created_at)'))
+                ->selectRaw('MONTH(c.fecha_calculo) AS Mes, SUM(c.salario_neto) AS horas_pagadas')
+                ->where('c.fecha_calculo', '>=', DB::raw('DATE_SUB(NOW(), INTERVAL 3 MONTH)'))
+                ->groupBy(DB::raw('MONTH(c.fecha_calculo)'))
                 ->orderBy('Mes')
                 ->get();
 
