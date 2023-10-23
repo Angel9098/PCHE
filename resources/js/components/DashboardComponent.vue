@@ -1,52 +1,43 @@
 <template>
     <div class="col-11">
-        <h1 class="text-center my-4">Bienvenido  {{ nombre }}</h1>
-<!--         <div v-if="rol == 'administrador'" class="w-100 d-flex flex-row justify-content-center align-items-center gap-4">       
+        <h1 class="text-center my-4" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">Bienvenido {{ nombre }}</h1>
+        <div v-if="rol == 'administrador'" class="w-100 d-flex flex-row justify-content-center align-items-center gap-4">
             <div class="col-6 border border-1 rounded-3">
-                <h3 class="text-center mt-2">Recuento de horas extras</h3>
+                <h3 class="text-center mt-2">RECUENTO HORAS EXTRA</h3>
                 <apexchart width="100%" type="bar" :options="optionsBar" :series="series"></apexchart>
             </div>
             <div class="col-6 border border-1 rounded-3">
-                <h3 class="text-center mt-2" style="margin-bottom: 45px;">Horas extra recientes</h3>
-                <div id="radialBar1"></div>
-            </div>
-        </div>
-        <div v-if="rol == 'administrador'" class="mt-5 mb-5 w-10 d-flex flex-row justify-content-center align-items-center gap-4">
-            <div class="col-6 border border-1 rounded-3">
-                <h3 class="text-center mt-2">Horas extra por área</h3>
-                <div class="d-flex flex-row justify-content-start col-4">
-                    <select class="form-select ms-4" v-model="empresaID" @change="getHorasExtraByArea()">
+                <h3 class="text-center mt-2">HORAS EXTRA POR ÁREA</h3>
+                <div class="d-flex flex-row justify-content-center col-12">
+                    <select class="form-select ms-4 w-75" v-model="empresaID" @change="getHorasExtraByArea()">
                         <option value="0">Seleccione Empresa</option>
                         <option v-for="empresa in empresas" :key="empresa.id" :value="empresa.id">
                             {{ empresa.nombre }}
                         </option>
                     </select>
                 </div>
-                <Doughnut
-                    :chart-options="chartOptionsDonut"
-                    :chart-data="chartDataDonut"
-                    :chart-id="chartId"
-                    :dataset-id-key="datasetIdKey"
-                    :plugins="plugins"
-                    :css-classes="cssClasses"
-                    :styles="styles"
-                    :width="width"
-                    :height="height"
-                    class="mb-2"
-                >
+                <Doughnut :chart-options="chartOptionsDonut" :chart-data="chartDataDonut" :chart-id="chartId"
+                    :dataset-id-key="datasetIdKey" :plugins="plugins" :css-classes="cssClasses" :styles="styles"
+                    :width="width" :height="height" class="mb-2">
                 </Doughnut>
             </div>
-            <div class="col-6 border border-1 rounded-3">
-                <h3 class="text-center mt-2">Comparativo horas extra</h3>
-                <apexchart width="100%" type="bar" :options="optionsLines" :series="optionsLines.series" id="chartLines"></apexchart>
+            <!--             <div class="col-6 border border-1 rounded-3">
+                <h3 class="text-center mt-2" style="margin-bottom: 45px;">Horas extra recientes</h3>
+                <div id="radialBar1"></div>
+            </div> -->
+        </div>
+        <div v-if="rol == 'administrador'" class="mt-5 mb-5 w-10 d-flex flex-row justify-content-center align-items-center gap-4">
+            <div class="col-12 border border-1 rounded-3">
+                <h3 class="text-center mt-2">COMPARATIVO HORAS EXTRA</h3>
+                <apexchart width="100%" type="bar" :options="optionsLines" :series="optionsLines.series" id="chartLines">
+                </apexchart>
             </div>
-        </div> -->
-        
+        </div>
     </div>
-
 </template>
 <script>
 import axios from 'axios';
+import moment from 'moment';
 import { Doughnut } from 'vue-chartjs/legacy';
 import { Chart, Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, LinearScale } from 'chart.js'
 
@@ -71,7 +62,7 @@ export default {
         },
         height: {
             type: Number,
-            default: 400
+            default: 315
         },
         cssClasses: {
             default: '',
@@ -94,6 +85,7 @@ export default {
             serieDonut: [],
             categorysDonut: [],
             comparativoBars: [],
+            dataBarRecuento: [],
             comparativoCategories: [],
             nombre: '',
             chartDataDonut: {
@@ -112,7 +104,7 @@ export default {
             optionsBar: {
                 chart: {
                     id: 'apexchart-bar',
-                    height: 350
+                    height: 360
                 },
                 plotOptions: {
                     bar: {
@@ -123,7 +115,7 @@ export default {
                     }  
                 },
                 xaxis: {
-                    categories:['Enero', 'Febrero', 'Marzo']
+                    categories:['Septiembre','Octubre','Noviembre']
                 },
                 yaxis: {
                     labels: {
@@ -133,10 +125,10 @@ export default {
                     }
                 }
             },
-            series: [{
+            series: [/* {
                 name: 'Horas extras USD',
-                data: [40, 20, 12]
-            }],
+                data: []
+            } */],
             optionsRadial: {
                 series: [45, 20, 63],
                 legend: {
@@ -208,7 +200,7 @@ export default {
                     colors: ['transparent']
                 },
                 xaxis: {
-                    categories: ['Agosto','Septiembre','Octubre']
+                    categories: ['Septiembre','Octubre','Noviembre']
                 },
                 yaxis: {
                     title: {
@@ -237,8 +229,8 @@ export default {
         }
     },
     mounted() {
-        //var chartCircle = new ApexCharts(document.querySelector('#radialBar1'), this.optionsRadial);
-        //chartCircle.render();
+        var chartCircle = new ApexCharts(document.querySelector('#radialBar1'), this.optionsRadial);
+        chartCircle.render();
 
         //var chartBar = new ApexCharts(document.querySelector("#chartLines"), this.optionsLines);
         //chartBar.render();
@@ -248,7 +240,8 @@ export default {
         if(localStorage.getItem('user') !== null){
             this.usuario = JSON.parse(localStorage.getItem('user'));
         }
-        //this.getHorasExtraComparativo();
+        this.getHorasExtraComparativo();
+        this.getRecuentoHorasExtra();
     },
     methods: {
         cerrarSesion(){
@@ -259,11 +252,6 @@ export default {
             if (localStorage.getItem('nombreUser') != null) {
                 this.nombre = JSON.parse(localStorage.getItem('nombreUser'));
             }
-/*             const {empleado_id} = JSON.parse(localStorage.getItem("user"));
-            axios.get(`empleadobyid?idEmpleado=${empleado_id}`).then((result) => {
-                this.nombre = result.data.object[0].nombres + ' ' + result.data.object[0].apellidos;
-                this.localStorage.setItem('nombreUser', JSON.stringify(this.nombre));
-            }).catch(error => {}) */
         },
         getEmpresas() {
             axios.get("/empresas").then((response) => {
@@ -281,7 +269,19 @@ export default {
             });
         },
         getRecuentoHorasExtra() {
-            
+            let dataAux = [];
+            let xaxisAux = [];
+            axios.get('calculo_horas/graficaDeTresMeses', { headers: { 'Content-type': 'application/json' } })
+                .then(response => {
+                    response.data.forEach(element => {
+                        dataAux.push(element.horas_pagadas.toFixed(2));
+                        xaxisAux.push(moment().month(element.Mes - 1).locale('es-mx').format('MMMM'));
+                    });
+                    this.dataBarRecuento.push({ name: 'Horas extras', data: dataAux });
+                    this.series = this.dataBarRecuento;
+                    this.$set(this.optionsBar, 'xaxis', { categories: xaxisAux });
+                    //console.log(this.optionsBar.xaxis)
+                });
         },
         getHorasExtraByArea() {
             this.chartDataDonut.labels = [];
@@ -302,7 +302,7 @@ export default {
                 resp.data.object.forEach(element => {
                     if (this.comparativoBars.length == 0) {
                         this.comparativoBars.push({ name: element.nombre_empresa, data: [element.total_horas.toFixed(2)] });
-                        this.comparativoCategories.push(element.periodo);
+                        this.comparativoCategories.push(moment().month(element.periodo - 1).locale('es-mx').format('MMMM'));
                     } else {
                         if (this.comparativoBars.findIndex(item => item.name == element.nombre_empresa) != -1) {
                             let index = this.comparativoBars.findIndex(item => item.name == element.nombre_empresa);
@@ -312,19 +312,16 @@ export default {
                         }
 
                         if (this.comparativoCategories.findIndex(item => item == element.periodo) == -1) {
-                            this.comparativoCategories.push(element.periodo);
+                            this.comparativoCategories.push(moment().month(element.periodo - 1).locale('es-mx').format('MMMM'));
                         }
                     }
                 });
                 this.optionsLines.series = this.comparativoBars;
-                Vue.set(this.optionsLines.xaxis, 'categories', this.comparativoCategories);
-                //this.optionsLines.xaxis = { ...this.optionsLines.xaxis, categories: this.comparativoCategories };
-                this.$forceUpdate();
-                console.log(this.optionsLines.xaxis.categories)
+                this.$set(this.optionsLines, 'series', this.comparativoBars);
+                //this.$set(this.optionsLines.xaxis, 'categories', this.comparativoCategories);
+                //this.optionsLines = { ...this.optionsLines.xaxis, categories: this.comparativoCategories };
+                //console.log(this.optionsLines.series)
             })
-        },
-        getRecuentoHorasExtras() {
-            
         }
     }
 }

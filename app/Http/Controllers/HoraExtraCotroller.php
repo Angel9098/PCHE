@@ -139,6 +139,28 @@ class HoraExtraCotroller extends Controller
         return CustomResponse::make($empleadosConHorasExtra, '', 200, null);
     }
 
+    public function horasProcesadaNo(Request $request)
+    {
+
+        $resultado = [];
+        $horasProcesadasQuery = HoraExtra::query()
+            ->where('procesado', 1)
+            ->count();
+
+        $horasNoProcesadasQuery = HoraExtra::query()
+            ->where('procesado', 0)
+            ->count();
+
+
+        $resultado = [
+            'noProcesadas' => $horasNoProcesadasQuery,
+            'procesadas' => $horasProcesadasQuery
+
+        ];
+
+
+        return CustomResponse::make($resultado, '', 200, null);
+    }
     public function limpiarTabla()
     {
         try {
