@@ -198,7 +198,18 @@ export default {
                     showConfirmButton: false,
                     timer: 2000
                 })
-            } else {
+            }
+            else if (this.contrasenia.length < 6) {
+                    this.$swal.fire({
+                    title: 'Error',
+                    icon: 'warning',
+                    text: 'Debe ingresar una contraseña con al menos 6 caracteres',
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            }
+            else {
                 if (!this.duiEmpleado == '' && !this.nombres == '' && !this.apellidosEmpleado == '' && !this.correo == '') {
                     const datosRegistro = {
                         idEmpleado: this.idEmpleado,
@@ -239,7 +250,7 @@ export default {
                             this.$swal.fire({
                                 title: 'Error',
                                 icon: 'error',
-                                text: error.data.message,
+                                text: error.response.data.message,
                                 showCancelButton: false,
                                 showConfirmButton: false,
                                 timer: 2000

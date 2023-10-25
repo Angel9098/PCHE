@@ -189,11 +189,11 @@
                     <div class="title-container">
                         <h2 class="title">PCHE</h2>
                         <h4>Reporte de Horas de Empleados</h4>
-                        <p v-if="EmpresaSelect != undefined">Empresa: {{ EmpresaSelect.nombre }}</p>
+                        <p v-if="EmpresaSelect.nombre != undefined">Empresa: {{ EmpresaSelect.nombre }}</p>
                         <p v-else>Empresas: Todas</p>
                     </div>
                     <div class="area-date-container">
-                        <p v-if="AreaSelect != undefined"> Área: {{ AreaSelect.nombre }}</p>
+                        <p v-if="AreaSelect.nombre != undefined"> Área: {{ AreaSelect.nombre }}</p>
                         <p v-else>Áreas: Todas</p>
                         <p class="date">Fecha de Emisión: {{ currentDate }}</p>
                     </div>
@@ -217,7 +217,7 @@
                                     <th scope="col" class="col-1">Nocturnas Asueto</th>
                                 </thead>
 
-                                <tbody class="text-center" v-if="horasExtras.length > 0">
+                                <tbody class="text-center bg-white" v-if="horasExtras.length > 0">
                                     <tr v-for="registro in horasExtras" :key="registro.id">
                                         <td scope="row">{{ registro.empleado.dui }}</td>
                                         <td>{{ registro.empleado.nombres + " " + registro.empleado.apellidos }}</td>
@@ -332,7 +332,7 @@ export default {
                 this.EmpresaSelect = {};
                 this.AreaSelect = {};
             }
-            this.EmpresaSelect = this.empresas.find(empresa => empresa.id == this.filtros.selectEmpresa);
+            this.EmpresaSelect = this.filtros.selectEmpresa == "" ? {} : this.empresas.find(empresa => empresa.id == this.filtros.selectEmpresa);
             this.buscarArea();
             this.buscarRegistrosByEmpresa(this.filtros);
 
@@ -354,7 +354,7 @@ export default {
             const areaId = this.filtros.selectArea;
             this.searchAreaById(areaId);
             this.buscarRegistrosByEmpresa(this.filtros);
-            this.AreaSelect = this.areas.find(area => area.id == this.filtros.selectArea);
+            this.AreaSelect = this.filtros.selectArea == "" ? {} : this.areas.find(area => area.id == this.filtros.selectArea);
         }, 300),
         async buscarArea() {
 
@@ -402,6 +402,11 @@ export default {
         },
 
         generatePDF() {
+
+            //Recuperar Usuario
+            if (localStorage.getItem('nombreUser') != null) {
+                this.nombre = JSON.parse(localStorage.getItem('nombreUser'));
+            }
             // Mostrar la sección de contenido para generar el PDF
             this.showPdfTemplate = true;
 

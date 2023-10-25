@@ -34,7 +34,7 @@
                         <td>{{ item.nombre_jefe_area }}</td>
                         <td>
                             <div class="d-flex flex-row justify-content-around">
-                                <button type="button" class="btn btn-primary" @click="showModificarArea(item.area_id, item.id_empresa)" title="Editar">
+                                <button type="button" class="btn btn-primary" @click="showModificarArea(item.area_id, item.id_empresa, item.id_jefe)" title="Editar">
                                     <i class="fa-solid fa-pen-to-square text-white"></i>
                                 </button>
                                 <button type="button" class="btn btn-danger" @click="showDeleteModal(item.area_id)" title="Eliminar">
@@ -189,20 +189,27 @@ export default {
             });
         },
         getJefaturas() {
+            this.jefaturas = [];
             axios.get('areas/jefes', { headers: { 'Content-type': 'application/json' } }).then(response => {
+                this.jefaturas = response.data.object;
+            });
+        },
+        getJefaturasAsignados(idEmpleado) {
+            this.jefaturas = [];
+            axios.get(`areas/jefesAsignados?id=${idEmpleado}`, { headers: { 'Content-type': 'application/json' } }).then(response => {
                 this.jefaturas = response.data.object;
             });
         },
         rellenarCampos(idArea, idEmpresa) {
             let registroSeleccionado = this.areas.find(element => element.area_id === idArea);
             this.area.nombre_area = registroSeleccionado.nombre_area;
-            this.area.jefe_area = registroSeleccionado.id_jefe;
+            this.area.id_jefe = registroSeleccionado.id_jefe;
             this.area.area_id = registroSeleccionado.area_id;
             this.area.empresa_id = idEmpresa;
         },
-        showModificarArea(idArea, idEmpresa) {
+        showModificarArea(idArea, idEmpresa, idJefe) {
             $('#modalCrear').modal('show');
-            this.getJefaturas();
+            this.getJefaturasAsignados(idJefe);
             this.accionModal = 'Modificar'; //Accion para modificar titulo y rellenar campos
             this.rellenarCampos(idArea, idEmpresa);
         },

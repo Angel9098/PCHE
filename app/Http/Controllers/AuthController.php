@@ -58,14 +58,19 @@ class AuthController extends Controller
                 'contrasenia' => 'required|string|min:6',
             ]);
 
-            // Crear usuario
-            $usuario = Usuario::create([
-                'email' => $request->input('correo'),
-                'password' => bcrypt($request->input('contrasenia')),
-                'empleado_id' => $request->input('idEmpleado'),
-                'rol' => $request->input('rol'),
+            try {
+                // Crear usuario
+                $usuario = Usuario::create([
+                    'email' => $request->input('correo'),
+                    'password' => bcrypt($request->input('contrasenia')),
+                    'empleado_id' => $request->input('idEmpleado'),
+                    'rol' => $request->input('rol'),
 
-            ]);
+                ]);
+            } catch (\Throwable $th) {
+                return CustomResponse::make(null, 'Usuario ya se encuentra registrado', 500, null);
+            }
+
 
             Auth::login($usuario);
 
@@ -77,7 +82,7 @@ class AuthController extends Controller
 
     public function editarPerfilUser(Request $request)
     {
-        try{
+        try {
             $imagen = $request->file('imagen');
             $nombreImagen = uniqid() . '.' . $imagen->getClientOriginalExtension();
             $rutaImagen = $imagen->storeAs('public/imagenes', $nombreImagen);
@@ -91,7 +96,7 @@ class AuthController extends Controller
             $usuario->save();
 
             return CustomResponse::make($usuario, 'Perfil usuario modificado con exito', 200, null);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return CustomResponse::make(null, 'Error en el servidor', 500, $e->getMessage());
         }
     }

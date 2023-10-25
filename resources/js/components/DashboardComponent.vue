@@ -16,9 +16,7 @@
                         </option>
                     </select>
                 </div>
-                <Doughnut :chart-options="chartOptionsDonut" :chart-data="chartDataDonut" :chart-id="chartId"
-                    :dataset-id-key="datasetIdKey" :plugins="plugins" :css-classes="cssClasses" :styles="styles"
-                    :width="width" :height="height" class="mb-2">
+                <Doughnut :chart-options="chartOptionsDonut" :chart-data="chartDataDonut" :chart-id="chartId" :width="width" :style="anchoGraficaCircular" class="mb-2">
                 </Doughnut>
             </div>
             <!--             <div class="col-6 border border-1 rounded-3">
@@ -52,10 +50,6 @@ export default {
             type: String,
             default:'doughnut-chart'
         },
-        datasetIdKey: {
-            type: String,
-            default: 'label'
-        },
         width: {
             type: Number,
             default: 600
@@ -63,31 +57,22 @@ export default {
         height: {
             type: Number,
             default: 315
-        },
-        cssClasses: {
-            default: '',
-            type: String
-        },
-        styles: {
-            type: Object,
-            default: () => { }
-        },
-        plugins: {
-            type: Array,
-            default: () => []
         }
     },
     data() {
         return {
+            screenWidth: window.innerWidth,
+            anchoGraficaCircular: { height: '0' },
             usuario: {},
             empresas: [],
             empresaID: 0,
             serieDonut: [],
             categorysDonut: [],
             comparativoBars: [],
-            dataBarRecuento: [],
             comparativoCategories: [],
+            dataBarRecuento: [],
             nombre: '',
+            //config para grafica de anillo
             chartDataDonut: {
                 labels: [],
                 datasets: [
@@ -101,6 +86,7 @@ export default {
                 responsive: true,
                 maintainAspectRatio: false
             },
+            //config para grafica de barras de 3 meses
             optionsBar: {
                 chart: {
                     id: 'apexchart-bar',
@@ -125,61 +111,10 @@ export default {
                     }
                 }
             },
-            series: [/* {
-                name: 'Horas extras USD',
-                data: []
-            } */],
-            optionsRadial: {
-                series: [45, 20, 63],
-                legend: {
-                    show: true
-                },
-                title: {
-                    align: 'left'
-                },
-                chart: {
-                    height: 500,
-                    type: 'radialBar'
-                },
-                plotOptions: {
-                    radialBar: {
-                        dataLabels: {
-                            name: {
-                                fontSize: '22px'
-                            },
-                            value: {
-                                fontSize: '16px',
-                                formatter: function (val) {
-                                    return '$' + val
-                                }
-                            },
-                            total: {
-                                show: true,
-                                label: 'Total',
-                                formatter: function (w) {
-                                    return '$' + 210
-                                }
-                            }
-                        }
-                    }
-                },
-                labels: ['Optimissa', 'Lat Mobile', 'Monetae']
-            },
+            series: [],
+            //config para grafica comparativo
             optionsLines: {
-                series: []/* [
-                    {
-                        name: 'Lat Mobile',
-                        data: [22, 44, 10]
-                    },
-                    {
-                        name: 'Monetae',
-                        data: [9, 15, 60]
-                    },
-                    {
-                        name: 'Optimissa',
-                        data: [65, 56, 63]
-                    },
-                ] */,
+                series: [],
                 chart: {
                     type: 'bar',
                     height: 400
@@ -228,13 +163,16 @@ export default {
             else return null;
         }
     },
+    created() {
+        window.addEventListener("resize", this.handleResize);
+    },
+    destroyed() {
+        window.removeEventListener("resize", this.handleResize);
+    },
     mounted() {
-        var chartCircle = new ApexCharts(document.querySelector('#radialBar1'), this.optionsRadial);
-        chartCircle.render();
-
-        //var chartBar = new ApexCharts(document.querySelector("#chartLines"), this.optionsLines);
-        //chartBar.render();
-
+        //var chartCircle = new ApexCharts(document.querySelector('#radialBar1'), this.optionsRadial);
+        //chartCircle.render();
+        this.handleResize();
         this.leerData();
         this.getEmpresas();
         if(localStorage.getItem('user') !== null){
@@ -244,6 +182,37 @@ export default {
         this.getRecuentoHorasExtra();
     },
     methods: {
+        handleResize() {
+            this.screenWidth = window.innerWidth;
+
+            if (this.screenWidth >= 960 && this.screenWidth < 1000) this.anchoGraficaCircular.height = "235px";
+            if (this.screenWidth >= 1000 &&  this.screenWidth < 1040) this.anchoGraficaCircular.height = "245px";
+            if (this.screenWidth >= 1040 && this.screenWidth < 1100) this.anchoGraficaCircular.height = "255px";
+            if (this.screenWidth >= 1100 && this.screenWidth < 1140) this.anchoGraficaCircular.height = "270px";
+            if (this.screenWidth >= 1140 && this.screenWidth < 1180) this.anchoGraficaCircular.height = "280px";
+            if (this.screenWidth >= 1180 && this.screenWidth < 1220) this.anchoGraficaCircular.height = "290px";
+            if (this.screenWidth >= 1220 && this.screenWidth < 1260) this.anchoGraficaCircular.height = "300px";
+            if (this.screenWidth >= 1260 && this.screenWidth < 1300) this.anchoGraficaCircular.height = "315px";
+            if (this.screenWidth >= 1300 && this.screenWidth < 1340) this.anchoGraficaCircular.height = "325px";
+            if (this.screenWidth >= 1340 && this.screenWidth < 1390) this.anchoGraficaCircular.height = "340px";
+            if (this.screenWidth >= 1390 && this.screenWidth < 1430) this.anchoGraficaCircular.height = "350px";
+            if (this.screenWidth >= 1430 && this.screenWidth < 1470) this.anchoGraficaCircular.height = "360px";
+            if (this.screenWidth >= 1470 && this.screenWidth < 1510) this.anchoGraficaCircular.height = "375px";
+            if (this.screenWidth >= 1510 && this.screenWidth < 1540) this.anchoGraficaCircular.height = "385px";
+            if (this.screenWidth >= 1540 && this.screenWidth < 1570) this.anchoGraficaCircular.height = "395px";
+            if (this.screenWidth >= 1570 && this.screenWidth < 1600) this.anchoGraficaCircular.height = "400px";
+            if (this.screenWidth >= 1600 && this.screenWidth < 1640) this.anchoGraficaCircular.height = "415px";
+            if (this.screenWidth >= 1640 && this.screenWidth < 1670) this.anchoGraficaCircular.height = "425px";
+            if (this.screenWidth >= 1670 && this.screenWidth < 1700) this.anchoGraficaCircular.height = "430px";
+            if (this.screenWidth >= 1700 && this.screenWidth < 1740) this.anchoGraficaCircular.height = "440px";
+            if (this.screenWidth >= 1740 && this.screenWidth < 1780) this.anchoGraficaCircular.height = "450px";
+            if (this.screenWidth >= 1780 && this.screenWidth < 1810) this.anchoGraficaCircular.height = "460px";
+            if (this.screenWidth >= 1810 && this.screenWidth < 1840) this.anchoGraficaCircular.height = "470px";
+            if (this.screenWidth >= 1840 && this.screenWidth < 1880) this.anchoGraficaCircular.height = "480px";
+            if (this.screenWidth >= 1880 && this.screenWidth < 1900) this.anchoGraficaCircular.height = "490px";
+            if (this.screenWidth >= 1900 && this.screenWidth < 1920) this.anchoGraficaCircular.height = "495px";
+            if (this.screenWidth >= 1920 && this.screenWidth < 1950) this.anchoGraficaCircular.height = "500px";
+        },
         cerrarSesion(){
             localStorage.removeItem('user');
             this.$router.push('/');
@@ -255,15 +224,7 @@ export default {
         },
         getEmpresas() {
             axios.get("/empresas").then((response) => {
-                // Formatear las empresas como 'id-nombre' y almacenarlas en 'empresas'
                 this.empresas = response.data;
-/*                 this.$swal({
-                    title: 'Empresas Obtenidas',
-                    icon: 'success',
-                    showConfirmButton: false,
-                    position: 'center',
-                    timer: 2000
-                }); */
             }).catch((error) => {
                 console.error("Error al cargar empresas:", error);
             });
@@ -271,6 +232,7 @@ export default {
         getRecuentoHorasExtra() {
             let dataAux = [];
             let xaxisAux = [];
+            
             axios.get('calculo_horas/graficaDeTresMeses', { headers: { 'Content-type': 'application/json' } })
                 .then(response => {
                     response.data.forEach(element => {
@@ -280,7 +242,6 @@ export default {
                     this.dataBarRecuento.push({ name: 'Horas extras', data: dataAux });
                     this.series = this.dataBarRecuento;
                     this.$set(this.optionsBar, 'xaxis', { categories: xaxisAux });
-                    //console.log(this.optionsBar.xaxis)
                 });
         },
         getHorasExtraByArea() {
@@ -288,6 +249,7 @@ export default {
             this.chartDataDonut.datasets[0].data = [];
             this.categorysDonut = [];
             this.serieDonut = [];
+
             axios.get(`dashboard/horasExtraEmpresa?idEmpresa=${this.empresaID}`, { headers: { 'Content-type': 'application/json' } }).then(resp => {
                 resp.data.object.forEach(element => {
                     this.categorysDonut.push(element.nombre_area);

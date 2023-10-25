@@ -11,7 +11,7 @@
                     <!-- Cabecera del acordeón con estilos personalizados -->
                     <h2 class="accordion-header" id="filters-headingOne">
                         <button class="accordion-button bg-gradient border-0 rounded-3" type="button" @click="toggleFiltros">
-                            FILTROS DE BÚSQUEDA <i :class="expandFiltros ? 'fa-solid fa-chevron-down arrow' : 'fa-solid fa-chevron-up arrow'"></i>
+                            FILTROS DE BÚSQUEDA <i :class="expandFiltros ? 'fa-solid fa-chevron-up arrow' : 'fa-solid fa-chevron-down arrow'"></i>
                         </button>
                     </h2>
                     <!-- Cuerpo del acordeón (filtros) con estilos personalizados -->
@@ -97,7 +97,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-3">
+                                    <div class="col-6">
                                         <input v-model="filtros.email" @input="debounceSearchEmpleadoByinput" type="text"
                                             placeholder="Email" class="form-control mb-2" />
                                     </div>
@@ -201,11 +201,11 @@
                     <div class="title-container">
                         <h2 class="title">PCHE</h2>
                         <h4>Reporte de Horas Extras</h4>
-                        <p v-if="EmpresaSelect != undefined">Empresa: {{ EmpresaSelect.nombre }}</p>
+                        <p v-if="EmpresaSelect.nombre != undefined">Empresa: {{ EmpresaSelect.nombre }}</p>
                         <p v-else>Empresas: Todas</p>
                     </div>
                     <div class="area-date-container">
-                        <p v-if="AreaSelect != undefined"> Área: {{ AreaSelect.nombre }}</p>
+                        <p v-if="AreaSelect.nombre != undefined"> Área: {{ AreaSelect.nombre }}</p>
                         <p v-else>Areas: Todas</p>
                         <p class="date">Fecha de Emisión: {{ currentDate }}</p>
                     </div>
@@ -229,7 +229,7 @@
                                     <th scope="col" class="col-1">ISSS</th>
                                     <th scope="col" class="col-1">Salario Mensual</th>
                                 </thead>
-                                <tbody class="text-center" v-if="calculosHoras.length > 0">
+                                <tbody class="text-center bg-white" v-if="calculosHoras.length > 0">
                                     <tr v-for="registro in calculosHoras" :key="registro.id">
                                         <td scope="row">{{ registro.dui }}</td>
                                         <td>{{ registro.nombres }}</td>
@@ -256,7 +256,7 @@
                         </div>
                     </div>
                     <!-- Espaciador para separar la tabla del pie de página -->
-                    <div class="row">
+                    <div class="row my-5">
                         <div class="col-4">
                             <p>Emitido por: {{ nombreJefe }} </p>
                         </div>
@@ -329,12 +329,11 @@ export default {
                 this.areas = [];
                 this.filtros.selectArea = "NA";
                 this.EmpresaSelect = {};
+                this.AreaSelect = {};
             }
             this.buscarArea();
             this.buscarRegistrosByEmpresa(this.filtros);
-            this.EmpresaSelect = this.empresas.find(
-                (empresa) => empresa.id === this.filtros.selectEmpresa
-            );
+            this.EmpresaSelect = this.empresas.find((empresa) => empresa.id === this.filtros.selectEmpresa) == undefined ? {} : this.empresas.find((empresa) => empresa.id === this.filtros.selectEmpresa);
 
         }, 300),
         debounceSearchFechas: _.debounce(function () {
@@ -354,11 +353,9 @@ export default {
                 this.selectArea = {};
 
             }
-            const areaId = this.filtros.selectArea;
+            let areaId = this.filtros.selectArea;
             this.buscarRegistrosByEmpresa(this.filtros);
-            this.AreaSelect = this.areas.find(
-                (area) => area.id === this.filtros.selectArea
-            );
+            this.AreaSelect = areaId == "" ? {} : this.areas.find((area) => area.id === areaId);
         }, 300),
         debounceSearchEmpleadoByinput: _.debounce(function () {
 
@@ -461,8 +458,6 @@ export default {
 
 
         fetchEmpresas() {
-            /* const nombre = JSON.parse(localStorage.getItem('nombreUser'));
-             this.nombreJefe = `${nombres} ${apellidos}`;*/
             axios
                 .get("/empresas")
                 .then((response) => {
@@ -486,6 +481,10 @@ export default {
             this.fetchEmpleados();
         },
         generatePDF() {
+            //Recuperar emitido por
+            if (localStorage.getItem('nombreUser') != null) {
+                this.nombreJefe = JSON.parse(localStorage.getItem('nombreUser'));   
+            }
             // Mostrar la sección de contenido para generar el PDF
             this.showPdfTemplate = true;
 

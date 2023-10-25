@@ -46,6 +46,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('areas/update', 'AreaController@updateArea');
     Route::delete('areas/delete', 'AreaController@deleteArea');
     Route::get('areas/jefes', 'AreaController@listaJefeEmpleado');
+    Route::get('areas/jefesAsignados', 'AreaController@listadoJefeAsignadoDisponible');
 
 
 
@@ -99,6 +100,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard/horasExtraEmpresa', 'DashboardController@obtenerHorasExtraPorEmpresa');
     Route::get('dashboard/horasExtraTotal', 'DashboardController@obtenerTotalSalarioHorasExtra');
     Route::get('dashboard/fechaReciente', 'DashboardController@obtenerFechaReciente');
+    Route::get('dashboard/recuentoHoras','HoraExtraCotroller@horasProcesadaNo');
 });
 
 

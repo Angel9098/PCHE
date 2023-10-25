@@ -158,19 +158,44 @@ class AreaController extends Controller
     {
         try {
             $usuarioJefe = DB::table('empleados as em')
-                ->join('areas as a', 'a.id', '=', 'em.area_id')
-                ->join('empresas as e', 'a.empresa_id', '=', 'e.id')
-                ->join('usuarios as u', 'u.empleado_id', '=', 'em.id')
-                ->select('u.id', DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe'))
-                ->where('u.rol', '=', 'jefe')
-                ->whereNull('a.jefe_area')
+                ->select('em.id', DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe'))
+                ->join('areas as a', 'em.area_id', '=', 'a.id')
+                ->join('usuarios as u', 'em.id', '=', 'u.empleado_id')
+                ->where('u.rol', 'Jefe')
+                ->where(function ($query) {
+                    $query->where('em.id', '<>', DB::raw('a.jefe_area'))
+                        ->orWhereNull('a.jefe_area');
+                })
                 ->get();
+
+            
 
             if ($usuarioJefe->isEmpty()) {
                 return CustomResponse::make(null, 'No hay elementos disponibles', 400, null);
             }
 
             return CustomResponse::make($usuarioJefe, '', 200, null);
+        } catch (Exception $e) {
+            return CustomResponse::make(null, 'Hubo un error en el servidor', 500, $e->getMessage());
+        }
+    }
+
+    public function listadoJefeAsignadoDisponible(Request $request){
+        try {
+            $idJefe = $request->input('id');
+
+            $resultados = DB::table('empleados as em')
+            ->select('em.id', DB::raw('CONCAT(em.nombres, " ", em.apellidos) as nombre_jefe'))
+            ->join('areas as a', 'em.area_id', '=', 'a.id')
+            ->join('usuarios as u', 'em.id', '=', 'u.empleado_id')
+            ->whereRaw('u.rol = ? AND (em.id = ? OR a.jefe_area IS NULL OR a.jefe_area <> em.id)',['jefe',$idJefe])
+            ->get();
+
+            if ($resultados->isEmpty()) {
+                return CustomResponse::make(null, 'No hay elementos disponibles', 400, null);
+            }
+
+            return CustomResponse::make($resultados, '', 200, null);
         } catch (Exception $e) {
             return CustomResponse::make(null, 'Hubo un error en el servidor', 500, $e->getMessage());
         }
