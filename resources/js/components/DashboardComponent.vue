@@ -36,6 +36,7 @@
 <script>
 import axios from 'axios';
 import moment from 'moment';
+import VueApexCharts from 'vue-apexcharts';
 import { Doughnut } from 'vue-chartjs/legacy';
 import { Chart, Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, LinearScale } from 'chart.js'
 
@@ -43,7 +44,8 @@ Chart.register(Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, Li
 
 export default {
     components: {
-        Doughnut
+        Doughnut,
+        apexchart: VueApexCharts
     },
     props: {
         chartId: {
@@ -90,7 +92,10 @@ export default {
             optionsBar: {
                 chart: {
                     id: 'apexchart-bar',
-                    height: 360
+                    height: 360,
+                    toolbar: {
+                        show: false
+                    }
                 },
                 plotOptions: {
                     bar: {
@@ -117,7 +122,10 @@ export default {
                 series: [],
                 chart: {
                     type: 'bar',
-                    height: 400
+                    height: 400,
+                    toolbar: {
+                        show: false
+                    },
                 },
                 plotOptions: {
                     bar: {

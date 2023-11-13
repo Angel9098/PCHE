@@ -8,7 +8,7 @@
                     <div v-if="loaded == false" class="d-flex flex-column justify-content-center align-items-center">
                         <i class="fa-solid fa-file-excel text-primary" :style="'font-size: 60px'"></i>
                         <h5 class="mb-0 mt-2">Adjunte archivo de horas extras</h5>
-                        <small>Solo se permite archivo Excel</small>
+                        <small>S&#243;lo se permite archivo Excel con extensi&#243;n <strong style="font-size: 16px;">XLSM</strong></small>
                     </div>
                     <div v-else class="col-12 d-flex flex-row justify-content-center align-items-center">
                         <div class="col-5 d-flex flex-row justify-content-end">

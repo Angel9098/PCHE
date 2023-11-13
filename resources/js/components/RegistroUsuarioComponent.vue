@@ -31,17 +31,20 @@
                         <div class="d-flex flex-row justify-content-between gap-2">
                             <div class="form-group col-5">
                                 <label for="job_title">DUI</label>
-                                <input id="job_title" type="text" class="form-control" v-model="$v.usuario.dui.$model" required v-mask="'########-#'" @change="verifyDui" autocomplete="off">
+                                <input id="job_title" type="text" :class="duiError?'form-control is-invalid':'form-control'" v-model="$v.usuario.dui.$model" required v-mask="'########-#'" @change="verifyDui" @keyup="verificarFormatoDUI(usuario.dui)" autocomplete="off">
                                 <span v-if="$v.usuario.dui.$error" class="text-danger">
                                     Este campo es obligatorio
                                 </span>
                                 <span v-if="verifyDuiEmailorBoolean" class="text-danger">
                                     {{ MSErrorDui }}
                                 </span>
+                                <span v-if="duiError" class="invalid-feedback">
+                                    DUI incorrecto
+                                </span>
                             </div>
                             <div class="form-group col-6">
                                 <label for="email">Correo Electr&#243;nico</label>
-                                <input id="email" type="email" class="form-control" v-model="$v.usuario.email.$model" required @keydown="verifyDomain" autocomplete="off">
+                                <input id="email" type="email" class="form-control" v-model="$v.usuario.email.$model" required @keyup="verifyDomain" autocomplete="off">
 
                                 <span v-if="verifyEmailorDuiBoolean" class="text-danger">
                                     {{ MSErrorEmailODui }}
@@ -68,10 +71,11 @@
                             </div>
                             <div class="form-group col-6">
                                 <label for="phoneEmergency">Tel&#233;fono</label>
-                                <input id="phoneEmergency" type="text" class="form-control" v-model="$v.usuario.numero_emergencia.$model" required v-mask="'####-####'" autocomplete="off">
+                                <input id="phoneEmergency" type="text" :class="phoneError ? 'form-control is-invalid' : 'form-control'" v-model="$v.usuario.numero_emergencia.$model" required v-mask="'####-####'" @keyup="verificarFormatoTelefono(usuario.numero_emergencia)" autocomplete="off">
                                 <span v-if="$v.usuario.numero_emergencia.$error" class="text-danger">
                                     Este campo es obligatorio
                                 </span>
+                                <span v-if="phoneError" class="text-danger">Teléfono incorrecto</span>
                             </div>
                         </div>
 
@@ -114,7 +118,7 @@
                             </div>
                             <div class="form-group col-6">
                                 <label for="salary">Salario</label>
-                                <input id="salary" type="text" class="form-control" v-model="$v.usuario.salario.$model" required autocomplete="off">
+                                <input id="salary" type="text" class="form-control" v-model="$v.usuario.salario.$model" @keydown="verificarSalario" required autocomplete="off">
                                 <span v-if="$v.usuario.salario.$error" class="text-danger">
                                     Este campo es obligatorio
                                 </span>
@@ -209,8 +213,10 @@ export default {
             turno: "all",
             verifyEmailBoolean: false,
             verifyEmailorDuiBoolean: false,
-            verifyDuiEmailorBoolean: false
-        };
+            verifyDuiEmailorBoolean: false,
+            phoneError: false,
+            duiError: false,
+        }
     },
     validations: {
         usuario: {
@@ -232,13 +238,14 @@ export default {
         this.getEmpresas();
         this.getHorarios();
         this.userId(this.id);
-        document.title = `PCHE - Registro de usuario`;
     },
     methods: {
         registrar() {
             this.verifyDomain();
             this.verifyDui();
-            if (this.$v.usuario.$invalid || this.verifyEmailBoolean || this.verifyDuiEmailorBoolean || this.usuario.area_id == 0 || this.usuario.empresa == 0 || this.usuario.horario_id == 0) {
+            this.verificarFormatoTelefono(this.usuario.numero_emergencia);
+            this.verificarFormatoDUI(this.usuario.dui);
+            if (this.$v.usuario.$invalid || this.verifyEmailBoolean || this.verifyDuiEmailorBoolean || this.usuario.area_id == 0 || this.usuario.empresa == 0 || this.usuario.horario_id == 0 || this.phoneError == true || this.duiError == true) {
                 this.$swal.fire({
                     title: "Error",
                     icon: "info",
@@ -436,6 +443,33 @@ export default {
                     }
                 }
             });
+        },
+
+        verificarFormatoTelefono(telefono) {
+            let formato = /^\d{4}-\d{4}$/;
+            if (formato.test(telefono)) {
+                this.phoneError = false;
+            }
+            else this.phoneError = true;
+        },
+        verificarFormatoDUI(dui) {
+            let formato = /^\d{8}-\d{1}$/;
+            if (formato.test(dui)) {
+                this.duiError = false;
+            }
+            else this.duiError = true;
+        },
+        verificarSalario(event) {
+            if(event.key === 'Backspace') {
+
+            }
+            else if (!this.isNumberKey(event) || /^\d+\.\d{2}$/.test(event.target.value)) {
+                event.preventDefault();
+            }
+            
+        },
+        isNumberKey(event) {
+            return((event.key >= 0 && event.key <= 9) || event.key ==='.')
         },
     },
 };

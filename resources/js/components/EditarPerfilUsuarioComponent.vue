@@ -82,8 +82,8 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">
-                            Nombre de persona
+                        <h5 class="modal-title text-center" id="exampleModalLabel">
+                            Actualizaci&#243;n de Contrase&#241;a
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
