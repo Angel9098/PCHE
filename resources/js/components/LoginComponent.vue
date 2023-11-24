@@ -15,12 +15,18 @@
                         aria-describedby="passHelp" v-model="objLogin.password" @keyup.enter="login">
                 </div>
                 <div class="form-group d-flex flex-row justify-content-center">
-                    <button type="button" class="btn btn-primary d-flex flex-row justify-content-center gap-1" @click="login">
+                    <button type="button" class="btn btn-primary d-flex flex-row justify-content-center gap-1"
+                        @click="login">
                         <div v-if="isSubmit" class="spinner-border text-white spinner-load" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
                         <div><span>Iniciar sesión</span></div>
                     </button>
+                </div>
+                <div class="form-group d-flex flex-row justify-content-center">
+
+                    <div><span>Recuperar contraseña</span></div>
+
                 </div>
             </form>
         </div>
@@ -59,15 +65,24 @@ export default {
                     this.nombre = result.data.object[0].nombres + ' ' + result.data.object[0].apellidos;
                     localStorage.setItem('nombreUser', JSON.stringify(this.nombre));
                 }).catch(error => { });
-                
+
             }).catch((error) => {
+
+                this.$swal.fire({
+                    title: 'Advertencia',
+                    icon: 'error',
+                    text: error.response.data.message,
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    timer: 2000
+                })
                 this.isSubmit = false;
-                if (error.response.data.status === 401) {
+               /* if (error.response.data.status === 401) {
                     this.showToast('Credenciales incorrectas. Intente de nuevo');
                 } else {
                     console.log(error)
                     this.showToast('Error en el servidor. Por favor, inténtelo de nuevo más tarde');
-                }
+                }*/
             });
         },
         showToast(message) {
@@ -101,7 +116,7 @@ export default {
     padding-right: 0px;
 }
 
-.spinner-load{
+.spinner-load {
     font-size: 10px;
     width: 20px;
     height: 20px;

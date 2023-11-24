@@ -30,12 +30,19 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
+        $mail = $request->input('email');
+
+        $mailbase = Usuario::where('email', $mail)->first();
+
+        if ($mailbase == null) {
+            return CustomResponse::make(null, 'Correo electronico invalido', 401, null);
+        }
         if (Auth::guard('web')->attempt($credentials)) {
 
             $user = Auth::user(); // Obtener el usuario autenticado
             return CustomResponse::make($user, 'Inicio de sesión exitoso', 200, null);
         }
-        return CustomResponse::make(null, 'Credenciales inválidas', 401, null);
+        return CustomResponse::make(null, 'Contraseña invalida', 401, null);
     }
 
     public function logout()
@@ -53,24 +60,26 @@ class AuthController extends Controller
     {
         try {
             // Validar datos de registro
-            $this->validate($request, [
-                'correo' => 'required|string|max:255',
-                'contrasenia' => 'required|string|min:6',
-            ]);
 
-            try {
-                // Crear usuario
-                $usuario = Usuario::create([
-                    'email' => $request->input('correo'),
-                    'password' => bcrypt($request->input('contrasenia')),
-                    'empleado_id' => $request->input('idEmpleado'),
-                    'rol' => $request->input('rol'),
+            // Crear usuario
 
-                ]);
-            } catch (\Throwable $th) {
-                return CustomResponse::make(null, 'Usuario ya se encuentra registrado', 500, null);
+            $mail = $request->input('correo');
+            $contra = $request->input('contrasenia');
+            if (strlen($contra) < 6) {
+                return CustomResponse::make(null, 'Contraseña debe tener un mínimo de 6 caracteres', 500, null);
             }
 
+
+            $mailExis = Usuario::where('email', '=', $mail);
+            if ($mailExis !=  null) {
+                return CustomResponse::make(null, 'Usuario ya se encuentra registrado', 500, null);
+            }
+            $usuario = Usuario::create([
+                'email' => $mail,
+                'password' => bcrypt($contra),
+                'empleado_id' => $request->input('idEmpleado'),
+                'rol' => $request->input('rol'),
+            ]);
 
             Auth::login($usuario);
 
@@ -98,6 +107,19 @@ class AuthController extends Controller
             return CustomResponse::make($usuario, 'Perfil usuario modificado con exito', 200, null);
         } catch (Exception $e) {
             return CustomResponse::make(null, 'Error en el servidor', 500, $e->getMessage());
+        }
+    }
+
+
+    public function recuperarPass(Request $request)
+    {
+        try {
+
+            $request->input('correo');
+
+            return CustomResponse::make(null, 'Usuario creado con exito', 200, null);
+        } catch (\Exception $e) {
+            return CustomResponse::make(null, 'Error al crear usuario', 500, $e->getMessage());
         }
     }
 }

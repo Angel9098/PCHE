@@ -21,6 +21,7 @@ use App\Http\Controllers\ImagenController;
 Route::get('/', 'AuthController@showLoginForm')->name('login');
 Route::post('login', 'AuthController@login')->name('ingresar');
 Route::get('logout', 'AuthController@logout')->name('salir');
+Route::get('recuperarPass', 'AuthController@recupararPass');
 
 Route::group(['middleware' => 'auth'], function () {
 

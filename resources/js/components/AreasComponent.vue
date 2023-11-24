@@ -37,7 +37,8 @@
                                 <button type="button" class="btn btn-primary" @click="showModificarArea(item.area_id, item.id_empresa, item.id_jefe)" title="Editar">
                                     <i class="fa-solid fa-pen-to-square text-white"></i>
                                 </button>
-                                <button type="button" class="btn btn-danger" @click="showDeleteModal(item.area_id)" title="Eliminar">
+                                <button type="button" class="btn btn-danger" @click="showDeleteModal(item.area_id)"
+                                    title="Eliminar">
                                     <i class="fa-solid fa-trash-alt text-white"></i>
                                 </button>
                             </div>
@@ -45,6 +46,29 @@
                     </tr>
                 </tbody>
             </table>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                        <a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link">{{ currentPage }}</span>
+                    </li>
+                    <li class="page-item" v-for="page in lastPage" :key="page" :class="{ active: page === currentPage }">
+                        <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
+                    </li>
+                    <li class="page-item" :class="{ disabled: currentPage === lastPage }">
+                        <a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+
+
         </div>
 
         <div class="modal fade" id="modalCrear" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
@@ -86,10 +110,19 @@
 </template>
 <script>
 import axios from 'axios';
+
+import Pagination from 'vue-pagination-2';
 import 'bootstrap/dist/js/bootstrap.bundle';
 export default {
+    components: {
+        Pagination,
+    },
     data() {
         return {
+            currentPage: 1,
+            perPage: 5,
+            totalPages: 0,
+
             empresas: [],
             areas: [],
             selected: 0,
@@ -118,15 +151,29 @@ export default {
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
     },
     methods: {
+        changePage(page) {
+            this.currentPage = page;
+            this.getAreasByEmpresa();
+        },
         getEmpresas() {
             axios.get('/empresas', { headers: { 'Content-type': 'application/json' } }).then(resp => {
                 this.empresas = resp.data;
             });
         },
         getAreasByEmpresa() {
-            axios.get(`/areas?id_empresa=${this.selected}`, { headers: { 'Content-type': 'application/json' } }).then(resp => {
-                this.areas = resp.data.object;
-            });
+
+            const params = {
+                id_empresa: this.selected,
+                page: this.currentPage,
+                per_page: this.perPage,
+            };
+
+            axios.get('/areas', { params, headers: { 'Content-type': 'application/json' } })
+                .then(resp => {
+                    this.areas = resp.data.object.data;
+                    this.totalPages = resp.data.object.last_page;
+                });
+
         },
         showCrearArea() {
             if (this.selected == 0) {
@@ -169,7 +216,7 @@ export default {
                 })
                 this.getAreasByEmpresa();
                 $('#modalCrear').modal('hide');
-                
+
             }).catch(error => {
                 if (error.response) {
                     this.$swal.fire({
@@ -184,9 +231,17 @@ export default {
             });
         },
         getAreasAll() {
-            axios.get('/areas', { headers: { 'Content-type': 'application/json' } }).then(resp => {
-                this.areas = resp.data.object;
-            });
+            const params = {
+                id_empresa: this.selected,
+                page: this.currentPage,
+                per_page: this.perPage,
+            };
+
+            axios.get('/areas', { params, headers: { 'Content-type': 'application/json' } })
+                .then(resp => {
+                    this.areas = resp.data.object.data;
+                    this.totalPages = resp.data.object.last_page;
+                });
         },
         getJefaturas() {
             this.jefaturas = [];

@@ -6,6 +6,7 @@ use App\Area;
 use App\CustomResponse;
 use Illuminate\Http\Request;
 use App\Empleado;
+use App\Usuario;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -69,10 +70,18 @@ class AreaController extends Controller
                 'jefe_area' => 'integer',
             ]);
 
+            $jefeArea = $request->input('jefe_area');
+
+            if ($jefeArea == 0) {
+
+                $user = Usuario::where('rol', '=', 'administrador')->first();
+
+                $jefeArea = $user->empleado_id;
+            }
             $area = new Area();
             $area->nombre = $request->input('nombre');
             $area->empresa_id = $request->input('empresa_id');
-            $area->jefe_area = $request->input('jefe_area');
+            $area->jefe_area =  $jefeArea;
             $area->save();
 
             return CustomResponse::make($area, 'Area de empresa creada con éxito', 201, null);
@@ -100,9 +109,14 @@ class AreaController extends Controller
                 'jefe_area' => 'required|integer',
             ]);
 
+            $jefeArea = $request->input('jefe_area');
+            $user = Usuario::where('id', '=',  $jefeArea)->first();
+
+            $idEmpleado = $user->empleado_id;
+
             $area->nombre = $request->input('nombre');
             $area->empresa_id = $request->input('empresa_id');
-            $area->jefe_area = $request->input('jefe_area');
+            $area->jefe_area = $idEmpleado;
             $area->save();
 
             return CustomResponse::make($area, 'Area de empresa actualizada con éxito', 200, null);
@@ -130,6 +144,7 @@ class AreaController extends Controller
     {
         try {
             $idEmpresa = $request->input('id_empresa');
+            $perPage = $request->input('per_page', 5); // Default to 10 items per page
 
             // Realizar la consulta utilizando Eloquent
             $query = DB::table('areas as a')
@@ -141,9 +156,10 @@ class AreaController extends Controller
                 $query->where('e.id', $idEmpresa);
             }
 
-            $resultados = $query->get();
+            // Use Eloquent's pagination
+            $resultados = $query->paginate($perPage);
 
-            if ($resultados == null) {
+            if ($resultados->isEmpty()) {
                 return CustomResponse::make(null, 'No hay elementos disponibles', 400, null);
             }
 

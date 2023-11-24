@@ -7,7 +7,8 @@
         </div>
         <form class="col-8 col-sm-12 col-md-12 d-flex flex-column justify-content-center">
             <div class="col-12 d-flex flex-column justify-content-center">
-                <h2 class="text-center" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); margin-bottom: 3%;">ACTIVACIÓN DE USUARIO</h2>
+                <h2 class="text-center" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); margin-bottom: 3%;">ACTIVACIÓN
+                    DE USUARIO</h2>
 
                 <!-- Campo para ingresar el DUI del empleado -->
                 <div class="d-flex flex-row justify-content-center align-items-center" style="margin-bottom: 5%;">
@@ -224,11 +225,11 @@ export default {
                     };
 
                     axios.post('/registrarse', datosRegistro)
-                        .then((response) => {
+                        .then((resp) => {
                             this.$swal.fire({
                                 title: 'Exito',
                                 icon: 'success',
-                                text: response.data.message,
+                                text: resp.data.message,
                                 showCancelButton: false,
                                 showConfirmButton: false,
                                 timer: 2000
@@ -246,15 +247,28 @@ export default {
                             this.rol = null;
 
                         })
-                        .catch((error) => {
+                        .catch((err) => {
+
                             this.$swal.fire({
-                                title: 'Error',
+                                title: 'Advertencia',
                                 icon: 'error',
-                                text: error.response.data.message,
+                                text: err.response.data.message,
                                 showCancelButton: false,
                                 showConfirmButton: false,
                                 timer: 2000
                             })
+
+                            this.nombres = null;
+                            this.duiEmpleado = null;
+                            this.contrasenia = null;
+                            this.idEmpleado = null;
+                            this.apellidosEmpleado = null;
+                            this.empresa = null;
+                            this.cargo = null;
+                            this.correo = null;
+                            this.idEmpleado = null
+                            this.activarUsuario = false;
+                            this.rol = null;
                         });
                 } else {
                     this.$swal.fire({
