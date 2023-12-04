@@ -164,8 +164,8 @@
                     <i :class="expandSideBar ? 'fa-solid fa-file-circle-check text-white' : 'fa-solid fa-file-circle-check text-white iconItem'"></i>
                     <span class="text-white" style="width:145px;text-align: center;" v-if="expandSideBar">Cálculo Horas</span>
                 </router-link>
-                <a :class="expandSideBar ? 'text-uppercase item-extend' : 'text-uppercase item'" href="" v-tooltip="{ theme: 'info-tooltip', content: 'Cerrar Sesión', disabled: expandSideBar }">
-                    <i :class="expandSideBar ? 'fa-solid fa-right-from-bracket text-white' : 'fa-solid fa-right-from-bracket text-white iconItem'" @click="cerrarSesion"></i>
+                <a :class="expandSideBar ? 'text-uppercase item-extend' : 'text-uppercase item'" href="" v-tooltip="{ theme: 'info-tooltip', content: 'Cerrar Sesión', disabled: expandSideBar }" @click="cerrarSesion">
+                    <i :class="expandSideBar ? 'fa-solid fa-right-from-bracket text-white' : 'fa-solid fa-right-from-bracket text-white iconItem'"></i>
                     <span class="text-white" style="width:145px;text-align: center;" v-if="expandSideBar">Cerrar Sesión</span>
                 </a>
             </ul>

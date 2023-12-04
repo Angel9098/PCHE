@@ -72,7 +72,10 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="descripcion">Descripción</label>
-                            <input type="text" class="form-control" id="descripcion" v-model="descripcionCorte" />
+                            <textarea class="form-control" style="height: 130px;" id="descripcion" v-model="descripcionCorte" @keydown="verifyLongDescription" rows="4"></textarea>
+                            <div class="d-flex flex-row justify-content-end">
+                                <span style="font-size: 12px;" >{{ descripcionCorte.length }}/250</span>
+                            </div>
                         </div>
                         <p v-if="errorDescripcion" class="text-danger">
                             La descripción no puede estar vacía.
@@ -115,7 +118,27 @@ export default {
     watch: {
         selectedDate(newDate) {
             if (newDate) {
-                $("#corteModal").modal("show");
+                if (moment().month() > moment(newDate).month()) {
+                this.$swal.fire({
+                    title: 'Error',
+                    icon: 'error',
+                    text: 'Fecha corresponde a mes anterior al actual',
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+                } else if (moment().month() < moment(newDate).month()) {
+                    this.$swal.fire({
+                        title: 'Error',
+                        icon: 'error',
+                        text: 'Fecha corresponde a mes posterior al actual',
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                } else {
+                    $("#corteModal").modal("show");
+                }
             }
         },
     },
@@ -196,31 +219,16 @@ export default {
                         }
                     });
             }
-
-            /* try {
-                const formattedDate = moment(this.selectedDate).format("YYYY/MM/DD");
-                const response = await axios.post("/cortes/crear", {
-                    descripcion: this.descripcionCorte,
-                    fecha_corte: formattedDate,
-                });
-                this.descripcionCorte = "";
-                this.errorSubmit = null;
-                $("#corteModal").modal("hide");
-                this.getCortes();
-                this.getDescripcionVigente();
-            } catch (error) {
-                this.errorSubmit = "Error: no se pudo guardar la fecha de corte.";
-                setTimeout(() => {
-                    $("#corteModal").modal("hide");
-                    this.selectedDate = null;
-                    this.descripcionCorte = "";
-                    this.errorSubmit = null;
-                }, 5000);
-            } */
         },
         formatFecha(date) {
             return moment(date).format("DD/MM/YYYY");
         },
+        verifyLongDescription($event) {
+            if ($event.target.value.length >= 250 && $event.key != 'Backspace') {
+                $event.preventDefault();
+                $event.stopPropagation();
+            }
+        }
     },
 };
 </script>

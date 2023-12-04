@@ -115,7 +115,7 @@
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <li class="page-item" v-for="page in lastPage" :key="page" :class="{ active: page === currentPage }">
+                    <li class="page-item" v-for="page in pages" :key="page" :class="{ active: page === currentPage }">
                         <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
                     </li>
                     <li class="page-item" :class="{ disabled: currentPage === lastPage }">
@@ -162,6 +162,7 @@ export default {
 
             currentPage: 1,
             lastPage: 1,
+            pages: []
         };
     },
     created() {
@@ -210,8 +211,12 @@ export default {
         fetchEmpleados() {
             axios.get("/empleados_area?page=" + this.currentPage)
                 .then((response) => {
+                    this.pages = [];
                     this.empleados = response.data.object.data.filter(result => result.eliminar === 1);
-                    this.lastPage = response.data.last_page;
+                    this.lastPage = response.data.object.last_page;
+                    for (let index = 0; index < this.lastPage; index++) {
+                        this.pages.push(index + 1);
+                    }
                 })
                 .catch((error) => {
                     console.error("Error al cargar empresas:", error);

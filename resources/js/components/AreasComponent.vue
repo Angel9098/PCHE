@@ -84,8 +84,8 @@
                             <div class="w-100 d-flex flex-row justify-content-between align-items-center">
                                 <div class="col-5">
                                     <label for="name">Nombre &#193;rea</label>
-                                    <input type="text" id="name" class="form-control" placeholder="Ingrese nombre de área"
-                                        v-model="area.nombre_area">
+                                    <input type="text" id="name" :class="errorNameArea ? 'form-control is-invalid' : 'form-control'" placeholder="Ingrese nombre de área" v-model="area.nombre_area" @keyup="verifyNameArea" @focusout="verifyNameArea">
+                                    <div class="invalid-feedback" v-if="errorNameArea">Campo requerido</div>
                                 </div>
                                 <div class="col-5">
                                     <label for="boss">Seleccione Jefatura</label>
@@ -110,13 +110,8 @@
 </template>
 <script>
 import axios from 'axios';
-
-import Pagination from 'vue-pagination-2';
 import 'bootstrap/dist/js/bootstrap.bundle';
 export default {
-    components: {
-        Pagination,
-    },
     data() {
         return {
             currentPage: 1,
@@ -140,7 +135,8 @@ export default {
                 jefe_area: 0
             },
             jefaturas: [],
-            selectedEliminar: 0
+            selectedEliminar: 0,
+            errorNameArea: false
         }
     },
     mounted() {
@@ -194,41 +190,53 @@ export default {
             }
         },
         crearArea() {
-            this.$swal.fire({
-                title: 'Cargando...',
-                html: '<div class="my-5 d-flex flex-row justify-content-center"><div class="sk-chase"><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div></div></div>',
-                showCancelButton: false,
-                showConfirmButton: false
-            });
-            Vue.set(this.areaCrear, 'nombre', this.area.nombre_area);
-            Vue.set(this.areaCrear, 'empresa_id', this.selected);
-            Vue.set(this.areaCrear, 'jefe_area', this.area.id_jefe);
-
-            axios.post('areas/create', this.areaCrear, { headers: { 'Content-type': 'application/json' } }).then(response => {
-                this.$swal.close();
+            if (this.area.nombre_area == '') {
                 this.$swal.fire({
-                    title: '¡Hecho!',
-                    icon: 'success',
-                    text: response.data.message,
+                    title: 'Error',
+                    icon: 'error',
+                    text: 'Nombre de área requerido',
                     showCancelButton: false,
                     showConfirmButton: false,
                     timer: 2000
-                })
-                this.getAreasByEmpresa();
-                $('#modalCrear').modal('hide');
+                });
+                this.errorNameArea = true;
+            } else {
+                this.$swal.fire({
+                    title: 'Cargando...',
+                    html: '<div class="my-5 d-flex flex-row justify-content-center"><div class="sk-chase"><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div><div class="sk-chase-dot"></div></div></div>',
+                    showCancelButton: false,
+                    showConfirmButton: false
+                });
+                Vue.set(this.areaCrear, 'nombre', this.area.nombre_area);
+                Vue.set(this.areaCrear, 'empresa_id', this.selected);
+                Vue.set(this.areaCrear, 'jefe_area', this.area.id_jefe);
 
-            }).catch(error => {
-                if (error.response) {
+                axios.post('areas/create', this.areaCrear, { headers: { 'Content-type': 'application/json' } }).then(response => {
+                    this.$swal.close();
                     this.$swal.fire({
-                        title: 'Error',
-                        icon: 'error',
-                        text: error.response.data.message,
+                        title: '¡Hecho!',
+                        icon: 'success',
+                        text: response.data.message,
                         showCancelButton: false,
                         showConfirmButton: false,
                         timer: 2000
                     })
-                }
-            });
+                    this.getAreasByEmpresa();
+                    $('#modalCrear').modal('hide');
+
+                }).catch(error => {
+                    if (error.response) {
+                        this.$swal.fire({
+                            title: 'Error',
+                            icon: 'error',
+                            text: error.response.data.message,
+                            showCancelButton: false,
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
+                    }
+                });
+            }
         },
         getAreasAll() {
             const params = {
@@ -354,6 +362,10 @@ export default {
                     })
                 }
             });
+        },
+        verifyNameArea($event) {
+            if ($event.target.value.length > 0) this.errorNameArea = false;
+            else this.errorNameArea = true;
         }
     },
     filters: {
