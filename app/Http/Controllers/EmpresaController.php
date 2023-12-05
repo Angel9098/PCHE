@@ -15,7 +15,7 @@ class EmpresaController extends Controller
 
     public function allempresas()
     {
-        $empresas = Empresa::all();
+        $empresas = Empresa::orderBy('id', 'asc')->paginate(5);
         return response()->json($empresas);
     }
 

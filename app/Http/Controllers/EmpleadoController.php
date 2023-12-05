@@ -19,7 +19,7 @@ class EmpleadoController extends Controller
 {
     public function allEmpleados()
     {
-        $empleados = Empleado::all();
+        $empleados = Empleado::where('eliminar', '<>', 1)->paginate(5);
         return response()->json($empleados);
     }
     public function planillaQuincenal(Request $request)
