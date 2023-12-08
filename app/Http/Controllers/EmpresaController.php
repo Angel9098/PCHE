@@ -8,6 +8,7 @@ use App\CustomResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 
 class EmpresaController extends Controller
@@ -61,10 +62,22 @@ class EmpresaController extends Controller
     {
         try {
             $nombreImagen = null;
-            if ($request->hasFile('imagen')) {
+            /* if ($request->hasFile('imagen')) {
                 $imagen = $request->file('imagen');
                 $nombreImagen = uniqid() . '.' . $imagen->getClientOriginalExtension();
                 $rutaImagen = $imagen->storeAs('public/imagenes', $nombreImagen);
+            } */
+
+            if ($request->has('imagen')) {
+                $base64Image = $request->input('imagen');
+                $imagen = base64_decode($base64Image);
+
+                // Se genera un nombre único para la imagen
+                $nombreImagen = Str::random(10) . '.png';
+
+                // Se guarda la imagen en el almacenamiento
+                $rutaImagen = storage_path('app/public/imagenes/' . $nombreImagen);
+                file_put_contents($rutaImagen, $imagen);
             }
 
 
@@ -91,10 +104,33 @@ class EmpresaController extends Controller
 
             $empresa = Empresa::findOrFail($empresaId);
 
-            if ($request->hasFile('imagen')) {
+/*             if ($request->hasFile('imagen')) {
                 $imagen = $request->file('imagen');
                 $nombreImagen = uniqid() . '.' . $imagen->getClientOriginalExtension();
                 $rutaImagen = $imagen->storeAs('public/imagenes', $nombreImagen);
+                $empresa->imagen = $nombreImagen;
+            } */
+
+            if ($request->has('imagen')) {
+                $base64Image = $request->input('imagen');
+                $imagen = base64_decode($base64Image);
+
+                // Genera un nuevo nombre único para la imagen
+                $nombreImagen = Str::random(10) . '.png';
+
+                // Elimina la imagen anterior si existe
+                if ($empresa->imagen) {
+                    $rutaImagenAnterior = storage_path('app/public/imagenes/' . $empresa->imagen);
+                    if (file_exists($rutaImagenAnterior)) {
+                        unlink($rutaImagenAnterior);
+                    }
+                }
+
+                // Guarda la nueva imagen en el almacenamiento
+                $rutaImagen = storage_path('app/public/imagenes/' . $nombreImagen);
+                file_put_contents($rutaImagen, $imagen);
+
+                // Actualiza el nombre de la imagen en el modelo
                 $empresa->imagen = $nombreImagen;
             }
 

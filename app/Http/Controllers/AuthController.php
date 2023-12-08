@@ -7,6 +7,7 @@ use App\Usuario;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -92,16 +93,40 @@ class AuthController extends Controller
     public function editarPerfilUser(Request $request)
     {
         try {
-            $imagen = $request->file('imagen');
+/*             $imagen = $request->file('imagen');
             $nombreImagen = uniqid() . '.' . $imagen->getClientOriginalExtension();
             $rutaImagen = $imagen->storeAs('public/imagenes', $nombreImagen);
-            $urlImagen = asset('storage/' . $rutaImagen);
+            $urlImagen = asset('storage/' . $rutaImagen); */
+
+
             $idEmpleado =  $request->input('id');
             $usuario = Usuario::findOrFail($idEmpleado);
+
+            if ($request->has('imagen')) {
+                $base64Image = $request->input('imagen');
+                $imagen = base64_decode($base64Image);
+
+                // Genera un nuevo nombre único para la imagen
+                $nombreImagen = Str::random(10) . '.png';
+
+                // Elimina la imagen anterior si existe
+                if ($usuario->imagen) {
+                    $rutaImagenAnterior = storage_path('app/public/imagenes/' . $usuario->imagen);
+                    if (file_exists($rutaImagenAnterior)) {
+                        unlink($rutaImagenAnterior);
+                    }
+                }
+
+                // Guarda la nueva imagen en el almacenamiento
+                $rutaImagen = storage_path('app/public/imagenes/' . $nombreImagen);
+                file_put_contents($rutaImagen, $imagen);
+
+                $usuario->imagen = $nombreImagen;
+            }
             if (!$usuario) {
                 return CustomResponse::make($usuario, 'Usuario no encontrado', 404, null);
             }
-            $usuario->imagen = $nombreImagen;
+
             $usuario->save();
 
             return CustomResponse::make($usuario, 'Perfil usuario modificado con exito', 200, null);
