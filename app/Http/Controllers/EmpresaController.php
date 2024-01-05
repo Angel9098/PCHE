@@ -51,9 +51,16 @@ class EmpresaController extends Controller
 
             $empresa = Empresa::where('id', $id)->first();
 
-            return CustomResponse::make($empresa, '', 200, null);
+            // Construye la URL completa de la imagen
+            if ($empresa->imagen) {
+                $empresa->imagen_url = asset('storage/imagenes/' . $empresa->imagen);
+            }
+
+            return CustomResponse::make($empresa, 'Empresa recuperada con exito', 200, null);
+        } catch (ModelNotFoundException $ex) {
+            return CustomResponse::make(null, 'Empresa no encontrada', 404, $ex->getMessage());
         } catch (\Exception $e) {
-            return CustomResponse::make(null, 'error al obtener la empresa', 500, null);
+            return CustomResponse::make(null, 'Error al obtener la empresa', 500, null);
         }
     }
 
