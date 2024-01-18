@@ -56,10 +56,7 @@ export default {
       // Llamar al endpoint de empresas utilizando Axios (cambia this.$axios a axios)
       axios.get("/empresas").then((response) => {
           // Formatear las empresas como 'id-nombre' y almacenarlas en 'empresas'
-          this.empresas = response.data.map((empresa) => ({
-            id: empresa.id,
-            nombre: empresa.nombre,
-          }));
+        this.empresas = response.data.data;
         }).catch((error) => {
           console.error("Error al cargar empresas:", error);
         });

@@ -77,11 +77,11 @@
                         <div class="modal-body gridClass">
                             <div class="p-4">
                                 <picture class="mb-3">
-                                    <source :srcset="defaultBooleand ? defaultImagen : perfil.imagen" type="image" />
-                                    <img v-if="data.id == 0" :src="defaultBooleand ? defaultImagen : perfil.imagen"
+                                    <source :srcset="defaultPreview ? defaultImagen : perfil.imagen" type="image" />
+                                    <img v-if="data.id == 0" :src="defaultPreview ? defaultImagen : data.imagen"
                                         class="img-fluid img-thumbnail cicle" alt="..." />
                                     <img v-else
-                                        :src="data.imagen == null ? defaultImagen : 'storage/imagenes/' + data.imagen"
+                                        :src="data.imagen == '' ? defaultImagen : data.imagen"
                                         class="img-fluid img-thumbnail cicle">
                                 </picture>
                             </div>
@@ -91,7 +91,7 @@
                                         <label for="changeIMG" v-if="data.id == 0">Agregar imagen</label>
                                         <label for="changeIMG" v-else>Modificar imagen</label>
                                         <input type="file" class="form-control" id="changeIMG"
-                                            placeholder="CAMBIAR LA IMAGEN" @change="changesDefauld" />
+                                            placeholder="CAMBIAR LA IMAGEN" @change="handleFileChange" />
                                     </div>
                                     <div class="row" style="margin-bottom: 2%">
                                         <div class="col-5">
@@ -146,7 +146,7 @@ export default {
         return {
             defaultImagen:
                 "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-            defaultBooleand: true,
+            defaultPreview: true,
             file: null,
             empresas: [],
             data: {
@@ -171,11 +171,24 @@ export default {
     },
     methods: {
         changesDefauld(event) {
-            this.defaultBooleand = false;
+            this.defaultPreview = false;
             this.file = event.target.files[0];
             const files = event.target.files[0];
             this.data.imagen = this.file;
             this.perfil.imagen = URL.createObjectURL(files);
+        },
+        handleFileChange(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = () => {
+                    this.defaultPreview = false;;
+                    this.data.imagen = reader.result;
+                };
+
+                reader.readAsDataURL(file);
+            }
         },
         async dataGuardarEmpresa() {
 
@@ -330,8 +343,8 @@ export default {
 
             const formData = new FormData();
 
-            if (this.file) {
-                formData.append('imagen', this.file);
+            if (this.data.imagen != null) {
+                formData.append('imagen', this.data.imagen);
             }
 
             formData.append('nombre', this.data.nombre);
@@ -372,15 +385,16 @@ export default {
         },
         fetchEmpresas() {
             axios
-                .get("/empresas")
+                .get("/empresas?page="+this.currentPage)
                 .then((response) => {
-                    this.empresas = response.data.map((empresa) => ({
+                    this.empresas = response.data.data.map((empresa) => ({
                         id: empresa.id,
                         nombre: empresa.nombre,
                         direccion: empresa.direccion,
                         rubro: empresa.rubro,
                         fecha: empresa.created_at,
                     }));
+                    this.lastPage = response.data.last_page;
                 })
                 .catch((error) => {
                     console.error("Error al cargar empresas:", error);
